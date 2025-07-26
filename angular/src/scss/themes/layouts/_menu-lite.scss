@@ -3,7 +3,9 @@
   display: flex;
   align-items: center;
 }
-
+.color-fondo{
+  background: #23272F  !important;
+}
 .navbar-collapsed {
   .b-brand {
     transform: rotateY(-90deg);
@@ -32,9 +34,21 @@
     }
   }
 }
-
+@keyframes moverLogo{
+  0%{
+    position: relative;
+    left:10px;
+  }
+  50%{
+    position: relative;
+    right:20px;
+  }
+  100%{
+    position: relative;
+    left:10px;
+  }
+}
 /* new logo End  */
-
 .search-bar {
   display: none;
   position: fixed;
@@ -43,15 +57,24 @@
   width: 100%;
   height: $header-height;
   z-index: 1030;
-  background: #fff;
+  background: #23272F;
   padding: 12px;
 
   .close {
     position: absolute;
-    top: 9px;
+    top: 14px;
     right: 9px;
     padding: 8px 16px;
+    border-radius: 100%;
   }
+  input{
+    background: #23272F;
+    color: white;
+  }
+  input::placeholder{
+    color: white ;
+  }
+ 
 }
 
 .pcoded-header {
@@ -61,12 +84,14 @@
   min-height: $header-height;
   padding: 0;
   top: 0;
-  background: $header-light-background;
-  color: transparentize($header-light-text-color, 0.2);
+  // background: $header-light-background;
+  border-bottom:2px solid #30CFD0 !important;
+  background: #23272F !important;
+  color: #30CFD0 !important;
   width: 100%;
   transition: all 0.15s ease-in-out;
-  box-shadow: 0 0 11px rgba(0, 0, 0, 0.13);
-
+  box-shadow: 0 0 20px 5px #30CFD0 !important;
+  
   .m-header {
     width: $Menu-width;
     position: relative;
@@ -74,7 +99,7 @@
     display: inline-flex;
     align-items: center;
     padding: 0 25px;
-
+    animation: moverLogo 2s infinite;
     .logo-dark,
     .logo-thumb {
       display: none;
@@ -187,7 +212,7 @@
 
       .form-control,
       .input-group-text {
-        background: transparent;
+        background: #23272F;
         border: none;
         border-radius: 0;
         padding: 0;
@@ -303,7 +328,11 @@
       padding: 0;
       line-height: 1.4;
       overflow: hidden;
-
+      color: #30CFD0 !important;
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+      border-radius: 10px;
+      
       a {
         color: $theme-font-color;
 
@@ -313,21 +342,27 @@
       }
 
       .noti-head {
-        background: $menu-dark-background;
+        background: #23272F;
         padding: 15px 20px;
-
+        color: #30CFD0;
+        border-bottom: 2px solid #30CFD0;
+        box-shadow: 0px 0px 15px 2px #30CFD0;
+        text-shadow: 0px 0px 10px #30CFD0;
+        margin-top: -10px;
         h6 {
-          color: #fff;
+          color: #30CFD0;
         }
 
         a {
-          color: #fff;
+          color: #30CFD0;
           text-decoration: underline;
           font-size: 13px;
         }
       }
 
       .noti-body {
+        background: #23272F !important;
+
         padding: 0;
         position: relative;
         height: 300px;
@@ -358,26 +393,32 @@
             font-size: 13px;
 
             strong {
-              color: #222;
+              color: #30CFD0;
             }
           }
 
           .n-time {
             font-size: 80%;
             float: right;
+            margin-top: 5px;
+            margin-right: 5px;
+            color: #30CFD0 !important;
           }
         }
       }
 
       .noti-footer {
-        border-top: 1px solid #f1f1f1;
+        box-shadow: 0px 0px 15px 2px #30CFD0;
+        border-top: 1px solid #30CFD0;
         padding: 15px 20px;
+        margin-bottom: -10px;
         text-align: center;
-        background: $theme-background;
-
+        background:#23272F;
+        text-shadow: 0px 0px 10px #30CFD0;
         a {
           text-decoration: underline;
           font-size: 13px;
+          color: #30CFD0;
         }
       }
 
@@ -398,10 +439,10 @@
       overflow: hidden;
 
       .pro-head {
-        color: #fff;
+        color: #ffffff;
         padding: 15px;
         position: relative;
-        background: $menu-dark-background;
+        background: #23272F;
 
         img {
           width: 40px;
@@ -409,7 +450,7 @@
         }
 
         .dud-logout {
-          color: #fff;
+          color: #30CFD0;
           padding-right: 0;
           position: absolute;
           right: 0;
@@ -445,11 +486,11 @@
           &:active,
           &:focus,
           &:hover {
-            background: $primary-color;
+            background: #23272F;
             box-shadow: 0 15px 8px -9px rgba(0, 0, 0, 0.25);
 
             > a {
-              color: #fff;
+              color: #30CFD0;
               background: transparent;
             }
           }
@@ -1691,7 +1732,7 @@
           &:active,
           &:focus,
           &:hover {
-            background: transparentize(nth($color-header-color, $i), 0.9);
+            background: #041130;
 
             > a {
               background: transparent;
@@ -1767,29 +1808,29 @@
 
             @media only screen and (min-width: 992px) {
               .form-control {
-                color: #fff;
+                color: #23272F;
 
                 &::-moz-placeholder {
-                  color: #fff;
+                  color: #23272F;
                   opacity: 1;
                 }
 
                 &:-ms-input-placeholder {
-                  color: #fff;
+                  color: #23272F;
                 }
 
                 &::-webkit-input-placeholder {
-                  color: #fff;
+                  color: #23272F;
                 }
               }
             }
 
             .search-btn {
-              background: nth($color-header-color, $i);
+              background: #23272F;
               border-color: nth($color-header-color, $i);
 
               .input-group-text {
-                color: #fff;
+                color: #30CFD0;
               }
             }
           }
@@ -1800,9 +1841,20 @@
         .notification {
           .noti-head {
             a {
-              color: #fff;
+              color: #ffffff;
+              transition: all 2s ease;
+
+            }
+            a:hover {
+              font-size: 12px;
+              transform: scale(1.2);
+              transition: all 1s ease-in;
+              color: #23272F;
             }
           }
+          
+            
+          
 
           .noti-body {
             li {
@@ -1815,11 +1867,11 @@
 
         .profile-notification {
           .pro-head {
-            color: #fff;
-            background: nth($color-header-color, $i);
+            color: white;
+            background: #041130;
 
             .dud-logout {
-              color: #fff;
+              color: white;
             }
           }
         }

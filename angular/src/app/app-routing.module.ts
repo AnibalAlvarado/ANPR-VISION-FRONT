@@ -39,6 +39,10 @@ const routes: Routes = [
       {
         path: 'sample-page',
         loadComponent: () => import('./demo/other/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
+      },
+      {
+        path: 'zonas-parqueadero',
+        loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
       }
     ]
   },

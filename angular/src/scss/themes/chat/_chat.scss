@@ -11,7 +11,7 @@
   right: -300px;
   border-radius: 0;
   z-index: 1030;
-  background-color: #fff;
+  background:#23272F  ;
   transition: all 0.3s ease-in-out;
 
   .main-friend-cont {
@@ -25,18 +25,18 @@
 
   .h-list-header {
     padding: 15px;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid #30CFD0;
   }
 
   &.open {
-    box-shadow: 0 1px 10px 0 rgba(69, 90, 100, 0.2);
+    box-shadow: 0 1px 10px 0 #30CFD0;
     right: 0;
   }
 }
 
 .header-user-list {
   .nav-tabs {
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid #30CFD0;
     .nav-item {
       width: calc(100% / 3);
       text-align: center;
@@ -90,7 +90,7 @@
         background: $primary-color;
         width: 32px;
         height: 40px;
-        box-shadow: -5px 2px 15px -4px rgba(69, 90, 100, 0.5);
+        box-shadow: -5px 2px 15px -4px #30CFD0;
         border-radius: 20px 0 0 20px;
       }
     }
@@ -131,7 +131,7 @@
       left: 20px;
       width: calc(100% - 40px);
       height: 1px;
-      background: #f3f4f9;
+      background: #23272F;
     }
 
     &.active {
@@ -151,7 +151,7 @@
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 0;
-
+      color: #30CFD0;
       small {
         margin-top: 5px;
         font-size: 90%;
@@ -165,10 +165,10 @@
       top: 35px;
       right: 20px;
       border-radius: 100%;
-      color: #fff;
+      color: #30CFD0;
       padding: 2px 0;
       text-align: center;
-      background: $primary-color;
+      background: #23272F;
     }
   }
 }
@@ -201,7 +201,7 @@
 
   .h-list-body {
     height: 100%;
-    background: lighten($primary-color, 41%);
+    background: #23272F;
   }
 
   .h-list-footer {
@@ -211,20 +211,20 @@
     right: 0;
     padding: 20px 15px;
     z-index: 10;
-    background: lighten($primary-color, 41%);
+    background: #23272F;
 
     .input-group {
-      background: #fff;
+      background: #23272F;
       border: none;
       display: inline-flex;
-      box-shadow: 0 5px 15px 0 rgba(62, 57, 107, 0.15);
+      box-shadow: 0 5px 15px #30CFD0;
       padding: 7px;
       border-radius: 20px;
       width: calc(100% - 40px);
 
       .form-control,
       .input-group-text {
-        background: transparent;
+        background: #23272F;
         border: none;
         border-radius: 0;
         padding: 0;
@@ -264,11 +264,12 @@
         }
 
         .input-group-text {
-          color: #fff;
+          color: #30CFD0;
         }
       }
 
       .form-control {
+        color: #30CFD0;
         transition: all 0.3s ease-in-out;
         width: 0;
       }
@@ -281,7 +282,7 @@
     padding-bottom: 20px;
     padding-left: 15px;
     padding-right: 15px;
-
+    outline: none !important;
     .photo-table {
       padding-right: 15px;
 
