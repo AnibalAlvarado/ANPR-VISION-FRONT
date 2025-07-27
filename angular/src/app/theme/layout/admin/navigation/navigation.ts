@@ -35,7 +35,7 @@ export const NavigationItems: NavigationItem[] = [
     ]
   },
    {
-    id: 'ui-component',
+    id: 'monitoreo',
     title: 'Monitoreo y control de Acceso',
     type: 'group',
     icon: 'icon-group',
@@ -46,7 +46,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-camera'
       },
       {
         id: 'apexchart',
@@ -54,7 +54,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-map-pin'
       },
        {
         id: 'apexchart',
@@ -62,7 +62,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-alert-octagon'
       },
     ]
   },
@@ -78,7 +78,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-credit-card'
       },
       {
         id: 'apexchart',
@@ -86,7 +86,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-file-text'
       },
 
     ]
@@ -156,7 +156,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-settings'
       },
       {
         id: 'apexchart',
@@ -164,7 +164,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-help-circle'
       },
 
       {
@@ -173,7 +173,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
+        icon: 'feather icon-log-out'
       },
 
     ]
