@@ -24,7 +24,7 @@ Guardar credenciales</label>
               </div>
             </div>
             <div class="d-grid bttn-inicio-sesion">
-              <button class="btn btn-block btn-primary mb-4">Iniciar sesión
+              <button class="btn btn-block btn-primary mb-4" (click)="login()">Iniciar sesión
 </button>
             </div>
             <p class="mb-2 text-muted color-p"
@@ -34,7 +34,7 @@ Guardar credenciales</label>
             </p>
             <p class="mb-0 text-muted color-p">
              ¿No tienes cuenta?
-              <a [routerLink]="['/login']" class="f-w-400">Regístrate</a>
+              <a [routerLink]="['/register']" class="f-w-400">Regístrate</a>
             </p>
           </div>
         </div>

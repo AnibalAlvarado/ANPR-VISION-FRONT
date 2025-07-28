@@ -52,6 +52,8 @@ $yellow: #ffb64d; // change
 $green: #2ed8b6; // change
 $teal: #20c997;
 $cyan: #00bcd4; // change
+$azulcar: #f9f9ff; // change
+
 
 $colors: ();
 // stylelint-disable-next-line scss/dollar-variable-default
@@ -83,6 +85,7 @@ $danger: $red; // change
 $light: $gray-100; // change
 $dark: $gray-800; // change
 
+
 $theme-colors: (); // change
 // stylelint-disable-next-line scss/dollar-variable-default
 $theme-colors: map-merge(
@@ -94,7 +97,8 @@ $theme-colors: map-merge(
     'warning': $warning,
     'danger': $danger,
     'light': $light,
-    'dark': $dark
+    'dark': $dark,
+    'azulCartas': $azulcar,
   ),
   $theme-colors
 );

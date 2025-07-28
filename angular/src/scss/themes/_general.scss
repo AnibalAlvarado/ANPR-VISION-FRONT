@@ -86,18 +86,73 @@ strong {
   flex: 1;
 }
 
+// .page-header {
+//   box-shadow: $card-shadow;
+//   background: #e7dcdc00;
+//   padding: 20px 20px;
+//   border-radius: 5px;
+//   border: 1px solid #30CFD0;
+
+//   h5 {
+//     margin-bottom: 16px;
+//     padding-bottom: 12px;
+//     font-weight: 600;
+//     border-bottom: 1px solid #30CFD0;
+//     font-weight: 600;
+//   }
+
+//   .page-header-title + .breadcrumb {
+//     background: transparent;
+//     padding: 0;
+//     margin-bottom: 0;
+
+//     > .breadcrumb-item {
+//       line-height: 1;
+
+//       a {
+//         color: $primary-color;
+
+//         font: {
+//           weight: 400;
+//         }
+//       }
+
+//       &:last-child a {
+//         color: $theme-font-color;
+//         font-weight: 400;
+//       }
+//     }
+//   }
+// }
+
 .page-header {
-  box-shadow: $card-shadow;
-  background: #fff;
-  padding: 20px 25px;
-  border-radius: 5px;
+  background: #23272F;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #a3a5a5;
+  // box-shadow:
+  //   0 10px 20px rgba(0, 0, 0, 0.25),  // sombra inferior
+  //   0 -4px 10px rgba(48, 207, 208, 0.15),  // glow superior suave
+  //   inset 0 1px 0 rgba(255, 255, 255, 0.05); // borde interior claro
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow:
+      0 12px 25px rgba(0, 0, 0, 0.3),
+      0 0 12px rgba(48, 207, 208, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
 
   h5 {
+    color: #ffffff;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    font-weight: 600;
-    border-bottom: 1px solid #e5e5e5;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #30CFD0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
   }
 
   .page-header-title + .breadcrumb {
@@ -106,23 +161,31 @@ strong {
     margin-bottom: 0;
 
     > .breadcrumb-item {
-      line-height: 1;
+      line-height: 1.5;
 
       a {
-        color: $primary-color;
+        color: #30CFD0;
+        text-decoration: none;
+        font-weight: 400;
+        transition: color 0.2s;
 
-        font: {
-          weight: 400;
+        &:hover {
+          color: #00e5ff;
         }
       }
 
       &:last-child a {
-        color: $theme-font-color;
+        color: #afaeae;
         font-weight: 400;
+      }
+
+      &::before {
+        color: #30CFD0;
       }
     }
   }
 }
+
 
 .pcoded-main-container {
   .page-header {
