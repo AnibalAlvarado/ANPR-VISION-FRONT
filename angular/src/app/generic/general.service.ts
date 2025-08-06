@@ -18,6 +18,11 @@ export class General {
     return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params });
   }
 
+  getById<T>(endpoint: string, id: number | string): Observable<T> {
+  return this.http.get<T>(`${this.baseUrl}/${endpoint}/${id}`);
+}
+
+
   post<T>(endpoint: string, body: unknown): Observable<T> {
   return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body);
 }
@@ -28,9 +33,10 @@ put<T>(endpoint: string, body: unknown): Observable<T> {
 
 
   // DELETE
-  delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`);
-  }
+delete<T>(endpoint: string, id: number | string): Observable<T> {
+  return this.http.delete<T>(`${this.baseUrl}/${endpoint}/${id}`);
+}
+
 
 
 }

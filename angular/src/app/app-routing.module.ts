@@ -5,6 +5,10 @@ import { Routes, RouterModule } from '@angular/router';
 // project import
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
+import { PersonIndex } from './demo/pages/segurity/person/person-index/person-index';
+import { PersonForm } from './demo/pages/segurity/person/person-form/person-form';
+import { RoleIndex } from './demo/pages/segurity/role/role-index/role-index';
+import { RoleForm } from './demo/pages/segurity/role/role-form/role-form';
 
 const routes: Routes = [
   {
@@ -20,6 +24,18 @@ const routes: Routes = [
         path: 'analytics',
         loadComponent: () => import('./demo/dashboard/dash-analytics.component').then((c) => c.DashAnalyticsComponent)
       },
+      {
+        path: 'persons-index',
+        component: PersonIndex
+      },
+      { path: 'persona-form', component: PersonForm },
+      { path: 'persona-form/:id', component: PersonForm },
+       {
+        path: 'role-index',
+        component: RoleIndex
+      },
+       { path: 'role-form', component: RoleForm },
+      { path: 'role-form/:id', component: RoleForm },
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

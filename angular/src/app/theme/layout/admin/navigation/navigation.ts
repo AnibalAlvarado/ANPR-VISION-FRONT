@@ -21,7 +21,7 @@ export interface NavigationItem {
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
-    title: 'Navigation',
+    title: 'Dashboard',
     type: 'group',
     icon: 'icon-group',
     children: [
@@ -34,56 +34,154 @@ export const NavigationItems: NavigationItem[] = [
       }
     ]
   },
+   {
+    id: 'monitoreo',
+    title: 'Monitoreo y control de Acceso',
+    type: 'group',
+    icon: 'icon-group',
+    children: [
+      {
+        id: 'apexchart',
+        title: 'Cámaras',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-camera'
+      },
+      {
+        id: 'apexchart',
+        title: 'Vehículos',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-map-pin'
+      },
+       {
+        id: 'apexchart',
+        title: 'Lista Negra',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-alert-octagon'
+      },
+    ]
+  },
+    {
+    id: 'ui-component',
+    title: 'Administración y Tarifas',
+    type: 'group',
+    icon: 'icon-group',
+    children: [
+      {
+        id: 'apexchart',
+        title: 'Membresías',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-credit-card'
+      },
+      {
+        id: 'apexchart',
+        title: 'Tarifas',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-file-text'
+      },
+
+    ]
+  },
+
   {
     id: 'ui-component',
-    title: 'Ui Component',
+    title: 'Módulo de Seguridad',
     type: 'group',
     icon: 'icon-group',
     children: [
       {
         id: 'basic',
-        title: 'Component',
+        title: 'Seguridad',
         type: 'collapse',
         icon: 'feather icon-box',
         children: [
           {
             id: 'button',
-            title: 'Button',
+            title: 'Roles',
             type: 'item',
-            url: '/component/button'
+            url: '/role-index'
           },
           {
             id: 'badges',
-            title: 'Badges',
+            title: 'Formularios',
             type: 'item',
             url: '/component/badges'
           },
           {
             id: 'breadcrumb-pagination',
-            title: 'Breadcrumb & Pagination',
+            title: 'Permisos',
             type: 'item',
             url: '/component/breadcrumb-paging'
           },
           {
             id: 'collapse',
-            title: 'Collapse',
+            title: 'Módulos',
             type: 'item',
             url: '/component/collapse'
           },
           {
             id: 'tabs-pills',
-            title: 'Tabs & Pills',
+            title: 'Usuarios',
             type: 'item',
             url: '/component/tabs-pills'
           },
           {
+            id: 'tabs-pills',
+            title: 'Personas',
+            type: 'item',
+            url: '/persons-index'
+          },
+          {
             id: 'typography',
-            title: 'Typography',
+            title: 'Formularios y Módulos',
             type: 'item',
             url: '/component/typography'
           }
         ]
       }
+    ]
+  },
+  {
+    id: 'ui-component',
+    title: 'Configuración y Soporte',
+    type: 'group',
+    icon: 'icon-group',
+    children: [
+      {
+        id: 'apexchart',
+        title: 'Configuración',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-settings'
+      },
+      {
+        id: 'apexchart',
+        title: 'Ayuda',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-help-circle'
+      },
+
+      {
+        id: 'apexchart',
+        title: 'Cerrar sesión',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-log-out'
+      },
+
     ]
   },
   // {
@@ -128,80 +226,80 @@ export const NavigationItems: NavigationItem[] = [
       }
     ]
   },
-  {
-    id: 'forms & tables',
-    title: 'Forms & Tables',
-    type: 'group',
-    icon: 'icon-group',
-    children: [
-      {
-        id: 'forms',
-        title: 'Basic Forms',
-        type: 'item',
-        url: '/forms',
-        classes: 'nav-item',
-        icon: 'feather icon-file-text'
-      },
-      {
-        id: 'tables',
-        title: 'Tables',
-        type: 'item',
-        url: '/tables',
-        classes: 'nav-item',
-        icon: 'feather icon-server'
-      }
-    ]
-  },
-  {
-    id: 'other',
-    title: 'Other',
-    type: 'group',
-    icon: 'icon-group',
-    children: [
-      {
-        id: 'sample-page',
-        title: 'Sample Page',
-        type: 'item',
-        url: '/sample-page',
-        classes: 'nav-item',
-        icon: 'feather icon-sidebar'
-      },
-      {
-        id: 'menu-level',
-        title: 'Menu Levels',
-        type: 'collapse',
-        icon: 'feather icon-menu',
-        children: [
-          {
-            id: 'menu-level-2.1',
-            title: 'Menu Level 2.1',
-            type: 'item',
-            url: 'javascript:',
-            external: true
-          },
-          {
-            id: 'menu-level-2.2',
-            title: 'Menu Level 2.2',
-            type: 'collapse',
-            children: [
-              {
-                id: 'menu-level-2.2.1',
-                title: 'Menu Level 2.2.1',
-                type: 'item',
-                url: 'javascript:',
-                external: true
-              },
-              {
-                id: 'menu-level-2.2.2',
-                title: 'Menu Level 2.2.2',
-                type: 'item',
-                url: 'javascript:',
-                external: true
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  // {
+  //   id: 'forms & tables',
+  //   title: 'Forms & Tables',
+  //   type: 'group',
+  //   icon: 'icon-group',
+  //   children: [
+  //     {
+  //       id: 'forms',
+  //       title: 'Basic Forms',
+  //       type: 'item',
+  //       url: '/forms',
+  //       classes: 'nav-item',
+  //       icon: 'feather icon-file-text'
+  //     },
+  //     {
+  //       id: 'tables',
+  //       title: 'Tables',
+  //       type: 'item',
+  //       url: '/tables',
+  //       classes: 'nav-item',
+  //       icon: 'feather icon-server'
+  //     }
+  //   ]
+  // },
+  // {
+  //   id: 'other',
+  //   title: 'Other',
+  //   type: 'group',
+  //   icon: 'icon-group',
+  //   children: [
+  //     {
+  //       id: 'sample-page',
+  //       title: 'Sample Page',
+  //       type: 'item',
+  //       url: '/sample-page',
+  //       classes: 'nav-item',
+  //       icon: 'feather icon-sidebar'
+  //     },
+  //     {
+  //       id: 'menu-level',
+  //       title: 'Menu Levels',
+  //       type: 'collapse',
+  //       icon: 'feather icon-menu',
+  //       children: [
+  //         {
+  //           id: 'menu-level-2.1',
+  //           title: 'Menu Level 2.1',
+  //           type: 'item',
+  //           url: 'javascript:',
+  //           external: true
+  //         },
+  //         {
+  //           id: 'menu-level-2.2',
+  //           title: 'Menu Level 2.2',
+  //           type: 'collapse',
+  //           children: [
+  //             {
+  //               id: 'menu-level-2.2.1',
+  //               title: 'Menu Level 2.2.1',
+  //               type: 'item',
+  //               url: 'javascript:',
+  //               external: true
+  //             },
+  //             {
+  //               id: 'menu-level-2.2.2',
+  //               title: 'Menu Level 2.2.2',
+  //               type: 'item',
+  //               url: 'javascript:',
+  //               external: true
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // }
 ];

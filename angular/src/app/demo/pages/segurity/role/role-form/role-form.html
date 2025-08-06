@@ -1,0 +1,21 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Descripción</mat-label>
+    <input matInput formControlName="description">
+  </mat-form-field>
+
+
+  <mat-slide-toggle formControlName="asset" color="primary">
+  Activo
+  </mat-slide-toggle>
+
+
+  <button mat-raised-button color="primary" type="submit">
+    {{ isEdit ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
