@@ -1,32 +1,26 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
+import { Role } from '../role';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { General } from 'src/app/generic/general.service';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Role } from '../role';
 
 @Component({
-  selector: 'app-role-index',
-  imports: [MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule, MatButtonModule,MatIconModule, CommonModule, FormsModule,MatTooltipModule],
+  selector: 'app-role-prueba',
+  imports: [GenericTable],
   templateUrl: './role-index.html',
   styleUrl: './role-index.scss'
 })
 export class RoleIndex implements OnInit {
- displayedColumns: string[] = ['name', 'description', 'asset', 'acciones'];
+dataSource = new MatTableDataSource<Role>();
+columns = [
+  { key: 'name', label: 'Nombre' },
+  { key: 'description', label: 'Apellido' },
+  { key: 'asset', label: 'Estado' }
+];
 
-  dataSource = new MatTableDataSource<Role>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -34,8 +28,7 @@ export class RoleIndex implements OnInit {
   private router = inject(Router);
 
   constructor() {}
-
-  ngOnInit(): void {
+ ngOnInit(): void {
     this.getAllRoles();
   }
 
@@ -74,8 +67,4 @@ deleteRole(id: number): void {
     }
   });
 }
-
-
-
-
 }

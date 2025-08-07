@@ -5,10 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 // project import
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
-import { PersonIndex } from './demo/pages/segurity/person/person-index/person-index';
 import { PersonForm } from './demo/pages/segurity/person/person-form/person-form';
-import { RoleIndex } from './demo/pages/segurity/role/role-index/role-index';
 import { RoleForm } from './demo/pages/segurity/role/role-form/role-form';
+import { RoleIndex } from './demo/pages/segurity/role/role-index/role-index';
+import { PersonIndex } from './demo/pages/segurity/person/person-index/person-index';
+import { UserIndex } from './demo/pages/segurity/user/user-index/user-index';
+import { UserForm } from './demo/pages/segurity/user/user-form/user-form';
 
 const routes: Routes = [
   {
@@ -36,6 +38,9 @@ const routes: Routes = [
       },
        { path: 'role-form', component: RoleForm },
       { path: 'role-form/:id', component: RoleForm },
+      { path: 'user-index', component: UserIndex },
+      { path: 'user-form', component: UserForm },
+      { path: 'user-form/:id', component: UserForm },
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

@@ -1,49 +1,38 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { General } from 'src/app/generic/general.service';
+import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
 import { Person } from '../person';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+import { General } from 'src/app/generic/general.service';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
-
 
 @Component({
-  selector: 'app-person-index',
-  imports: [MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule, MatButtonModule,MatIconModule, CommonModule, FormsModule,MatTooltipModule],
+  selector: 'app-person-prueba',
+  imports: [GenericTable],
   templateUrl: './person-index.html',
   styleUrl: './person-index.scss'
 })
 export class PersonIndex implements OnInit {
-
-
-  displayedColumns: string[] = ['firstName', 'lastName', 'phoneNumber', 'asset', 'acciones'];
-
   dataSource = new MatTableDataSource<Person>();
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+
+columns = [
+  { key: 'firstName', label: 'Nombre' },
+  { key: 'lastName', label: 'Apellido' },
+  { key: 'phoneNumber', label: 'Teléfono' },
+  { key: 'asset', label: 'Estado' }
+];
 
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
-
-  ngOnInit(): void {
+    ngOnInit(): void {
     this.getAllPersons();
   }
 
- getAllPersons(): void {
+  getAllPersons(): void {
   this._generalService.get<{ data: Person[] }>('Person/select').subscribe(response => {
     this.dataSource.data = response.data;
     this.dataSource.paginator = this.paginator;
@@ -53,7 +42,6 @@ export class PersonIndex implements OnInit {
 goToCreate(): void {
   this.router.navigate(['/persona-form']);
 }
-
 goToEdit(person: Person): void {
   this.router.navigate(['/persona-form', person.id]);
 }
@@ -78,8 +66,6 @@ deletePerson(id: number): void {
     }
   });
 }
-
-
 
 
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RoleIndex } from './role-index';
+import { GenericTable } from './generic-table';
 
-describe('RoleIndex', () => {
-  let component: RoleIndex;
-  let fixture: ComponentFixture<RoleIndex>;
+describe('GenericTable', () => {
+  let component: GenericTable;
+  let fixture: ComponentFixture<GenericTable>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoleIndex]
+      imports: [GenericTable]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RoleIndex);
+    fixture = TestBed.createComponent(GenericTable);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

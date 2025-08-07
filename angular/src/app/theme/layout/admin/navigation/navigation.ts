@@ -116,12 +116,12 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/component/badges'
           },
-          {
-            id: 'breadcrumb-pagination',
-            title: 'Permisos',
-            type: 'item',
-            url: '/component/breadcrumb-paging'
-          },
+          // {
+          //   id: 'breadcrumb-pagination',
+          //   title: 'Permisos',
+          //   type: 'item',
+          //   url: '/component/breadcrumb-paging'
+          // },
           {
             id: 'collapse',
             title: 'Módulos',
@@ -132,7 +132,7 @@ export const NavigationItems: NavigationItem[] = [
             id: 'tabs-pills',
             title: 'Usuarios',
             type: 'item',
-            url: '/component/tabs-pills'
+            url: '/user-index'
           },
           {
             id: 'tabs-pills',
@@ -140,12 +140,7 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/persons-index'
           },
-          {
-            id: 'typography',
-            title: 'Formularios y Módulos',
-            type: 'item',
-            url: '/component/typography'
-          }
+
         ]
       }
     ]

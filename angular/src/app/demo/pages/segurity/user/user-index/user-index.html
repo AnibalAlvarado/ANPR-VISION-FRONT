@@ -1,1 +1,8 @@
-<p>user-index works!</p>
+<app-generic-table
+  [columns]="columns"
+  [data]="dataSource.data"
+  [showActions]="true"
+  (create)="goToCreate()"
+  (edit)="goToEdit($event)"
+  (delete)="deleteUser($event)">
+</app-generic-table>
