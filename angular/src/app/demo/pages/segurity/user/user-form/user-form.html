@@ -24,9 +24,14 @@
 </mat-form-field>
 
 
-  <mat-slide-toggle formControlName="asset" color="primary">
+  <!-- <mat-slide-toggle formControlName="asset" color="white">
   Activo
-  </mat-slide-toggle>
+  </mat-slide-toggle> -->
+
+  <mat-slide-toggle formControlName="asset" color="primary" aria-label="Usuario activo">
+  <span style="color: #ffffff;">Activo</span>
+</mat-slide-toggle>
+
 
 
   <button mat-raised-button color="primary" type="submit">
@@ -48,12 +53,14 @@
   </mat-form-field>
 
   <mat-slide-toggle [(ngModel)]="rolUserAsset" color="primary">
-    Relación Activa
+  <span style="color: #ffffff;">Relacion Activa</span>
   </mat-slide-toggle>
+
+
 </div>
 
 <!-- Tabla de roles del usuario -->
-<div class="mt-4">
+<div class="mt-4" *ngIf="isEdit">
   <h5>Roles Asignados</h5>
   <table class="table table-bordered">
     <thead>

@@ -21,7 +21,8 @@ columns = [
   { key: 'userName', label: 'Nombre de Usuario' },
   { key: 'email', label: 'Email' },
   { key: 'personName', label: 'Persona' },
-  { key: 'asset', label: 'Estado' }
+  { key: 'asset', label: 'Estado' },
+  { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];
 
   private _generalService = inject(General);
@@ -51,7 +52,7 @@ goToEdit(user: User): void {
 deleteUser(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el usuario permanentemente.',
+    text: 'Esta acción eliminará el usuario.',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, eliminar',
@@ -62,6 +63,26 @@ deleteUser(id: number): void {
     if (result.isConfirmed) {
       this._generalService.delete('User', id).subscribe(() => {
         Swal.fire('¡Eliminado!', 'El usuario se ha sido eliminado.', 'success');
+        this.getAllUsers();
+      });
+    }
+  });
+}
+
+deletePermanentUser(id: number): void {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción eliminará el usuario permanentemente.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this._generalService.delete('User/permanent', id).subscribe(() => {
+        Swal.fire('¡Eliminado!', 'El usuario se ha sido eliminado permanentemente.', 'success');
         this.getAllUsers();
       });
     }

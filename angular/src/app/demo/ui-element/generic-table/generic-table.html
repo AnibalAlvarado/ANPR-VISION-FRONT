@@ -12,19 +12,33 @@
     <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
       <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
       <td mat-cell *matCellDef="let element">
-        <ng-container *ngIf="col.key === 'asset'; else defaultCell">
-          <div class="status-icon">
-            <mat-icon
-              [class]="element.asset ? 'status-active' : 'status-inactive'"
-              [matTooltip]="element.asset ? 'Activo' : 'Inactivo'">
-              {{ element.asset ? 'check_circle' : 'cancel' }}
-            </mat-icon>
-          </div>
-        </ng-container>
-        <ng-template #defaultCell>
-          {{ element[col.key] }}
-        </ng-template>
-      </td>
+  <ng-container *ngIf="col.key === 'asset'; else checkIsDelete">
+    <div class="status-icon">
+      <mat-icon
+        [class]="element.asset ? 'status-active' : 'status-inactive'"
+        [matTooltip]="element.asset ? 'Activo' : 'Inactivo'">
+        {{ element.asset ? 'check_circle' : 'cancel' }}
+      </mat-icon>
+    </div>
+  </ng-container>
+
+  <ng-template #checkIsDelete>
+    <ng-container *ngIf="col.key === 'isDeleted'; else defaultCell">
+      <div class="status-icon">
+        <mat-icon
+          [class]="element.isDeleted ? 'status-inactive' : 'status-active'"
+          [matTooltip]="element.isDeleted ? 'Eliminado' : 'No eliminado'">
+          {{ element.isDeleted ? 'cancel' : 'check_circle' }}
+        </mat-icon>
+      </div>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #defaultCell>
+    {{ element[col.key] }}
+  </ng-template>
+</td>
+
     </ng-container>
 
     <!-- Acciones -->
@@ -37,6 +51,9 @@
           </button>
           <button class="delete-btn" (click)="delete.emit(element.id)">
             Eliminar
+          </button>
+          <button *ngIf="isAdmin" class="delete-btn" (click)="deletePermanent.emit(element.id)">
+            Eliminar Permanentemente
           </button>
         </div>
       </td>

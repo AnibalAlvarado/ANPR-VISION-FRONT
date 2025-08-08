@@ -3,4 +3,5 @@ export interface Role {
   name: string;
   description: string;
   asset: boolean;
+  isDeleted: boolean;
 }

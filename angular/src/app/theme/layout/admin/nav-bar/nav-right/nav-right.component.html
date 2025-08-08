@@ -88,7 +88,7 @@
       <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
         <div class="pro-head">
           <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
-          <span>John Doe</span>
+          <span>{{userName}}</span>
           <a href="javascript:" class="dud-logout" title="Logout">
             <i class="feather icon-log-out"></i>
           </a>
@@ -97,26 +97,26 @@
           <li>
             <a href="javascript:" class="dropdown-item">
               <i class="feather icon-user"></i>
-              Profile
+              Perfil
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a href="javascript:" class="dropdown-item">
               <i class="feather icon-mail"></i>
               My Messages
             </a>
-          </li>
+          </li> -->
           <li>
             <a href="javascript:" class="dropdown-item">
-              <i class="feather icon-lock"></i>
-              Lock Screen
+              <i class="feather icon-settings"></i>
+              Configuración
             </a>
           </li>
           <li>
-            <a href="javascript:" class="dropdown-item">
+            <button class="dropdown-item" (click)="cerrarSesion()" >
               <i class="feather icon-lock"></i>
-              Logout
-            </a>
+              Cerrar sesión
+            </button>
           </li>
         </ul>
       </div>

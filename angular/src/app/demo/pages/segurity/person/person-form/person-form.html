@@ -14,10 +14,14 @@
     <input matInput formControlName="phoneNumber">
   </mat-form-field>
 
-  <mat-slide-toggle formControlName="asset" color="primary">
+  <!-- <mat-slide-toggle formControlName="asset" color="primary">
   Activo
-  </mat-slide-toggle>
+  </mat-slide-toggle> -->
 
+
+  <mat-slide-toggle formControlName="asset" color="primary" aria-label="Usuario activo">
+  <span style="color: #ffffff;">Activo</span>
+</mat-slide-toggle>
 
   <button mat-raised-button color="primary" type="submit">
     {{ isEdit ? 'Actualizar' : 'Crear' }}

@@ -22,7 +22,8 @@ columns = [
   { key: 'firstName', label: 'Nombre' },
   { key: 'lastName', label: 'Apellido' },
   { key: 'phoneNumber', label: 'Teléfono' },
-  { key: 'asset', label: 'Estado' }
+  { key: 'asset', label: 'Estado' },
+  { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];
 
   private _generalService = inject(General);
@@ -50,7 +51,7 @@ goToEdit(person: Person): void {
 deletePerson(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
-    text: 'Esta acción eliminará a la persona permanentemente.',
+    text: 'Esta acción eliminará a la persona',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, eliminar',
@@ -66,6 +67,28 @@ deletePerson(id: number): void {
     }
   });
 }
+
+deletePermanentPerson(id: number): void {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción eliminará a la persona permanentemente.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this._generalService.delete('Person/permanent', id).subscribe(() => {
+        Swal.fire('¡Eliminado!', 'La persona ha sido eliminada permanentemente.', 'success');
+        this.getAllPersons();
+      });
+    }
+  });
+}
+
+
 
 
 }

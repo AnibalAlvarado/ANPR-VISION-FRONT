@@ -4,4 +4,5 @@ export interface Person {
   lastName: string;
   phoneNumber: string;
   asset: boolean;
+  isDeleted: boolean;
 }

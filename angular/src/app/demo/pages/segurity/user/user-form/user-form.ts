@@ -140,7 +140,7 @@ onDeleteRole(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this.service.delete('RolUser', id).subscribe(() => {
+      this.service.delete('RolUser/permanent', id).subscribe(() => {
         Swal.fire('¡Eliminado!', 'El rol ha sido eliminado.', 'success');
         this.loadUserRoles(this.userId);
       });
@@ -204,6 +204,7 @@ assignRole(): void {
         timer: 2000,
         timerProgressBar: true
       });
+      this.loadUserRoles(userId);
     });
   }
 }

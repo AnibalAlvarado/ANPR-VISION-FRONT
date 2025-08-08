@@ -18,7 +18,8 @@ dataSource = new MatTableDataSource<Role>();
 columns = [
   { key: 'name', label: 'Nombre' },
   { key: 'description', label: 'Apellido' },
-  { key: 'asset', label: 'Estado' }
+  { key: 'asset', label: 'Estado' },
+  { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];
 
 
@@ -51,7 +52,7 @@ goToEdit(role: Role): void {
 deleteRole(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el rol permanentemente.',
+    text: 'Esta acción eliminará el rol.',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, eliminar',
@@ -67,4 +68,25 @@ deleteRole(id: number): void {
     }
   });
 }
+
+deletePermanentRole(id: number): void {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción eliminará el rol permanentemente.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this._generalService.delete('Rol/permanent', id).subscribe(() => {
+        Swal.fire('¡Eliminado!', 'El rol ha sido eliminado permanentemente.', 'success');
+        this.getAllRoles();
+      });
+    }
+  });
+}
+
 }

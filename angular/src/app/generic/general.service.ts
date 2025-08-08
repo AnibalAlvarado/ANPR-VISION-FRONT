@@ -12,6 +12,19 @@ export class General {
   private baseUrl = environment.apiURL;
 
   constructor() {}
+  getAuthToken(): string | null {
+  return localStorage.getItem('authToken');
+}
+
+getUserRoles(): string[] {
+  const roles = localStorage.getItem('userRoles');
+  return roles ? JSON.parse(roles) : [];
+}
+
+getUsername(): string | null {
+  return localStorage.getItem('username');
+}
+
 
   // GET
   get<T>(endpoint: string, params?: HttpParams): Observable<T> {

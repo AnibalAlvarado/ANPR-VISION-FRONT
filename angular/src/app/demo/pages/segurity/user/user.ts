@@ -6,4 +6,5 @@ export interface User {
   personId: number;
   personName: string;
   asset: boolean;
+  isDeleted: boolean;
 }
