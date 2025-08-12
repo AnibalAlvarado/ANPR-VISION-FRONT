@@ -1,131 +1,305 @@
-<div class="container zones-container">
-  <!-- Header -->
-  <div class="row zones-header align-items-center mb-4">
-    <div class="col-md-6">
-      <h1 class="mb-0">Gestión de Zonas</h1>
+<div class="zones-container">
+  <!-- Header Principal -->
+  <div class="zones-header">
+    <div class="row align-items-center">
+      <div class="col-lg-4">
+        <h1 class="zones-title mb-0">
+          <i class="fas fa-parking me-2"></i>
+          Gestión de Zonas
+        </h1>
+      </div>
+      <div class="col-lg-8">
+        <div class="d-flex justify-content-end gap-3 flex-wrap">
+          <select class="form-select filter-select" [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange($event)">
+            <option value="all">Todas las zonas</option>
+            <option value="active">Zonas activas</option>
+            <option value="maintenance">En mantenimiento</option>
+            <option value="high-occupancy">Alta ocupación</option>
+          </select>
+          <input type="text" class="form-control search-input" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)" placeholder="🔍 Buscar zona, sector o cámara...">
+          <button class="btn-primary" (click)="addZone()">
+            <i class="fas fa-plus"></i> Agregar Zona
+          </button>
+          <button class="btn-secondary" (click)="refreshData()">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="col-md-6 d-flex justify-content-end gap-2">
-      <select class="form-select filter w-auto">
-        <option>Todas las zonas</option>
-        <option>Zona A</option>
-        <option>Zona B</option>
-      </select>
-      <input type="text" class="form-control search w-auto" placeholder="Buscar cámara..." />
-      <button class="btn btn-primary add-zone">+ Agregar Zona</button>
+  </div>
+
+  <!-- Dashboard de Estadísticas -->
+  <div class="stats-dashboard mb-4">
+    <div class="row g-3">
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card total-zones">
+          <div class="stat-icon">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{totalZones}}</h3>
+            <p>Zonas Totales</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card available-spaces">
+          <div class="stat-icon">
+            <i class="fas fa-car"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{availableSpaces}}</h3>
+            <p>Espacios Disponibles</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card active-cameras">
+          <div class="stat-icon">
+            <i class="fas fa-video"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{activeCameras}}</h3>
+            <p>Cámaras Activas</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card occupancy-rate">
+          <div class="stat-icon">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{occupancyRate}}%</h3>
+            <p>Tasa de Ocupación</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros Avanzados -->
+  <div class="advanced-filters mb-4">
+    <div class="filter-tabs">
+      <button class="filter-tab" 
+              [class.active]="activeTab === 'all'" 
+              (click)="onTabClick('all')">Todas</button>
+      <button class="filter-tab" 
+              [class.active]="activeTab === 'disponible'" 
+              (click)="onTabClick('disponible')">Disponibles</button>
+      <button class="filter-tab" 
+              [class.active]="activeTab === 'ocupacion'" 
+              (click)="onTabClick('ocupacion')">Alta Ocupación</button>
+      <button class="filter-tab" 
+              [class.active]="activeTab === 'mantenimiento'" 
+              (click)="onTabClick('mantenimiento')">Mantenimiento</button>
     </div>
   </div>
 
   <!-- Lista de Zonas -->
-  <div class="zone-card p-3 mb-4">
-    <div class="d-flex justify-content-between align-items-center zone-header mb-2">
-      <h2>Zona A</h2>
-      <span class="badge bg-success status">Activa</span>
-    </div>
-    <p class="zone-info mb-3">
-      Capacidad Total: 45 vehículos - Nivel: 1 - Cámaras: 2
-    </p>
-
-    <!-- Sectores -->
-    <div class="row sector-list g-3">
-      <div class="col-md-6">
-        <div class="sector-card disponible p-3 h-100">
-          <div class="d-flex justify-content-between align-items-start">
-            <h3>Sector A1</h3>
-            <span class="badge bg-success">DISPONIBLE</span>
+  <div id="zonesContainer">
+    <div *ngFor="let zoneId of getZoneKeys()" 
+         class="zone-card" 
+         [attr.data-zone]="zoneId" 
+         [attr.data-status]="zonesData[zoneId].status">
+      
+      <div class="zone-header">
+        <div class="zone-title-section">
+          <h2>
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{zonesData[zoneId].name}}
+          </h2>
+          <div class="zone-actions">
+            <button class="btn-icon" (click)="onZoneAction('edit', zoneId)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon" (click)="onZoneAction('settings', zoneId)">
+              <i class="fas fa-cog"></i>
+            </button>
+            <button class="btn-icon" (click)="onZoneAction('analytics', zoneId)">
+              <i class="fas fa-chart-line"></i>
+            </button>
           </div>
-          <p>Capacidad: 28 espacios</p>
-          <p>Cámaras: Entrada Principal</p>
-          <p>Acceso: Vehículos + Motos</p>
+        </div>
+        <span class="badge" [ngClass]="getBadgeClass(zonesData[zoneId].status)">
+          {{getStatusText(zonesData[zoneId].status)}}
+        </span>
+      </div>
+      
+      <div class="zone-info-grid">
+        <div class="info-item">
+          <i class="fas fa-car-side"></i>
+          <span>Capacidad: <strong>{{zonesData[zoneId].capacity}} vehículos</strong></span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-layer-group"></i>
+          <span>Nivel: <strong>{{zonesData[zoneId].level}}</strong></span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-video"></i>
+          <span>Cámaras: <strong>{{zonesData[zoneId].cameras}} activas</strong></span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-percentage"></i>
+          <span>Ocupación: <strong>{{calculateOccupancyPercentage(zonesData[zoneId].occupied, zonesData[zoneId].capacity)}}%</strong></span>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="sector-card mantenimiento p-3 h-100">
-          <div class="d-flex justify-content-between align-items-start">
-            <h3>Sector A2</h3>
-            <span class="badge bg-danger">EN MANTENIMIENTO</span>
+
+      <div class="progress-container">
+        <label>Ocupación Actual</label>
+        <div class="progress">
+          <div class="progress-bar" 
+               [class.high-occupancy]="calculateOccupancyPercentage(zonesData[zoneId].occupied, zonesData[zoneId].capacity) > 80"
+               [style.width.%]="calculateOccupancyPercentage(zonesData[zoneId].occupied, zonesData[zoneId].capacity)"></div>
+        </div>
+        <span class="progress-text">{{zonesData[zoneId].occupied}} de {{zonesData[zoneId].capacity}} espacios ocupados</span>
+      </div>
+
+      <!-- Sectores -->
+      <div class="sectors-container">
+        <h4>Sectores</h4>
+        <div class="row g-3">
+          <div *ngFor="let sectorId of getSectorKeys(zoneId)" class="col-md-6">
+            <div class="sector-card" [ngClass]="zonesData[zoneId].sectors[sectorId].status">
+              <div class="sector-header">
+                <h5>Sector {{sectorId}}</h5>
+                <span class="badge" [ngClass]="getBadgeClass(zonesData[zoneId].sectors[sectorId].status)">
+                  {{getStatusText(zonesData[zoneId].sectors[sectorId].status)}}
+                </span>
+              </div>
+              <div class="sector-details">
+                <p><i class="fas fa-car"></i> Capacidad: {{zonesData[zoneId].sectors[sectorId].capacity}} espacios</p>
+                <p><i class="fas fa-video"></i> Cámara: {{zonesData[zoneId].sectors[sectorId].camera}}</p>
+                <p><i class="fas fa-road"></i> Acceso: Vehículos + Motos</p>
+                <p *ngIf="zonesData[zoneId].sectors[sectorId].status === 'mantenimiento'">
+                  <i class="fas fa-wrench"></i> Mantenimiento programado hasta: 15:30
+                </p>
+                <p *ngIf="zonesData[zoneId].sectors[sectorId].status === 'ocupacion'">
+                  <i class="fas fa-exclamation-triangle"></i> 
+                  {{zonesData[zoneId].sectors[sectorId].occupied}} de {{zonesData[zoneId].sectors[sectorId].capacity}} espacios ocupados
+                </p>
+                <p *ngIf="zonesData[zoneId].sectors[sectorId].status === 'disponible'">
+                  <i class="fas fa-clock"></i> Última actualización: Hace 2 min
+                </p>
+              </div>
+              <div class="sector-actions">
+                <button class="btn-sm btn-outline" (click)="onSectorAction('view-sector', sectorId)">
+                  <i class="fas fa-eye"></i> Ver Detalles
+                </button>
+                <button class="btn-sm btn-primary" 
+                        (click)="onSectorAction('manage-sector', sectorId)"
+                        *ngIf="zonesData[zoneId].sectors[sectorId].status === 'disponible'">
+                  <i class="fas fa-cogs"></i> Gestionar
+                </button>
+                <button class="btn-sm btn-warning" 
+                        (click)="onSectorAction('maintenance-sector', sectorId)"
+                        *ngIf="zonesData[zoneId].sectors[sectorId].status === 'mantenimiento'">
+                  <i class="fas fa-tools"></i> Mantenimiento
+                </button>
+                <button class="btn-sm btn-warning" 
+                        (click)="onSectorAction('monitor-sector', sectorId)"
+                        *ngIf="zonesData[zoneId].sectors[sectorId].status === 'ocupacion'">
+                  <i class="fas fa-eye-slash"></i> Monitorear
+                </button>
+              </div>
+            </div>
           </div>
-          <p>Capacidad: 25 espacios</p>
-          <p>Cámaras: Lateral Este</p>
-          <p>Acceso: Solo Vehículos</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Otra zona -->
-  <div class="zone-card p-3 mb-4">
-    <div class="d-flex justify-content-between align-items-center zone-header mb-2">
-      <h2>Zona B</h2>
-      <span class="badge bg-success status">Activa</span>
+  <!-- Sección de Cámaras -->
+  <div class="camera-section">
+    <div class="section-header">
+      <h2>
+        <i class="fas fa-video me-2"></i>
+        Gestión de Cámaras
+      </h2>
+      <button class="btn-primary" (click)="addCamera()">
+        <i class="fas fa-plus"></i> Agregar Cámara
+      </button>
     </div>
-    <p class="zone-info mb-3">
-      Capacidad Total: 60 vehículos - Nivel: 2 - Cámaras: 3
-    </p>
-
-    <!-- Sectores -->
-    <div class="row sector-list g-3">
-      <div class="col-md-6">
-        <div class="sector-card disponible p-3 h-100">
-          <div class="d-flex justify-content-between align-items-start">
-            <h3>Sector B1</h3>
-            <span class="badge bg-success">DISPONIBLE</span>
-          </div>
-          <p>Capacidad: 30 espacios</p>
-          <p>Cámaras: Entrada Oeste</p>
-          <p>Acceso: Vehículos + Motos</p>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="sector-card ocupacion p-3 h-100">
-          <div class="d-flex justify-content-between align-items-start">
-            <h3>Sector B2</h3>
-            <span class="badge bg-warning text-dark">AL OCUPACIÓN</span>
-          </div>
-          <p>Capacidad: 30 espacios</p>
-          <p>Cámaras: Salida Oeste</p>
-          <p>Acceso: Vehículos</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cámaras -->
-  <div class="camera-section mt-4">
-    <h2 class="mb-3">Gestión de Cámaras</h2>
+    
     <div class="row camera-list g-3">
-      <div class="col-md-4">
-        <div class="camera-card p-3 h-100 text-center">
-          <div class="camera-icon fs-2 mb-2">📷</div>
-          <h4>Cámara Entrada Principal</h4>
-          <p>Modelo: XBR-1001</p>
-          <p>Resolución: HD</p>
-          <p>IP: 192.168.0.10</p>
-          <button class="btn btn-sm btn-outline-primary">Ver</button>
-          <button class="btn btn-sm btn-primary ms-2">Configurar</button>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="camera-card p-3 h-100 text-center">
-          <div class="camera-icon fs-2 mb-2">📷</div>
-          <h4>Cámara Salida Principal</h4>
-          <p>Modelo: XBR-2002</p>
-          <p>Resolución: Full HD</p>
-          <p>IP: 192.168.0.11</p>
-          <button class="btn btn-sm btn-outline-primary">Ver</button>
-          <button class="btn btn-sm btn-primary ms-2">Configurar</button>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="camera-card p-3 h-100 text-center">
-          <div class="camera-icon fs-2 mb-2">📷</div>
-          <h4>Cámara Nivel 3</h4>
-          <p>Modelo: XBR-3003</p>
-          <p>Resolución: 4K</p>
-          <p>IP: 192.168.0.12</p>
-          <button class="btn btn-sm btn-outline-primary">Ver</button>
-          <button class="btn btn-sm btn-primary ms-2">Configurar</button>
+      <div *ngFor="let cameraId of getCameraKeys()" class="col-lg-4 col-md-6">
+        <div class="camera-card" [ngClass]="camerasData[cameraId].status">
+          <div class="camera-status">
+            <span class="status-indicator" [ngClass]="camerasData[cameraId].status"></span>
+            <span class="status-text">{{getStatusText(camerasData[cameraId].status)}}</span>
+          </div>
+          <div class="camera-preview">
+            <div class="camera-icon" [ngClass]="camerasData[cameraId].status === 'offline' ? 'offline' : ''">
+              <i class="fas" [ngClass]="camerasData[cameraId].status === 'offline' ? 'fa-video-slash' : 'fa-video'"></i>
+            </div>
+            <div class="camera-overlay">
+              <button class="btn-play" 
+                      *ngIf="camerasData[cameraId].status === 'online'"
+                      (click)="onCameraAction('view-camera', cameraId)">
+                <i class="fas fa-play"></i>
+              </button>
+              <button class="btn-reconnect" 
+                      *ngIf="camerasData[cameraId].status === 'offline'"
+                      (click)="onCameraAction('reconnect-camera', cameraId)">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div class="camera-info">
+            <h4>{{camerasData[cameraId].name}}</h4>
+            <div class="camera-details">
+              <p><i class="fas fa-tag"></i> Modelo: {{camerasData[cameraId].model}}</p>
+              <p><i class="fas fa-desktop"></i> Resolución: {{camerasData[cameraId].resolution}}</p>
+              <p><i class="fas fa-network-wired"></i> IP: {{camerasData[cameraId].ip}}</p>
+              <p><i class="fas fa-map-marker-alt"></i> {{camerasData[cameraId].location}}</p>
+            </div>
+            <div class="camera-actions">
+              <button class="btn-sm btn-outline" 
+                      *ngIf="camerasData[cameraId].status === 'online'"
+                      (click)="onCameraAction('view-camera', cameraId)">
+                <i class="fas fa-eye"></i> Ver
+              </button>
+              <button class="btn-sm btn-danger" 
+                      *ngIf="camerasData[cameraId].status === 'offline'"
+                      (click)="onCameraAction('reconnect-camera', cameraId)">
+                <i class="fas fa-plug"></i> Reconectar
+              </button>
+              <button class="btn-sm btn-primary" (click)="onCameraAction('configure-camera', cameraId)">
+                <i class="fas fa-cog"></i> Configurar
+              </button>
+              <button class="btn-sm btn-secondary" 
+                      *ngIf="camerasData[cameraId].status === 'online'"
+                      (click)="onCameraAction('record-camera', cameraId)">
+                <i class="fas fa-record-vinyl"></i> Grabar
+              </button>
+              <button class="btn-sm btn-warning" 
+                      *ngIf="camerasData[cameraId].status === 'offline'"
+                      (click)="onCameraAction('troubleshoot-camera', cameraId)">
+                <i class="fas fa-tools"></i> Diagnóstico
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal de Información Detallada -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1" *ngIf="showModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{modalTitle}}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body" [innerHTML]="modalContent">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal"></div>

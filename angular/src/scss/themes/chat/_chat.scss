@@ -29,7 +29,7 @@
   }
 
   &.open {
-    box-shadow: 0 1px 10px 0 #30CFD0;
+    box-shadow: 0 1px 5px 0 #30CFD0;
     right: 0;
   }
 }
@@ -217,7 +217,7 @@
       background: #23272F;
       border: none;
       display: inline-flex;
-      box-shadow: 0 5px 15px #30CFD0;
+      box-shadow: 0 0px 5px 2px #30CFD0;
       padding: 7px;
       border-radius: 20px;
       width: calc(100% - 40px);

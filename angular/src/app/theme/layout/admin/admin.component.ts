@@ -9,7 +9,7 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { BreadcrumbComponent } from '../../shared/components/breadcrumb/breadcrumb.component';
 import { Footer } from './footer/footer';
-
+// import {} from ''
 @Component({
   selector: 'app-admin',
   imports: [ConfigurationComponent, RouterModule, NavBarComponent, NavigationComponent, CommonModule, BreadcrumbComponent, Footer],

@@ -1,172 +1,796 @@
-$bg-color: #23272F;
-$primary-color: #30CFD0;
-$success-color: #00ff99;
-$danger-color: #ff3b30;
-$warning-color: #FFD60A;
+// Variables base
+$color-border1: #30CFD0;
+$color-border2: #23272F;
+$color-bg-gradient: linear-gradient(135deg, #1e272e, #485563);
+$color-text-primary: #eee;
+$color-text-secondary: #bbb;
+$color-badge-active: #30CFD0;
+$color-badge-maintenance: #f39c12;
+$color-badge-high-occupancy: #e74c3c;
+$color-badge-available: #2ecc71;
+$transition-fast: 0.3s ease;
 
+// Contenedor general
 .zones-container {
-  background: $bg-color;
-  color: $primary-color;
-  padding: 20px;
+  background: $color-bg-gradient;
+  color: $color-text-primary;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
 
+  // Header principal
   .zones-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-
-    h1 {
-      font-size: 1.8rem;
-      font-weight: bold;
+    margin-bottom: 2rem;
+    h1.zones-title {
+      font-weight: 700;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      i {
+        color: $color-border1;
+        margin-right: 0.5rem;
+        animation: pulse-border 2.5s ease-in-out infinite;
+      }
     }
 
-    .actions {
-      display: flex;
-      gap: 10px;
+    .filter-select, .search-input {
+      min-width: 200px;
+      max-width: 300px;
+      border: 2px solid transparent;
+      border-image-slice: 1;
+      border-image-source: linear-gradient(90deg, $color-border1, $color-border2);
+      border-image-outset: 0;
+      border-image-repeat: stretch;
+      border-radius: 8px;
+      padding: 0.35rem 0.75rem;
+      transition: border-color $transition-fast;
 
-      .filter,
-      .search {
-        background: darken($bg-color, 5%);
-        border: 1px solid $primary-color;
-        padding: 8px 10px;
-        border-radius: 8px;
-        color: $primary-color;
+      &:focus {
         outline: none;
-        transition: 0.3s;
+        border-image-source: linear-gradient(270deg, $color-border2, $color-border1);
+        box-shadow: 0 0 8px rgba($color-border1, 0.7);
+      }
+    }
 
-        &:focus {
-          box-shadow: 0 0 10px $primary-color;
-        }
+    .btn-primary, .btn-secondary {
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 0.45rem 1.25rem;
+      cursor: pointer;
+      transition: box-shadow $transition-fast, transform 0.15s ease;
+      border: none;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 4px 8px rgba($color-border1, 0.5),
+          0 0 8px rgba($color-border2, 0.5);
       }
 
-      .add-zone {
-        background: $primary-color;
-        border: none;
-        color: $bg-color;
-        padding: 10px 15px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.3s;
+      &:active {
+        transform: translateY(1px);
+        box-shadow: none;
+      }
+    }
 
-        &:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0 10px $primary-color;
-        }
+    .btn-primary {
+      background-color: $color-border1;
+      color: #111;
+      border: 2px solid $color-border1;
+      &:hover {
+        background-color: lighten($color-border1, 10%);
+        border-color: lighten($color-border1, 10%);
+      }
+    }
+    .btn-secondary {
+      background-color: $color-border2;
+      color: #eee;
+      border: 2px solid $color-border2;
+      &:hover {
+        background-color: lighten($color-border2, 10%);
+        border-color: lighten($color-border2, 10%);
       }
     }
   }
 
-  .zone-card {
-    background: darken($bg-color, 5%);
-    border: 1px solid $primary-color;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(48, 207, 208, 0.2);
-    transition: 0.3s;
+  // Estadísticas
+  .stats-dashboard {
+    margin-bottom: 2rem;
 
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(48, 207, 208, 0.5);
-    }
-
-    .zone-header {
+    .stat-card {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 1.5rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 1rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      transition: box-shadow $transition-fast ease;
 
-      h2 {
-        font-size: 1.4rem;
+      &:hover {
+        box-shadow: 0 0 25px rgba($color-border1, 0.6);
       }
 
-      .status {
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        &.active { background: $success-color; color: $bg-color; }
-        &.inactive { background: $danger-color; color: white; }
+      .stat-icon {
+        font-size: 2.5rem;
+        color: $color-border1;
+        animation: pulse-border 3s ease-in-out infinite;
       }
-    }
 
-    .sector-list {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-
-      .sector-card {
-        background: $bg-color;
-        border: 1px solid $primary-color;
-        border-radius: 8px;
-        padding: 10px;
-        flex: 1 1 calc(50% - 10px);
-        transition: 0.3s;
-        position: relative;
-
+      .stat-info {
         h3 {
           margin: 0;
-          font-size: 1.1rem;
+          font-size: 2rem;
+          font-weight: 700;
         }
-
-        .tag {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          padding: 2px 8px;
-          border-radius: 5px;
-          font-size: 0.7rem;
-
-          &.disponible { background: $success-color; color: $bg-color; }
-          &.mantenimiento { background: $danger-color; color: white; }
-          &.ocupacion { background: $warning-color; color: $bg-color; }
+        p {
+          margin: 0;
+          color: $color-text-secondary;
         }
       }
     }
   }
 
-  .camera-section {
-    margin-top: 30px;
+  // Filtros Avanzados
+  .advanced-filters {
+    margin-bottom: 2rem;
 
-    .camera-list {
+    .filter-tabs {
       display: flex;
-      gap: 15px;
+      gap: 1rem;
       flex-wrap: wrap;
 
-      .camera-card {
-        background: darken($bg-color, 5%);
-        border: 1px solid $primary-color;
-        border-radius: 8px;
-        padding: 10px;
-        width: 220px;
-        text-align: center;
-        transition: 0.3s;
+      .filter-tab {
+        padding: 0.5rem 1.2rem;
+        border-radius: 30px;
+        border: 2px solid transparent;
+        background-color: rgba(255,255,255,0.1);
+        color: $color-text-primary;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color $transition-fast, border-color $transition-fast;
 
-        &:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 0 15px rgba(48, 207, 208, 0.5);
+        &.active {
+          border-image-slice: 1;
+          border-image-source: linear-gradient(90deg, $color-border1, $color-border2);
+          border-style: solid;
+          background: transparent;
+          color: $color-border1;
+          font-weight: 700;
+          box-shadow: 0 0 8px rgba($color-border1, 0.7);
         }
 
-        .camera-icon {
-          font-size: 2rem;
+        &:hover:not(.active) {
+          background-color: rgba(255,255,255,0.15);
+        }
+      }
+    }
+  }
+
+  // Lista de zonas
+  #zonesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+
+    .zone-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      transition: box-shadow $transition-fast ease;
+
+      &:hover {
+        box-shadow: 0 0 25px rgba($color-border1, 0.8);
+      }
+
+      .zone-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .zone-title-section {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          h2 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            i {
+              color: $color-border1;
+              margin-right: 0.5rem;
+              animation: pulse-border 2.5s ease-in-out infinite;
+            }
+          }
+
+          .zone-actions {
+            display: flex;
+            gap: 0.5rem;
+
+            .btn-icon {
+              background: transparent;
+              border: none;
+              color: $color-text-primary;
+              font-size: 1.2rem;
+              padding: 0.3rem 0.5rem;
+              cursor: pointer;
+              border-radius: 6px;
+              transition: background-color $transition-fast, color $transition-fast;
+
+              &:hover {
+                background-color: rgba($color-border1, 0.15);
+                color: $color-border1;
+              }
+            }
+          }
         }
 
-        .btn-view, .btn-config {
-          background: $primary-color;
-          border: none;
-          padding: 5px 10px;
-          margin-top: 5px;
-          border-radius: 6px;
-          color: $bg-color;
-          cursor: pointer;
-          transition: 0.3s;
+        .badge {
+          padding: 0.35rem 1rem;
+          border-radius: 20px;
+          font-weight: 600;
+          font-size: 0.9rem;
+          user-select: none;
+          &.active {
+            background-color: $color-badge-active;
+            color: #111;
+          }
+          &.mantenimiento {
+            background-color: $color-badge-maintenance;
+            color: #111;
+          }
+          &.ocupacion {
+            background-color: $color-badge-high-occupancy;
+            color: #fff;
+          }
+          &.disponible {
+            background-color: $color-badge-available;
+            color: #111;
+          }
+        }
+      }
 
-          &:hover {
-            background: lighten($primary-color, 10%);
+      .zone-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .info-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.95rem;
+          color: $color-text-secondary;
+
+          i {
+            color: $color-border1;
+            animation: pulse-border 3s ease-in-out infinite;
+          }
+
+          strong {
+            color: $color-text-primary;
+          }
+        }
+      }
+
+      .progress-container {
+        label {
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          display: block;
+          color: $color-text-primary;
+        }
+
+        .progress {
+          background-color: rgba(255,255,255,0.15);
+          border-radius: 10px;
+          height: 14px;
+          overflow: hidden;
+
+          .progress-bar {
+            background: linear-gradient(90deg, $color-border1, $color-border2);
+            height: 100%;
+            width: 0%;
+            transition: width 1s ease-in-out;
+
+            &.high-occupancy {
+              background: #e74c3c;
+              box-shadow: 0 0 6px #e74c3c;
+            }
+          }
+        }
+
+        .progress-text {
+          font-size: 0.85rem;
+          margin-top: 0.25rem;
+          color: $color-text-secondary;
+          user-select: none;
+        }
+      }
+
+      // Sectores
+      .sectors-container {
+        margin-top: 1.5rem;
+
+        h4 {
+          margin-bottom: 1rem;
+          color: $color-border1;
+          font-weight: 700;
+          font-size: 1.2rem;
+        }
+
+        .row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+
+          .sector-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            flex: 1 1 calc(50% - 1rem);
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+            transition: box-shadow $transition-fast;
+
+            &:hover {
+              box-shadow: 0 0 25px rgba($color-border1, 0.6);
+            }
+
+            &.mantenimiento {
+              border-left: 5px solid $color-badge-maintenance;
+            }
+            &.ocupacion {
+              border-left: 5px solid $color-badge-high-occupancy;
+            }
+            &.disponible {
+              border-left: 5px solid $color-badge-available;
+            }
+
+            .sector-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 0.7rem;
+
+              h5 {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: $color-text-primary;
+              }
+
+              .badge {
+                font-size: 0.85rem;
+                padding: 0.25rem 0.75rem;
+                border-radius: 20px;
+                font-weight: 600;
+
+                &.active { background-color: $color-badge-active; color: #111; }
+                &.mantenimiento { background-color: $color-badge-maintenance; color: #111; }
+                &.ocupacion { background-color: $color-badge-high-occupancy; color: #fff; }
+                &.disponible { background-color: $color-badge-available; color: #111; }
+              }
+            }
+
+            .sector-details {
+              p {
+                font-size: 0.9rem;
+                margin: 0.15rem 0;
+                color: $color-text-secondary;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                i {
+                  color: $color-border1;
+                  animation: pulse-border 3.5s ease-in-out infinite;
+                }
+              }
+            }
+
+            .sector-actions {
+              margin-top: 1rem;
+              display: flex;
+              gap: 0.5rem;
+              flex-wrap: wrap;
+
+              button {
+                border-radius: 8px;
+                font-weight: 600;
+                padding: 0.3rem 0.8rem;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: background-color $transition-fast, box-shadow $transition-fast;
+
+                &.btn-sm {
+                  min-width: 90px;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 0.4rem;
+                }
+
+                &.btn-outline {
+                  background: transparent;
+                  border: 2px solid $color-border1;
+                  color: $color-border1;
+
+                  &:hover {
+                    background-color: $color-border1;
+                    color: #111;
+                    box-shadow: 0 0 10px rgba($color-border1, 0.6);
+                  }
+                }
+                &.btn-primary {
+                  background-color: $color-border1;
+                  border: none;
+                  color: #111;
+
+                  &:hover {
+                    background-color: lighten($color-border1, 10%);
+                    box-shadow: 0 0 12px rgba($color-border1, 0.7);
+                  }
+                }
+                &.btn-warning {
+                  background-color: #f39c12;
+                  border: none;
+                  color: #111;
+
+                  &:hover {
+                    background-color: darken(#f39c12, 5%);
+                    box-shadow: 0 0 12px rgba(#f39c12, 0.7);
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
+  }
+
+  // Cámara - sección y cards
+  .camera-section {
+    margin-top: 3rem;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h2 {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: $color-border1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          animation: pulse-border 3s ease-in-out infinite;
+        }
+      }
+
+      button.btn-primary {
+        background-color: $color-border1;
+        border: none;
+        color: #111;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color $transition-fast ease;
+
+        &:hover {
+          background-color: lighten($color-border1, 10%);
+          box-shadow: 0 0 10px rgba($color-border1, 0.6);
+        }
+
+        &:active {
+          transform: translateY(1px);
+          box-shadow: none;
+        }
+      }
+    }
+
+    .camera-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+
+      .camera-card {
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        flex: 1 1 calc(33% - 1rem);
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow $transition-fast ease;
+
+        &:hover {
+          box-shadow: 0 0 20px rgba($color-border1, 0.7);
+        }
+
+        &.online {
+          border: 2px solid $color-border1;
+        }
+
+        &.offline {
+          border: 2px solid $color-badge-high-occupancy;
+          opacity: 0.85;
+          filter: grayscale(30%);
+        }
+
+        .camera-status {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 0.8rem;
+
+          .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            &.online {
+              background-color: $color-border1;
+              box-shadow: 0 0 8px $color-border1;
+              animation: pulse-border 2.5s ease-in-out infinite;
+            }
+            &.offline {
+              background-color: $color-badge-high-occupancy;
+            }
+          }
+          .status-text {
+            font-weight: 600;
+            color: $color-text-primary;
+          }
+        }
+
+        .camera-preview {
+          position: relative;
+          height: 140px;
+          background: #222;
+          border-radius: 10px;
+          overflow: hidden;
+          margin-bottom: 1rem;
+
+          .camera-icon {
+            font-size: 4rem;
+            color: rgba(255,255,255,0.15);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            &.offline {
+              color: rgba(255,0,0,0.3);
+            }
+          }
+
+          .camera-overlay {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 0.5rem;
+
+            button {
+              background-color: rgba($color-border1, 0.9);
+              border: none;
+              padding: 0.3rem 0.6rem;
+              border-radius: 6px;
+              color: #111;
+              cursor: pointer;
+              transition: background-color $transition-fast;
+
+              &:hover {
+                background-color: lighten($color-border1, 10%);
+              }
+            }
+
+            .btn-reconnect {
+              background-color: #e74c3c;
+
+              &:hover {
+                background-color: darken(#e74c3c, 5%);
+                color: #fff;
+              }
+            }
+          }
+        }
+
+        .camera-info {
+          h4 {
+            margin: 0 0 0.4rem 0;
+            color: $color-border1;
+          }
+
+          .camera-details {
+            font-size: 0.9rem;
+            color: $color-text-secondary;
+            margin-bottom: 1rem;
+
+            p {
+              margin: 0.15rem 0;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+
+              i {
+                color: $color-border1;
+                animation: pulse-border 3.5s ease-in-out infinite;
+              }
+            }
+          }
+
+          .camera-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+
+            button {
+              border-radius: 8px;
+              padding: 0.3rem 0.75rem;
+              font-size: 0.85rem;
+              font-weight: 600;
+              cursor: pointer;
+              transition: background-color $transition-fast, box-shadow $transition-fast;
+
+              &.btn-sm {
+                min-width: 75px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.3rem;
+              }
+              &.btn-outline {
+                background: transparent;
+                border: 2px solid $color-border1;
+                color: $color-border1;
+                &:hover {
+                  background-color: $color-border1;
+                  color: #111;
+                  box-shadow: 0 0 10px rgba($color-border1, 0.6);
+                }
+              }
+              &.btn-danger {
+                background-color: #e74c3c;
+                border: none;
+                color: #fff;
+                &:hover {
+                  background-color: darken(#e74c3c, 5%);
+                  box-shadow: 0 0 12px rgba(#e74c3c, 0.7);
+                }
+              }
+              &.btn-primary {
+                background-color: $color-border1;
+                border: none;
+                color: #111;
+                &:hover {
+                  background-color: lighten($color-border1, 10%);
+                  box-shadow: 0 0 12px rgba($color-border1, 0.7);
+                }
+              }
+              &.btn-secondary {
+                background-color: $color-border2;
+                border: none;
+                color: #eee;
+                &:hover {
+                  background-color: lighten($color-border2, 10%);
+                  box-shadow: 0 0 10px rgba($color-border2, 0.5);
+                }
+              }
+              &.btn-warning {
+                background-color: #f39c12;
+                border: none;
+                color: #111;
+                &:hover {
+                  background-color: darken(#f39c12, 5%);
+                  box-shadow: 0 0 12px rgba(#f39c12, 0.7);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Modal general
+  .modal {
+    &.fade {
+      transition: opacity 0.3s ease;
+      &.show {
+        opacity: 1;
+      }
+      &[style*="display: block"] {
+        opacity: 1;
+      }
+    }
+    .modal-dialog {
+      max-width: 900px;
+      margin: 1.75rem auto;
+      pointer-events: auto;
+    }
+    .modal-content {
+      border-radius: 12px;
+      background: $color-bg-gradient;
+      color: $color-text-primary;
+      box-shadow: 0 0 25px rgba($color-border1, 0.7);
+      border: none;
+    }
+    .modal-header, .modal-footer {
+      border: none;
+      padding: 1rem 1.5rem;
+    }
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: $color-border1;
+    }
+    .btn-close {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: $color-text-primary;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $color-border1;
+      }
+    }
+    .modal-body {
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+
+      .btn {
+        border-radius: 8px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color $transition-fast, box-shadow $transition-fast;
+      }
+      .btn-primary {
+        background-color: $color-border1;
+        border: none;
+        color: #111;
+        &:hover {
+          background-color: lighten($color-border1, 10%);
+          box-shadow: 0 0 12px rgba($color-border1, 0.7);
+        }
+      }
+      .btn-secondary {
+        background-color: $color-border2;
+        border: none;
+        color: #eee;
+        &:hover {
+          background-color: lighten($color-border2, 10%);
+          box-shadow: 0 0 10px rgba($color-border2, 0.5);
+        }
+      }
+    }
+  }
+}
+
+// Pulsing animation for borders and icons
+@keyframes pulse-border {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px #30cfd0);
+    opacity: 1;
+  }
+  50% {
+    filter: drop-shadow(0 0 10px #30cfd0);
+    opacity: 0.7;
   }
 }
