@@ -62,5 +62,14 @@ cerrarSesion() {
   this.route.navigate(['/login']); // Redirección
 }
 
+viewProfile(){
+  this.route.navigate(['/profile-index']);
+}
+
+get firstLetter(): string {
+  return this.userName
+    ? this.userName.charAt(0).toUpperCase()
+    : '';
+}
 
 }

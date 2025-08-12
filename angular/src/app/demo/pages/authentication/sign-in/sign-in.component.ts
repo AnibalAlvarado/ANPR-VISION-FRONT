@@ -12,6 +12,7 @@ interface LoginResponse {
   success: boolean;
   message?: string;
   data?: {
+    userId: number;
     token: string;
     roles: string[];
     // cualquier otra info que tenga el user
@@ -53,6 +54,8 @@ export class SignInComponent {
         localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('userRoles', JSON.stringify(response.data.roles));
         localStorage.setItem('username', this.LoginDto.username);
+        localStorage.setItem('userId', JSON.stringify(response.data.userId));
+
 
         Swal.fire({
           icon: 'success',

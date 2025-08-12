@@ -25,6 +25,10 @@ getUsername(): string | null {
   return localStorage.getItem('username');
 }
 
+getUserId(): string | null {
+  return localStorage.getItem('userId');
+}
+
 
   // GET
   get<T>(endpoint: string, params?: HttpParams): Observable<T> {

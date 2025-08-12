@@ -121,13 +121,6 @@ loadUserRoles(userId: string) {
 }
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// onDeleteRole(roleId: number) {
-//   this.service.delete('RolUser', roleId).subscribe(() => {
-//     this.userRoles = this.userRoles.filter(r => r.roleName !== roleId.roleName);
-//   });
-// }
-
 onDeleteRole(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',

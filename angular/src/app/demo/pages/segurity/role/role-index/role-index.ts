@@ -17,7 +17,7 @@ export class RoleIndex implements OnInit {
 dataSource = new MatTableDataSource<Role>();
 columns = [
   { key: 'name', label: 'Nombre' },
-  { key: 'description', label: 'Apellido' },
+  { key: 'description', label: 'Descripción' },
   { key: 'asset', label: 'Estado' },
   { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];

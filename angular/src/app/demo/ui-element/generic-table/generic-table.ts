@@ -34,6 +34,7 @@ export class GenericTable<T = any> implements OnInit, AfterViewInit, OnChanges {
   isAdmin: boolean = false;
 isUser: boolean = false;
 
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private service = inject(General);
 

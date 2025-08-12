@@ -92,6 +92,60 @@ export const NavigationItems: NavigationItem[] = [
     ]
   },
 
+    {
+    id: 'ui-component',
+    title: 'Módulo de Parametros',
+    type: 'group',
+    icon: 'icon-group',
+    children: [
+      {
+        id: 'basic',
+        title: 'Parametros',
+        type: 'collapse',
+        icon: 'feather icon-box',
+        children: [
+          {
+            id: 'MembershipsType',
+            title: 'Tipo de Membresías',
+            type: 'item',
+            url: '/memberShipType-index'
+          },
+          {
+            id: 'TypeVehicle',
+            title: 'Tipo de Vehículos',
+            type: 'item',
+            url: '/form-index'
+          },
+          {
+            id: 'TypeRates',
+            title: 'Tipo de Tarifas',
+            type: 'item',
+            url: '/permission-index'
+          },
+          {
+            id: 'CategoryParking',
+            title: 'Categorías del Parqueadero',
+            type: 'item',
+            url: '/module-index'
+          },
+           {
+            id: 'Sectors',
+            title: 'Sectores',
+            type: 'item',
+            url: '/form-module-index'
+          },
+             {
+            id: 'Zones',
+            title: 'Zonas',
+            type: 'item',
+            url: '/rolFormPermission-index'
+          },
+
+        ]
+      }
+    ]
+  },
+
   {
     id: 'ui-component',
     title: 'Módulo de Seguridad',
@@ -105,37 +159,49 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-box',
         children: [
           {
-            id: 'button',
+            id: 'Roles',
             title: 'Roles',
             type: 'item',
             url: '/role-index'
           },
           {
-            id: 'badges',
+            id: 'Formularios',
             title: 'Formularios',
             type: 'item',
-            url: '/component/badges'
+            url: '/form-index'
           },
-          // {
-          //   id: 'breadcrumb-pagination',
-          //   title: 'Permisos',
-          //   type: 'item',
-          //   url: '/component/breadcrumb-paging'
-          // },
           {
-            id: 'collapse',
+            id: 'Permisos',
+            title: 'Permisos',
+            type: 'item',
+            url: '/permission-index'
+          },
+          {
+            id: 'Módulos',
             title: 'Módulos',
             type: 'item',
-            url: '/component/collapse'
+            url: '/module-index'
+          },
+           {
+            id: 'FormsModule',
+            title: 'Formularios por Modulos',
+            type: 'item',
+            url: '/form-module-index'
+          },
+             {
+            id: 'RolFormPermission',
+            title: 'Permisos por Roles y Formularios',
+            type: 'item',
+            url: '/rolFormPermission-index'
           },
           {
-            id: 'tabs-pills',
+            id: 'Usuarios',
             title: 'Usuarios',
             type: 'item',
             url: '/user-index'
           },
           {
-            id: 'tabs-pills',
+            id: 'Personas',
             title: 'Personas',
             type: 'item',
             url: '/persons-index'
