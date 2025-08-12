@@ -41,7 +41,7 @@ export const NavigationItems: NavigationItem[] = [
     icon: 'icon-group',
     children: [
       {
-        id: 'apexchart',
+        id: 'Cámaras',
         title: 'Cámaras',
         type: 'item',
         url: '/chart',
@@ -49,8 +49,25 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-camera'
       },
       {
-        id: 'apexchart',
-        title: 'Vehículos',
+        "id": "Vehículos",
+        "title": "Vehículos",
+        "type": "item",
+        "url": "/chart",
+        "classes": "nav-item",
+        "icon": "fa-solid fa-car"
+      }
+      ,
+      {
+        id: 'Sectores',
+        title: 'Sectores',
+        type: 'item',
+        url: '/chart',
+        classes: 'nav-item',
+        icon: 'feather icon-map-pin'
+      },
+      {
+        id: 'Zonas',
+        title: 'Zonas',
         type: 'item',
         url: '/chart',
         classes: 'nav-item',
@@ -66,32 +83,56 @@ export const NavigationItems: NavigationItem[] = [
       },
     ]
   },
-    {
+
+
+      {
     id: 'ui-component',
-    title: 'Administración y Tarifas',
+    title: 'Módulo Operacional',
     type: 'group',
     icon: 'icon-group',
     children: [
       {
-        id: 'apexchart',
-        title: 'Membresías',
-        type: 'item',
-        url: '/chart',
-        classes: 'nav-item',
-        icon: 'feather icon-credit-card'
-      },
-      {
-        id: 'apexchart',
-        title: 'Tarifas',
-        type: 'item',
-        url: '/chart',
-        classes: 'nav-item',
-        icon: 'feather icon-file-text'
-      },
+        id: 'basic',
+        title: 'Operacional',
+        type: 'collapse',
+        icon: 'feather icon-box',
+        children: [
+          {
+            id: 'Membresías',
+            title: 'Membresías',
+            type: 'item',
+            url: '/memberShipType-index'
+          },
+          {
+            id: 'Tarifas',
+            title: 'Tarifas',
+            type: 'item',
+            url: '/TypeVehicle-index'
+          },
+          {
+            id: 'RegisteredVehicles',
+            title: 'Registros de Vehículos',
+            type: 'item',
+            url: '/RatesType-index'
+          },
+          {
+            id: 'Slots',
+            title: 'Espacios',
+            type: 'item',
+            url: '/ParkingCategory-index'
+          },
+           {
+            id: 'HistoryVehicle',
+            title: 'Historial de Vehículos',
+            type: 'item',
+            url: '/ParkingCategory-index'
+          },
 
+
+        ]
+      }
     ]
   },
-
     {
     id: 'ui-component',
     title: 'Módulo de Parametros',
@@ -114,32 +155,21 @@ export const NavigationItems: NavigationItem[] = [
             id: 'TypeVehicle',
             title: 'Tipo de Vehículos',
             type: 'item',
-            url: '/form-index'
+            url: '/TypeVehicle-index'
           },
           {
             id: 'TypeRates',
             title: 'Tipo de Tarifas',
             type: 'item',
-            url: '/permission-index'
+            url: '/RatesType-index'
           },
           {
             id: 'CategoryParking',
             title: 'Categorías del Parqueadero',
             type: 'item',
-            url: '/module-index'
+            url: '/ParkingCategory-index'
           },
-           {
-            id: 'Sectors',
-            title: 'Sectores',
-            type: 'item',
-            url: '/form-module-index'
-          },
-             {
-            id: 'Zones',
-            title: 'Zonas',
-            type: 'item',
-            url: '/rolFormPermission-index'
-          },
+
 
         ]
       }

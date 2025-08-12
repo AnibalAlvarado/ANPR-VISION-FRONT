@@ -24,6 +24,12 @@ import { RolFormPerForm } from './demo/pages/segurity/rolFormPermission/rol-form
 import { MembershipsTypeIndex } from './demo/pages/parameters/membershipsType/memberships-type-index/memberships-type-index';
 import { MembershipsTypeForm } from './demo/pages/parameters/membershipsType/memberships-type-form/memberships-type-form';
 import { ProfileIndex } from './demo/pages/segurity/profile/profile-index/profile-index';
+import { VehicleTypeIndex } from './demo/pages/parameters/vehicleType/vehicle-type-index/vehicle-type-index';
+import { VehicleTypeForm } from './demo/pages/parameters/vehicleType/vehicle-type-form/vehicle-type-form';
+import { RateTypeIndex } from './demo/pages/parameters/ratesType/rate-type-index/rate-type-index';
+import { RateTypeForm } from './demo/pages/parameters/ratesType/rate-type-form/rate-type-form';
+import { ParkingCategoryIndex } from './demo/pages/parameters/parkingCategory/parking-category-index/parking-category-index';
+import { ParkingCategoryForm } from './demo/pages/parameters/parkingCategory/parking-category-form/parking-category-form';
 
 const routes: Routes = [
   {
@@ -73,6 +79,15 @@ const routes: Routes = [
       {path: 'memberShipType-form', component: MembershipsTypeForm},
       {path: 'memberShipType-form/:id', component: MembershipsTypeForm},
       {path: 'profile-index', component: ProfileIndex},
+      {path: 'TypeVehicle-index', component: VehicleTypeIndex},
+      {path: 'TypeVehicle-form', component: VehicleTypeForm},
+      {path: 'TypeVehicle-form/:id', component: VehicleTypeForm},
+      {path: 'RatesType-index', component: RateTypeIndex},
+      {path: 'RatesType-form', component: RateTypeForm},
+      {path: 'RatesType-form/:id', component: RateTypeForm},
+      {path: 'ParkingCategory-index', component: ParkingCategoryIndex},
+      {path: 'ParkingCategory-form', component: ParkingCategoryForm},
+      {path: 'ParkingCategory-form/:id', component: ParkingCategoryForm},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
