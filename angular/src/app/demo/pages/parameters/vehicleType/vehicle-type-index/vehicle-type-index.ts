@@ -1,15 +1,21 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
+// import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
 import { VehicleType } from '../vehicle-type';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-vehicle-type-index',
-  imports: [GenericTable],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule,CommonModule, FormsModule],
   templateUrl: './vehicle-type-index.html',
   styleUrl: './vehicle-type-index.scss'
 })
@@ -86,5 +92,31 @@ deletePermanentTypeVehicle(id: number): void {
       });
     }
   });
+}
+
+getActiveVehicles(): number {
+  return this.dataSource.data.filter(v => v.asset && !v.isDeleted).length;
+}
+
+getDeletedVehicles(): number {
+  return this.dataSource.data.filter(v => v.isDeleted).length;
+}
+
+getVehicleIcon(name: string): string {
+  const normalizedName = name.toLowerCase();
+  if (normalizedName.includes('moto') || normalizedName.includes('bici')) return 'two_wheeler';
+  if (normalizedName.includes('camion') || normalizedName.includes('truck')) return 'local_shipping';
+  if (normalizedName.includes('bus') || normalizedName.includes('autobus')) return 'directions_bus';
+  if (normalizedName.includes('taxi')) return 'local_taxi';
+  return 'directions_car';
+}
+
+getVehicleIconClass(name: string): string {
+  const normalizedName = name.toLowerCase();
+  if (normalizedName.includes('moto') || normalizedName.includes('bici')) return 'icon-motorcycle';
+  if (normalizedName.includes('camion') || normalizedName.includes('truck')) return 'icon-truck';
+  if (normalizedName.includes('bus') || normalizedName.includes('autobus')) return 'icon-bus';
+  if (normalizedName.includes('taxi')) return 'icon-taxi';
+  return 'icon-car';
 }
 }

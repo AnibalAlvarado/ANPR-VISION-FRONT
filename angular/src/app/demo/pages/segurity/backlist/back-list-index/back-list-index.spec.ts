@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MembershipsTypeIndex } from './memberships-type-index';
+import { BackListIndex } from './back-list-index';
 
-describe('MembershipsTypeIndex', () => {
-  let component: MembershipsTypeIndex;
-  let fixture: ComponentFixture<MembershipsTypeIndex>;
+describe('BackListIndex', () => {
+  let component: BackListIndex;
+  let fixture: ComponentFixture<BackListIndex>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MembershipsTypeIndex]
+      imports: [BackListIndex]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MembershipsTypeIndex);
+    fixture = TestBed.createComponent(BackListIndex);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,466 @@
+/* CSS Mejorado */
+.rate-type-container {
+  padding: 24px;
+  // background: white;
+  min-height: 100vh;
+  background-color: transparent;
+  border-radius: 16px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.page-title {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.025em;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #59cee6 0%, #75e6ea 100%);
+  box-shadow: 0 4px 12px rgba(6, 6, 6, 0.3);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.2s ease;
+}
+
+.create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.create-btn mat-icon {
+  margin-right: 8px;
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+/* Rate Cards */
+.rate-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.rate-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-color: #cbd5e1;
+}
+
+/* Status Badge */
+.status-badge {
+  position: absolute;
+  top: 30px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.badge-active {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-inactive {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.status-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+/* Card Header */
+.card-header {
+  padding: 24px 24px 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icon {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon mat-icon {
+  color: #475569;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.header-text {
+  flex: 1;
+  padding-right: 60px; /* Space for status badge */
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Card Content */
+.card-content {
+  padding: 0 24px 24px 24px;
+}
+
+.description-section {
+  margin-bottom: 16px;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #475569;
+  font-size: 14px;
+}
+
+.label-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #64748b;
+}
+
+.description-text {
+  margin: 0;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3fbebe;
+  color: #475569;
+  // font-style: italic;
+  line-height: 1.5;
+}
+
+.metadata-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.metadata-item.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.metadata-item mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+/* Card Actions */
+.card-actions {
+  padding: 16px 24px;
+  // background: #f8fafc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.action-btn {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+}
+
+.edit-btn {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.edit-btn:hover {
+  background: #0369a1;
+  color: white;
+  transform: scale(1.05);
+}
+
+.delete-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+  color: white;
+  transform: scale(1.05);
+}
+
+.danger-btn {
+  background: #7f1d1d;
+  color: white;
+  border: 1px solid #7f1d1d;
+}
+
+.danger-btn:hover {
+  background: #991b1b;
+  transform: scale(1.05);
+}
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 32px;
+  background: transparent;
+  border-radius: 24px;
+  border: 3px dashed #24d3da;
+  margin-top: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(135deg, #3aedea 0%, #38c2cc 100%);
+}
+
+.empty-animation {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.membership-animation {
+  background: linear-gradient(135deg, #ddd6fe 0%, #aaeefc 100%);
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  animation: membershipBounce 3s infinite;
+  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.2);
+}
+
+.membership-animation mat-icon {
+  font-size: 60px;
+  width: 60px;
+  height: 60px;
+  color: #363636;
+}
+
+.floating-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.floating-icons mat-icon {
+  position: absolute;
+  color: #c4b5fd;
+  opacity: 0.6;
+}
+
+.float-1 {
+  top: 20%;
+  left: 20%;
+  font-size: 24px;
+  animation: floatLeft 4s infinite;
+}
+
+.float-2 {
+  top: 30%;
+  right: 15%;
+  font-size: 20px;
+  animation: floatRight 3s infinite;
+}
+
+.float-3 {
+  bottom: 30%;
+  left: 25%;
+  font-size: 18px;
+  animation: floatUp 5s infinite;
+}
+
+.empty-state h3 {
+  margin: 0 0 16px 0;
+  // color: #374151;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #3aedea 0%, #55d7f7 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.empty-state p {
+  margin: 0 0 32px 0;
+  color: #6b7280;
+  font-size: 16px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.empty-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Opacar tarjeta eliminada */
+.deleted-card {
+  opacity: 0.6;
+  position: relative;
+}
+
+/* Franja inferior */
+.deleted-banner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #b91c1c;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.deleted-banner mat-icon {
+  font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rate-type-container {
+    padding: 16px;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card-header {
+    padding: 20px 20px 12px 20px;
+  }
+
+  .card-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  .card-actions {
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-text {
+    padding-right: 80px;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .status-badge {
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}

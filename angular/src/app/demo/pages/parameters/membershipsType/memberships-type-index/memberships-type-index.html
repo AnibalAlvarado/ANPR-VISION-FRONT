@@ -1,9 +1,202 @@
-<app-generic-table
-  [columns]="columns"
-  [data]="dataSource.data"
-  [showActions]="true"
-  (create)="goToCreate()"
-  (edit)="goToEdit($event)"
-  (delete)="deleteModule($event)"
-  (deletePermanent)="deletePermanentModule($event)">
-</app-generic-table>
+
+<div class="memberships-container">
+  <!-- Header Section -->
+  <div class="header-section">
+
+    <button mat-raised-button color="primary" (click)="goToCreate()" class="create-btn">
+      <mat-icon>card_membership</mat-icon>
+      Nueva Membresía
+    </button>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-section">
+    <div class="stat-card active-stats">
+      <div class="stat-icon">
+        <mat-icon>verified</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>{{ getActiveMemberships() }}</h3>
+        <p>Tipos de Membresías Activas</p>
+        <div class="stat-trend positive">
+          <mat-icon>trending_up</mat-icon>
+          <span>Disponibles</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card total-stats">
+      <div class="stat-icon">
+        <mat-icon>workspace_premium</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>{{ dataSource.data.length }}</h3>
+        <p>Total de Tipos de Membresías</p>
+        <div class="stat-trend neutral">
+          <mat-icon>inventory</mat-icon>
+          <span>Registradas</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="stat-card deleted-stats">
+      <div class="stat-icon">
+        <mat-icon>delete_sweep</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>{{ getDeletedMemberships() }}</h3>
+        <p>Eliminadas</p>
+        <div class="stat-trend negative">
+          <mat-icon>trending_down</mat-icon>
+          <span>Inactivos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memberships Grid -->
+  <div class="memberships-grid">
+    <div *ngFor="let membership of dataSource.data"
+         class="membership-card"
+         [ngClass]="{
+           'card-deleted': membership.isDeleted,
+           'card-premium': isPremiumPlan(membership),
+           'card-basic': isBasicPlan(membership)
+         }">
+
+
+
+      <!-- Card Header -->
+      <div class="card-header">
+
+        <div class="header-content">
+          <h3 class="membership-name">{{ membership.name }}</h3>
+        </div>
+
+        <!-- Price Tag -->
+        <div class="price-tag">
+          <span class="currency">$</span>
+          <span class="amount">{{ membership.price | number:'1.0-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Card Content -->
+      <div class="card-content">
+        <!-- Description -->
+        <div class="description-section">
+          <div class="section-label">
+            <mat-icon>description</mat-icon>
+            <span>Descripción</span>
+          </div>
+          <p class="description-text">{{ membership.description || 'Sin descripción disponible' }}</p>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+          <div class="feature-item">
+            <mat-icon class="feature-icon">schedule</mat-icon>
+            <div class="feature-content">
+              <span class="feature-label">Duración</span>
+              <span class="feature-value">{{ membership.duration }} días</span>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <mat-icon class="feature-icon">attach_money</mat-icon>
+            <div class="feature-content">
+              <span class="feature-label">Precio</span>
+              <span class="feature-value">${{ membership.price | number:'1.0-2' }}</span>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <mat-icon class="feature-icon">calculate</mat-icon>
+            <div class="feature-content">
+              <span class="feature-label">Por día</span>
+              <span class="feature-value">${{ getDailyRate(membership) | number:'1.0-2' }}</span>
+            </div>
+          </div>
+
+          <div class="feature-item" [ngClass]="membership.asset ? 'feature-active' : 'feature-inactive'">
+            <mat-icon class="feature-icon">{{ membership.asset ? 'verified' : 'pause' }}</mat-icon>
+            <div class="feature-content">
+              <span class="feature-label">Estado</span>
+              <span class="feature-value">{{ membership.asset ? 'Activa' : 'Inactiva' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning for deleted items -->
+        <div class="warning-section" *ngIf="membership.isDeleted">
+          <mat-icon>warning</mat-icon>
+          <span>Esta membresía ha sido eliminada lógicamente</span>
+        </div>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-actions">
+        <button mat-icon-button
+                class="action-btn edit-btn"
+                (click)="goToEdit(membership)"
+                matTooltip="Editar membresía"
+                [disabled]="membership.isDeleted"
+                aria-label="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button
+                class="action-btn delete-btn"
+                (click)="deleteModule(membership.id)"
+                matTooltip="Eliminar membresía"
+                [disabled]="membership.isDeleted"
+                aria-label="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <!-- Botón de eliminación permanente - solo visible si está eliminado lógicamente -->
+        <button *ngIf="membership.isDeleted"
+                mat-icon-button
+                class="action-btn danger-btn permanent-delete"
+                (click)="deletePermanentModule(membership.id)"
+                matTooltip="Eliminar permanentemente - Esta acción no se puede deshacer"
+                aria-label="Eliminar Permanentemente">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </div>
+
+      <!-- Deleted Indicator -->
+      <div class="deleted-indicator" *ngIf="membership.isDeleted">
+        <mat-icon>delete_forever</mat-icon>
+        <span>Membresía Eliminada</span>
+      </div>
+
+      <!-- Status Overlay for deleted items -->
+      <div class="status-overlay" *ngIf="membership.isDeleted">
+        <mat-icon>block</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="dataSource.data.length === 0">
+    <div class="empty-animation">
+      <div class="membership-animation">
+        <mat-icon>card_membership</mat-icon>
+      </div>
+      <div class="floating-icons">
+        <mat-icon class="float-1">stars</mat-icon>
+        <mat-icon class="float-2">workspace_premium</mat-icon>
+        <mat-icon class="float-3">verified</mat-icon>
+      </div>
+    </div>
+    <h3>No hay tipos de membresías registradas</h3>
+    <p>Crea diferentes tipos de membresía para ofrecer beneficios exclusivos a tus clientes</p>
+    <div class="empty-actions">
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon>
+        Crear Primer Tipo de Membresía
+      </button>
+    </div>
+  </div>
+</div>

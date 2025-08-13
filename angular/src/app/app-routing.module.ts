@@ -30,6 +30,9 @@ import { RateTypeIndex } from './demo/pages/parameters/ratesType/rate-type-index
 import { RateTypeForm } from './demo/pages/parameters/ratesType/rate-type-form/rate-type-form';
 import { ParkingCategoryIndex } from './demo/pages/parameters/parkingCategory/parking-category-index/parking-category-index';
 import { ParkingCategoryForm } from './demo/pages/parameters/parkingCategory/parking-category-form/parking-category-form';
+import { BackListIndex } from './demo/pages/segurity/backlist/back-list-index/back-list-index';
+import { ZonesIndex } from './demo/pages/parameters/zones/zones-index/zones-index';
+import { ZonesForm } from './demo/pages/parameters/zones/zones-form/zones-form';
 
 const routes: Routes = [
   {
@@ -88,6 +91,10 @@ const routes: Routes = [
       {path: 'ParkingCategory-index', component: ParkingCategoryIndex},
       {path: 'ParkingCategory-form', component: ParkingCategoryForm},
       {path: 'ParkingCategory-form/:id', component: ParkingCategoryForm},
+      {path: 'BackList-index', component: BackListIndex},
+      {path: 'Zones-index', component: ZonesIndex},
+      {path: 'Zones-form', component: ZonesForm},
+      {path: 'Zones-form/:id', component: ZonesForm},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

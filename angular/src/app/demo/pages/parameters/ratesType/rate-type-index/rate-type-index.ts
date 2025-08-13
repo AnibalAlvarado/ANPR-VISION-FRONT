@@ -1,15 +1,21 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
+// import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
 import { RateType } from '../rate-type';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-rate-type-index',
-  imports: [GenericTable],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule,CommonModule, FormsModule, ],
   templateUrl: './rate-type-index.html',
   styleUrl: './rate-type-index.scss'
 })

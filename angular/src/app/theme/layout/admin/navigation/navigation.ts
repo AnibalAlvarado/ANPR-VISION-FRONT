@@ -44,7 +44,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'Cámaras',
         title: 'Cámaras',
         type: 'item',
-        url: '/chart',
+        url: '/Cámaras-index',
         classes: 'nav-item',
         icon: 'feather icon-camera'
       },
@@ -52,35 +52,21 @@ export const NavigationItems: NavigationItem[] = [
         "id": "Vehículos",
         "title": "Vehículos",
         "type": "item",
-        "url": "/chart",
+        "url": "/Vehículos",
         "classes": "nav-item",
-        "icon": "fa-solid fa-car"
+        "icon": "feather icon-map-pin"
       }
       ,
-      {
-        id: 'Sectores',
-        title: 'Sectores',
-        type: 'item',
-        url: '/chart',
-        classes: 'nav-item',
-        icon: 'feather icon-map-pin'
-      },
+
       {
         id: 'Zonas',
         title: 'Zonas',
         type: 'item',
-        url: '/chart',
+        url: '/Zones-index',
         classes: 'nav-item',
         icon: 'feather icon-map-pin'
       },
-       {
-        id: 'apexchart',
-        title: 'Lista Negra',
-        type: 'item',
-        url: '/chart',
-        classes: 'nav-item',
-        icon: 'feather icon-alert-octagon'
-      },
+
     ]
   },
 
@@ -98,34 +84,29 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-box',
         children: [
           {
-            id: 'Membresías',
+            id: 'Memberships',
             title: 'Membresías',
             type: 'item',
-            url: '/memberShipType-index'
+            url: '/Memberships-index'
           },
           {
-            id: 'Tarifas',
+            id: 'Rates',
             title: 'Tarifas',
             type: 'item',
-            url: '/TypeVehicle-index'
+            url: '/Rates-index'
           },
           {
             id: 'RegisteredVehicles',
             title: 'Registros de Vehículos',
             type: 'item',
-            url: '/RatesType-index'
+            url: '/RegisteredVehicles-index'
           },
-          {
-            id: 'Slots',
-            title: 'Espacios',
-            type: 'item',
-            url: '/ParkingCategory-index'
-          },
+
            {
             id: 'HistoryVehicle',
             title: 'Historial de Vehículos',
             type: 'item',
-            url: '/ParkingCategory-index'
+            url: '/HistoryVehicle-index'
           },
 
 
@@ -169,7 +150,24 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/ParkingCategory-index'
           },
-
+            {
+            id: 'Zones',
+            title: 'Zonas',
+            type: 'item',
+            url: '/Zones-index'
+          },
+             {
+            id: 'Sectors',
+            title: 'Sectores',
+            type: 'item',
+            url: '/Sectors-index'
+          },
+          {
+            id: 'Slots',
+            title: 'Espacios',
+            type: 'item',
+            url: '/Slots-index'
+          },
 
         ]
       }
@@ -236,6 +234,12 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/persons-index'
           },
+             {
+            id: 'BackList',
+            title: 'Lista Negra',
+            type: 'item',
+            url: '/BackList-index'
+          },
 
         ]
       }
@@ -275,122 +279,5 @@ export const NavigationItems: NavigationItem[] = [
 
     ]
   },
-  // {
-  //   id: 'Authentication',
-  //   title: 'Authentication',
-  //   type: 'group',
-  //   icon: 'icon-group',
-  //   children: [
-  //     {
-  //       id: 'signup',
-  //       title: 'Sign up',
-  //       type: 'item',
-  //       url: '/register',
-  //       icon: 'feather icon-at-sign',
-  //       target: true,
-  //       breadcrumbs: false
-  //     },
-  //     {
-  //       id: 'signin',
-  //       title: 'Sign in',
-  //       type: 'item',
-  //       url: '/login',
-  //       icon: 'feather icon-log-in',
-  //       target: true,
-  //       breadcrumbs: false
-  //     }
-  //   ]
-  // },
-  {
-    id: 'chart',
-    title: 'Chart',
-    type: 'group',
-    icon: 'icon-group',
-    children: [
-      {
-        id: 'apexchart',
-        title: 'ApexChart',
-        type: 'item',
-        url: '/chart',
-        classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
-      }
-    ]
-  },
-  // {
-  //   id: 'forms & tables',
-  //   title: 'Forms & Tables',
-  //   type: 'group',
-  //   icon: 'icon-group',
-  //   children: [
-  //     {
-  //       id: 'forms',
-  //       title: 'Basic Forms',
-  //       type: 'item',
-  //       url: '/forms',
-  //       classes: 'nav-item',
-  //       icon: 'feather icon-file-text'
-  //     },
-  //     {
-  //       id: 'tables',
-  //       title: 'Tables',
-  //       type: 'item',
-  //       url: '/tables',
-  //       classes: 'nav-item',
-  //       icon: 'feather icon-server'
-  //     }
-  //   ]
-  // },
-  // {
-  //   id: 'other',
-  //   title: 'Other',
-  //   type: 'group',
-  //   icon: 'icon-group',
-  //   children: [
-  //     {
-  //       id: 'sample-page',
-  //       title: 'Sample Page',
-  //       type: 'item',
-  //       url: '/sample-page',
-  //       classes: 'nav-item',
-  //       icon: 'feather icon-sidebar'
-  //     },
-  //     {
-  //       id: 'menu-level',
-  //       title: 'Menu Levels',
-  //       type: 'collapse',
-  //       icon: 'feather icon-menu',
-  //       children: [
-  //         {
-  //           id: 'menu-level-2.1',
-  //           title: 'Menu Level 2.1',
-  //           type: 'item',
-  //           url: 'javascript:',
-  //           external: true
-  //         },
-  //         {
-  //           id: 'menu-level-2.2',
-  //           title: 'Menu Level 2.2',
-  //           type: 'collapse',
-  //           children: [
-  //             {
-  //               id: 'menu-level-2.2.1',
-  //               title: 'Menu Level 2.2.1',
-  //               type: 'item',
-  //               url: 'javascript:',
-  //               external: true
-  //             },
-  //             {
-  //               id: 'menu-level-2.2.2',
-  //               title: 'Menu Level 2.2.2',
-  //               type: 'item',
-  //               url: 'javascript:',
-  //               external: true
-  //             }
-  //           ]
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // }
+
 ];

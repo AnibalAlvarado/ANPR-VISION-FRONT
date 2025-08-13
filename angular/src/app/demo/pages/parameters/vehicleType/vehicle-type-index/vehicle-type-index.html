@@ -1,9 +1,152 @@
-<app-generic-table
-  [columns]="columns"
-  [data]="dataSource.data"
-  [showActions]="true"
-  (create)="goToCreate()"
-  (edit)="goToEdit($event)"
-  (delete)="deleteTypeVehicle($event)"
-  (deletePermanent)="deletePermanentTypeVehicle($event)">
-</app-generic-table>
+
+
+
+<!-- HTML Template para Tipos de Vehículos -->
+<div class="vehicle-type-container">
+  <!-- Header Section -->
+  <div class="header-section">
+
+    <button mat-raised-button color="primary" (click)="goToCreate()" class="create-btn">
+      <mat-icon>directions_car</mat-icon>
+      Nuevo Tipo de Vehículo
+    </button>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-section">
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>{{ getActiveVehicles() }}</h3>
+        <p>Tipos de Vehículos Activos</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon total">
+        <mat-icon>inventory</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>{{ dataSource.data.length }}</h3>
+        <p>Total de Tipos de Vehículos</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon deleted">
+        <mat-icon>delete_sweep</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>{{ getDeletedVehicles() }}</h3>
+        <p>Eliminados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vehicle Types Grid -->
+  <div class="vehicles-grid">
+    <div *ngFor="let vehicle of dataSource.data" class="vehicle-card"
+         [ngClass]="{'card-deleted': vehicle.isDeleted, 'card-inactive': !vehicle.asset}">
+
+      <!-- Vehicle Icon Background -->
+      <div class="vehicle-icon-bg">
+        <div class="vehicle-icon" [ngClass]="getVehicleIconClass(vehicle.name)">
+          <mat-icon>{{ getVehicleIcon(vehicle.name) }}</mat-icon>
+        </div>
+
+        <!-- Status Overlay -->
+        <div class="status-overlay" *ngIf="vehicle.isDeleted">
+          <mat-icon>delete</mat-icon>
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div class="status-badge" [ngClass]="vehicle.asset ? 'badge-active' : 'badge-inactive'">
+        <mat-icon class="status-icon">{{ vehicle.asset ? 'check_circle' : 'pause_circle_filled' }}</mat-icon>
+        <span>{{ vehicle.asset ? 'Activo' : 'Inactivo' }}</span>
+      </div>
+
+      <!-- Card Content -->
+      <div class="card-content">
+        <h3 class="vehicle-name">{{ vehicle.name }}</h3>
+        <!-- <p class="vehicle-type">Tipo de Vehículo</p> -->
+
+        <!-- Vehicle Details -->
+        <div class="vehicle-details">
+          <div class="detail-item">
+            <mat-icon class="detail-icon">info</mat-icon>
+            <span class="detail-label">Estado:</span>
+            <span class="detail-value" [ngClass]="vehicle.asset ? 'value-active' : 'value-inactive'">
+              {{ vehicle.asset ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+
+          <div class="detail-item" *ngIf="vehicle.isDeleted">
+            <mat-icon class="detail-icon warning">warning</mat-icon>
+            <span class="detail-label">Eliminado lógicamente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-actions">
+        <button mat-icon-button
+                class="action-btn edit-btn"
+                (click)="goToEdit(vehicle)"
+                matTooltip="Editar tipo de vehículo"
+                [disabled]="vehicle.isDeleted"
+                aria-label="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button
+                class="action-btn delete-btn"
+                (click)="deleteTypeVehicle(vehicle.id)"
+                matTooltip="Eliminar tipo de vehículo"
+                [disabled]="vehicle.isDeleted"
+                aria-label="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <!-- Botón de eliminación permanente - solo visible si está eliminado lógicamente -->
+        <button *ngIf="vehicle.isDeleted"
+                mat-icon-button
+                class="action-btn danger-btn permanent-delete"
+                (click)="deletePermanentTypeVehicle(vehicle.id)"
+                matTooltip="Eliminar permanentemente - Esta acción no se puede deshacer"
+                aria-label="Eliminar Permanentemente">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </div>
+
+      <!-- Deleted Indicator -->
+      <div class="deleted-indicator" *ngIf="vehicle.isDeleted">
+        <mat-icon>delete_forever</mat-icon>
+        <span>Eliminado</span>
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="empty-state" *ngIf="dataSource.data.length === 0">
+    <div class="empty-animation">
+      <div class="membership-animation">
+        <mat-icon>directions_car</mat-icon>
+      </div>
+      <div class="floating-icons">
+        <mat-icon class="float-1">stars</mat-icon>
+        <mat-icon class="float-2">workspace_premium</mat-icon>
+        <mat-icon class="float-3">verified</mat-icon>
+      </div>
+    </div>
+   <h3>No hay tipos de vehículos registrados</h3>
+    <p>Comienza agregando los tipos de vehículos que manejará tu parqueadero</p>
+    <div class="empty-actions">
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon>
+        Crear Primer Tipo
+      </button>
+    </div>
+  </div>
+</div>

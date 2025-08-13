@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RateTypeIndex } from './rate-type-index';
+import { ZonesIndex } from './zones-index';
 
-describe('RateTypeIndex', () => {
-  let component: RateTypeIndex;
-  let fixture: ComponentFixture<RateTypeIndex>;
+describe('ZonesIndex', () => {
+  let component: ZonesIndex;
+  let fixture: ComponentFixture<ZonesIndex>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RateTypeIndex]
+      imports: [ZonesIndex]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RateTypeIndex);
+    fixture = TestBed.createComponent(ZonesIndex);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

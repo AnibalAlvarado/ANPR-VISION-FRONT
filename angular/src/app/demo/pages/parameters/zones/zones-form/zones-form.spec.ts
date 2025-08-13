@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParkingCategoryIndex } from './parking-category-index';
+import { ZonesForm } from './zones-form';
 
-describe('ParkingCategoryIndex', () => {
-  let component: ParkingCategoryIndex;
-  let fixture: ComponentFixture<ParkingCategoryIndex>;
+describe('ZonesForm', () => {
+  let component: ZonesForm;
+  let fixture: ComponentFixture<ZonesForm>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ParkingCategoryIndex]
+      imports: [ZonesForm]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ParkingCategoryIndex);
+    fixture = TestBed.createComponent(ZonesForm);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

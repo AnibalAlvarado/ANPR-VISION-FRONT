@@ -1,9 +1,119 @@
-<app-generic-table
-  [columns]="columns"
-  [data]="dataSource.data"
-  [showActions]="true"
-  (create)="goToCreate()"
-  (edit)="goToEdit($event)"
-  (delete)="deleteTypeVehicle($event)"
-  (deletePermanent)="deletePermanentTypeVehicle($event)">
-</app-generic-table>
+
+
+
+<div class="rate-type-container">
+  <!-- Header Section -->
+  <div class="header-section">
+
+    <button mat-raised-button color="primary" (click)="goToCreate()" class="create-btn">
+      <mat-icon>add</mat-icon>
+      Nuevo Tipo de Tarifa
+    </button>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="cards-grid">
+  
+
+
+    <mat-card *ngFor="let rate of dataSource.data"
+          class="rate-card"
+          appearance="outlined"
+          [ngClass]="{'deleted-card': rate.isDeleted}">
+
+  <!-- Status Badge -->
+  <div class="status-badge" [ngClass]="rate.asset ? 'badge-active' : 'badge-inactive'">
+    <mat-icon class="status-icon">{{ rate.asset ? 'check_circle' : 'cancel' }}</mat-icon>
+    <span>{{ rate.asset ? 'Activo' : 'Inactivo' }}</span>
+  </div>
+
+  <mat-card-header class="card-header">
+    <div class="header-icon">
+      <mat-icon>attach_money</mat-icon>
+    </div>
+    <div class="header-text">
+      <mat-card-title class="card-title">{{ rate.name }}</mat-card-title>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="card-content">
+    <div class="description-section">
+      <div class="section-label">
+        <mat-icon class="label-icon">description</mat-icon>
+        <span>Descripción</span>
+      </div>
+      <p class="description-text">{{ rate.description || 'Sin descripción' }}</p>
+    </div>
+
+    <div class="metadata-section" *ngIf="rate.isDeleted">
+      <div class="metadata-item warning">
+        <mat-icon>warning</mat-icon>
+        <span>Eliminado lógicamente</span>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions class="card-actions">
+    <!-- Botón Editar (deshabilitado si está eliminado) -->
+    <button mat-icon-button
+            class="action-btn edit-btn"
+            (click)="goToEdit(rate)"
+            [disabled]="rate.isDeleted"
+            matTooltip="Editar tarifa"
+            aria-label="Editar">
+      <mat-icon>edit</mat-icon>
+    </button>
+
+    <!-- Botón Eliminar Lógico (deshabilitado si está eliminado) -->
+    <button mat-icon-button
+            class="action-btn delete-btn"
+            (click)="deleteTypeVehicle(rate.id)"
+            [disabled]="rate.isDeleted"
+            matTooltip="Eliminar tarifa"
+            aria-label="Eliminar">
+      <mat-icon>delete</mat-icon>
+    </button>
+
+    <!-- Botón Eliminar Permanente (solo visible si está eliminado) -->
+    <button *ngIf="rate.isDeleted"
+            mat-icon-button
+            class="action-btn danger-btn"
+            (click)="deletePermanentTypeVehicle(rate.id)"
+            matTooltip="Eliminar permanentemente"
+            aria-label="Eliminar Permanentemente">
+      <mat-icon>delete_forever</mat-icon>
+    </button>
+  </mat-card-actions>
+
+  <!-- Franja inferior para eliminado -->
+  <div *ngIf="rate.isDeleted" class="deleted-banner">
+    <mat-icon>delete_forever</mat-icon>
+    REGISTRO ELIMINADO
+  </div>
+</mat-card>
+
+  </div>
+
+
+
+  <div class="empty-state" *ngIf="dataSource.data.length === 0">
+    <div class="empty-animation">
+      <div class="membership-animation">
+        <mat-icon>inbox</mat-icon>
+      </div>
+      <div class="floating-icons">
+        <mat-icon class="float-1">stars</mat-icon>
+        <mat-icon class="float-2">workspace_premium</mat-icon>
+        <mat-icon class="float-3">verified</mat-icon>
+      </div>
+    </div>
+    <h3>No hay tipos de tarifas</h3>
+    <p>Comienza creando tu primer tipo de tarifa</p>
+    <div class="empty-actions">
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon>
+        Crear Primer Tipo de Membresía
+      </button>
+    </div>
+  </div>
+</div>

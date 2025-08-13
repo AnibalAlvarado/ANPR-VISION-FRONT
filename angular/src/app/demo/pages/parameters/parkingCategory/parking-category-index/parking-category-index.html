@@ -1,4 +1,4 @@
-<app-generic-table
+<!-- <app-generic-table
   [columns]="columns"
   [data]="dataSource.data"
   [showActions]="true"
@@ -6,4 +6,220 @@
   (edit)="goToEdit($event)"
   (delete)="deleteTypeVehicle($event)"
   (deletePermanent)="deletePermanentTypeVehicle($event)">
-</app-generic-table>
+</app-generic-table> -->
+
+
+<div class="parking-categories-container">
+  <!-- Header Section -->
+  <div class="header-section">
+
+    <button mat-raised-button color="primary" (click)="goToCreate()" class="create-btn">
+      <mat-icon>category</mat-icon>
+      Nueva Categoría
+    </button>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-section">
+    <div class="stat-card active-stats">
+      <!-- <div class="stat-icon">
+        <mat-icon>verified</mat-icon>
+      </div> -->
+      <div class="stat-content">
+        <h3>{{ getActiveCategories() }}</h3>
+        <p>Categorías Activas</p>
+
+      </div>
+      <div class="stat-decoration active"></div>
+    </div>
+
+    <div class="stat-card total-stats">
+
+      <div class="stat-content">
+        <h3>{{ dataSource.data.length }}</h3>
+        <p>Total Categorías</p>
+        <!-- <div class="stat-trend neutral">
+          <mat-icon>category</mat-icon>
+          <span>Registradas</span>
+        </div> -->
+      </div>
+      <div class="stat-decoration total"></div>
+    </div>
+
+
+    <div class="stat-card deleted-stats">
+
+      <div class="stat-content">
+        <h3>{{ getDeletedCategories() }}</h3>
+        <p>Eliminadas</p>
+
+      </div>
+      <div class="stat-decoration deleted"></div>
+    </div>
+  </div>
+
+
+
+  <!-- Categories Grid -->
+  <div class="categories-grid">
+    <div *ngFor="let category of dataSource.data"
+         class="category-card"
+         [ngClass]="{
+           'card-deleted': category.isDeleted,
+           'card-inactive': !category.asset,
+           'card-premium': isPremiumCategory(category),
+           'card-vip': isVIPCategory(category),
+           'card-standard': isStandardCategory(category)
+         }">
+
+      <!-- Category Code Badge -->
+      <div class="code-badge" [ngClass]="getCategoryCodeClass(category.code)">
+        <div class="code-icon">
+          <mat-icon>{{ getCategoryCodeIcon(category.code) }}</mat-icon>
+        </div>
+        <span class="code-text">{{ category.code || 'N/A' }}</span>
+      </div>
+
+      <!-- Status Badge -->
+      <!-- <div class="status-badge" [ngClass]="category.asset ? 'badge-active' : 'badge-inactive'">
+        <mat-icon class="status-icon">{{ category.asset ? 'check_circle' : 'pause_circle_filled' }}</mat-icon>
+        <span>{{ category.asset ? 'Activa' : 'Inactiva' }}</span>
+      </div> -->
+
+      <!-- Card Header -->
+      <div class="card-header">
+        <!-- <div class="category-icon" [ngClass]="getCategoryIconClass(category)">
+          <mat-icon>{{ getCategoryIcon(category) }}</mat-icon>
+        </div> -->
+        <div class="header-content">
+          <h3 class="category-name">{{ category.name }}</h3>
+          <!-- <p class="category-type">Zona {{ category.code || 'General' }}</p> -->
+        </div>
+
+        <!-- Priority Indicator -->
+        <!-- <div class="priority-indicator" [ngClass]="getPriorityClass(category)">
+          <mat-icon>{{ getPriorityIcon(category) }}</mat-icon>
+        </div> -->
+      </div>
+
+      <!-- Card Content -->
+      <div class="card-content">
+        <!-- Description -->
+        <div class="description-section">
+          <div class="section-label">
+            <mat-icon>description</mat-icon>
+            <span>Descripción</span>
+          </div>
+          <p class="description-text">{{ category.description || 'Sin descripción disponible' }}</p>
+        </div>
+
+        <!-- Category Details -->
+        <div class="details-grid">
+          <div class="detail-item">
+            <mat-icon class="detail-icon">qr_code</mat-icon>
+            <div class="detail-content">
+              <span class="detail-label">Código</span>
+              <span class="detail-value code-value">{{ category.code || 'Sin código' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <mat-icon class="detail-icon">info</mat-icon>
+            <div class="detail-content">
+              <span class="detail-label">Estado</span>
+              <span class="detail-value" [ngClass]="category.asset ? 'value-active' : 'value-inactive'">
+                {{ category.asset ? 'Activa' : 'Inactiva' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- <div class="detail-item">
+            <mat-icon class="detail-icon">location_on</mat-icon>
+            <div class="detail-content">
+              <span class="detail-label">Tipo</span>
+              <span class="detail-value">{{ getCategoryTypeLabel(category) }}</span>
+            </div>
+          </div> -->
+
+          <div class="detail-item" *ngIf="category.isDeleted">
+            <mat-icon class="detail-icon warning">warning</mat-icon>
+            <div class="detail-content">
+              <span class="detail-label">Eliminada</span>
+              <span class="detail-value warning-value">Lógicamente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-actions">
+        <button mat-icon-button
+                class="action-btn edit-btn"
+                (click)="goToEdit(category)"
+                matTooltip="Editar categoría"
+                [disabled]="category.isDeleted"
+                aria-label="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button
+                class="action-btn delete-btn"
+                (click)="deleteTypeVehicle(category.id)"
+                matTooltip="Eliminar categoría"
+                [disabled]="category.isDeleted"
+                aria-label="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <!-- Botón de eliminación permanente - solo visible si está eliminado lógicamente -->
+        <button *ngIf="category.isDeleted"
+                mat-icon-button
+                class="action-btn danger-btn permanent-delete"
+                (click)="deletePermanentTypeVehicle(category.id)"
+                matTooltip="Eliminar permanentemente - Esta acción no se puede deshacer"
+                aria-label="Eliminar Permanentemente">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </div>
+
+      <!-- Deleted Indicator -->
+      <div class="deleted-indicator" *ngIf="category.isDeleted">
+        <mat-icon>delete_forever</mat-icon>
+        <span>Categoría Eliminada</span>
+      </div>
+
+      <!-- Status Overlay for deleted items -->
+      <div class="status-overlay" *ngIf="category.isDeleted">
+        <mat-icon>block</mat-icon>
+      </div>
+
+      <!-- Category Level Indicator -->
+      <div class="level-indicator" [ngClass]="getCategoryLevelClass(category)">
+        <div class="level-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="dataSource.data.length === 0">
+    <div class="empty-animation">
+      <div class="category-animation">
+        <mat-icon>category</mat-icon>
+      </div>
+      <div class="floating-categories">
+        <div class="floating-badge badge-a">A</div>
+        <div class="floating-badge badge-b">B</div>
+        <div class="floating-badge badge-c">C</div>
+        <div class="floating-badge badge-vip">VIP</div>
+      </div>
+    </div>
+    <h3>No hay categorías de parqueadero</h3>
+    <p>Define las diferentes categorías para organizar mejor tu parqueadero</p>
+    <div class="empty-actions">
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon>
+        Crear Primera Categoría
+      </button>
+    </div>
+  </div>
+</div>
