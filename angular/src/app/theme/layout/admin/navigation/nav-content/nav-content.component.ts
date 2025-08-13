@@ -3,7 +3,6 @@ import { Component, OnInit, inject, output } from '@angular/core';
 import { Location, LocationStrategy } from '@angular/common';
 
 // project import
-import { environment } from 'src/environments/environment';
 import { NavigationItem, NavigationItems } from '../navigation';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavGroupComponent } from './nav-group/nav-group.component';
@@ -20,7 +19,7 @@ export class NavContentComponent implements OnInit {
 
   // version
   title = 'Demo application for version numbering';
-  currentApplicationVersion = environment.appVersion;
+  // currentApplicationVersion = environment.appVersion;
 
   // public pops
   navigation: NavigationItem[];

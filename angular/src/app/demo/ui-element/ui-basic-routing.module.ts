@@ -5,10 +5,7 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      {
-        path: 'badges',
-        loadComponent: () => import('./badge/badge.component').then((c) => c.BadgeComponent)
-      },
+     
       {
         path: 'button',
         loadComponent: () => import('./button/button.component').then((c) => c.ButtonComponent)

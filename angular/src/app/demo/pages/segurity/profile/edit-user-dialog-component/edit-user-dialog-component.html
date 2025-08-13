@@ -1,0 +1,18 @@
+<div class="edit-user-modal">
+  <h1 mat-dialog-title>Editar Usuario</h1>
+  <div mat-dialog-content>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Nombre de usuario</mat-label>
+      <input matInput [(ngModel)]="data.userName">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="data.email">
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+  </div>
+</div>

@@ -1,1 +1,16 @@
 // This file is intentionally left empty to allow customers to add custom CSS if needed.
+.patient-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid #e0e0e0;
+  background-color: #27d3c8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 25px;
+  color: #333;
+}

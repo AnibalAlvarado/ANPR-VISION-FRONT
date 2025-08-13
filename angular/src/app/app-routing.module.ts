@@ -5,6 +5,31 @@ import { Routes, RouterModule } from '@angular/router';
 // project import
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
+import { RoleForm } from './demo/pages/segurity/role/role-form/role-form';
+import { RoleIndex } from './demo/pages/segurity/role/role-index/role-index';
+import { PersonIndex } from './demo/pages/segurity/person/person-index/person-index';
+import { UserIndex } from './demo/pages/segurity/user/user-index/user-index';
+import { UserForm } from './demo/pages/segurity/user/user-form/user-form';
+import { PersonPrueba } from './demo/pages/segurity/person/person-prueba/person-prueba';
+import { ModuleIndex } from './demo/pages/segurity/module/module-index/module-index';
+import { ModuleForm } from './demo/pages/segurity/module/module-form/module-form';
+import { FormIndex } from './demo/pages/segurity/form/form-index/form-index';
+import { FormForm } from './demo/pages/segurity/form/form-form/form-form';
+import { PermissionIndex } from './demo/pages/segurity/permission/permission-index/permission-index';
+import { PermissionForm } from './demo/pages/segurity/permission/permission-form/permission-form';
+import { FormModuleIndex } from './demo/pages/segurity/form-module/form-module-index/form-module-index';
+import { FormModuleForm } from './demo/pages/segurity/form-module/form-module-form/form-module-form';
+import { RolFormPerIndex } from './demo/pages/segurity/rolFormPermission/rol-form-per-index/rol-form-per-index';
+import { RolFormPerForm } from './demo/pages/segurity/rolFormPermission/rol-form-per-form/rol-form-per-form';
+import { MembershipsTypeIndex } from './demo/pages/parameters/membershipsType/memberships-type-index/memberships-type-index';
+import { MembershipsTypeForm } from './demo/pages/parameters/membershipsType/memberships-type-form/memberships-type-form';
+import { ProfileIndex } from './demo/pages/segurity/profile/profile-index/profile-index';
+import { VehicleTypeIndex } from './demo/pages/parameters/vehicleType/vehicle-type-index/vehicle-type-index';
+import { VehicleTypeForm } from './demo/pages/parameters/vehicleType/vehicle-type-form/vehicle-type-form';
+import { RateTypeIndex } from './demo/pages/parameters/ratesType/rate-type-index/rate-type-index';
+import { RateTypeForm } from './demo/pages/parameters/ratesType/rate-type-form/rate-type-form';
+import { ParkingCategoryIndex } from './demo/pages/parameters/parkingCategory/parking-category-index/parking-category-index';
+import { ParkingCategoryForm } from './demo/pages/parameters/parkingCategory/parking-category-form/parking-category-form';
 
 const routes: Routes = [
   {
@@ -21,6 +46,49 @@ const routes: Routes = [
         loadComponent: () => import('./demo/dashboard/dash-analytics.component').then((c) => c.DashAnalyticsComponent)
       },
       {
+        path: 'persons-index',
+        component: PersonIndex
+      },
+      { path: 'persona-form', component: PersonPrueba },
+      { path: 'persona-form/:id', component: PersonPrueba },
+       {
+        path: 'role-index',
+        component: RoleIndex
+      },
+       { path: 'role-form', component: RoleForm },
+      { path: 'role-form/:id', component: RoleForm },
+      { path: 'user-index', component: UserIndex },
+      { path: 'user-form', component: UserForm },
+      { path: 'user-form/:id', component: UserForm },
+      { path: 'module-index', component: ModuleIndex },
+      { path: 'module-form', component: ModuleForm },
+      { path: 'module-form/:id', component: ModuleForm },
+      { path: 'form-index', component: FormIndex },
+      { path: 'form-form', component: FormForm },
+      { path: 'form-form/:id', component: FormForm },
+      {path: 'permission-index', component: PermissionIndex},
+      {path: 'permission-form', component: PermissionForm},
+      {path: 'permission-form/:id', component: PermissionForm},
+      {path: 'form-module-index', component: FormModuleIndex},
+      {path: 'formModule-form', component: FormModuleForm},
+      {path: 'formModule-form/:id', component: FormModuleForm},
+      {path: 'rolFormPermission-index', component: RolFormPerIndex},
+      {path: 'rolFormPermission-form', component: RolFormPerForm},
+      {path: 'rolFormPermission-form/:id', component: RolFormPerForm},
+      {path: 'memberShipType-index', component: MembershipsTypeIndex},
+      {path: 'memberShipType-form', component: MembershipsTypeForm},
+      {path: 'memberShipType-form/:id', component: MembershipsTypeForm},
+      {path: 'profile-index', component: ProfileIndex},
+      {path: 'TypeVehicle-index', component: VehicleTypeIndex},
+      {path: 'TypeVehicle-form', component: VehicleTypeForm},
+      {path: 'TypeVehicle-form/:id', component: VehicleTypeForm},
+      {path: 'RatesType-index', component: RateTypeIndex},
+      {path: 'RatesType-form', component: RateTypeForm},
+      {path: 'RatesType-form/:id', component: RateTypeForm},
+      {path: 'ParkingCategory-index', component: ParkingCategoryIndex},
+      {path: 'ParkingCategory-form', component: ParkingCategoryForm},
+      {path: 'ParkingCategory-form/:id', component: ParkingCategoryForm},
+      {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
       },
@@ -28,18 +96,9 @@ const routes: Routes = [
         path: 'chart',
         loadComponent: () => import('./demo/chart-maps/core-apex.component').then((c) => c.CoreApexComponent)
       },
-      {
-        path: 'forms',
-        loadComponent: () => import('./demo/forms/form-elements/form-elements.component').then((c) => c.FormElementsComponent)
-      },
-      {
-        path: 'tables',
-        loadComponent: () => import('./demo/tables/tbl-bootstrap/tbl-bootstrap.component').then((c) => c.TblBootstrapComponent)
-      },
-      {
-        path: 'sample-page',
-        loadComponent: () => import('./demo/other/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
-      },
+
+
+
       {
         path: 'zonas-parqueadero',
         loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)

@@ -1,0 +1,70 @@
+.edit-user-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 25px;
+  max-width: 450px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.edit-user-modal h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.edit-user-modal mat-form-field {
+  margin-bottom: 15px;
+}
+
+/* Ajuste de labels para que no se corten */
+.edit-user-modal ::ng-deep .mat-form-field-label {
+  top: -3px !important;
+  font-size: 14px !important;
+  color: #666 !important;
+}
+
+.edit-user-modal ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-radius: 10px;
+}
+
+.edit-user-modal ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  border-color: #6c63ff;
+}
+
+.edit-user-modal [mat-dialog-actions] {
+  padding-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Botón cancelar */
+.edit-user-modal button[mat-button] {
+  color: #6c757d;
+  font-weight: 500;
+  background: #f1f1f1;
+  border-radius: 8px;
+  padding: 6px 16px;
+  transition: all 0.2s ease;
+}
+.edit-user-modal button[mat-button]:hover {
+  background: #e2e2e2;
+}
+
+/* Botón guardar */
+.edit-user-modal button[mat-raised-button] {
+  background: linear-gradient(135deg, #6c63ff, #836fff);
+  color: white;
+  font-weight: 500;
+  padding: 6px 18px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.edit-user-modal button[mat-raised-button]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(108, 99, 255, 0.4);
+}

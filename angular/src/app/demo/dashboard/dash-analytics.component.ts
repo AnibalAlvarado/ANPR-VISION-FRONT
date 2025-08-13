@@ -3,7 +3,7 @@ import { Component, viewChild } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { ProductSaleComponent } from './product-sale/product-sale.component';
+// import { ProductSaleComponent } from './product-sale/product-sale.component';
 
 import { ChartDB } from 'src/app/fack-db/chartData';
 
@@ -12,7 +12,7 @@ import { ChartDB } from 'src/app/fack-db/chartData';
 import { ApexOptions, ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 @Component({
   selector: 'app-dash-analytics',
-  imports: [SharedModule, NgApexchartsModule, ProductSaleComponent],
+  imports: [SharedModule, NgApexchartsModule],
   templateUrl: './dash-analytics.component.html',
   styleUrls: ['./dash-analytics.component.scss']
 })
