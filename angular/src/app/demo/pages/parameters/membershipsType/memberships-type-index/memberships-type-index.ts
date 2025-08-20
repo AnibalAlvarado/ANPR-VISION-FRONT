@@ -21,11 +21,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class MembershipsTypeIndex implements OnInit {
 dataSource = new MatTableDataSource<MembershipsType>();
+originalData: MembershipsType[] = [];
+  selectedFilter: string = 'all';
 columns = [
   { key: 'name', label: 'Nombre' },
   { key: 'description', label: 'Descripción' },
-  { key: 'duration', label: 'Duración(días)' },
-  { key: 'price', label: 'Precio' },
+  { key: 'durationDaysBase', label: 'Duración(días)' },
+  { key: 'priceBase', label: 'Precio' },
   { key: 'asset', label: 'Estado' },
   { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];
@@ -44,6 +46,7 @@ columns = [
  getAllForms(): void {
   this._generalService.get<{ data: MembershipsType[] }>('MemberShipType/select').subscribe(response => {
     this.dataSource.data = response.data;
+    this.originalData = response.data;
     this.dataSource.paginator = this.paginator;
   });
 }
@@ -57,7 +60,7 @@ goToEdit(form: MembershipsType): void {
 }
 
 
-deleteModule(id: number): void {
+deleteMembershipType(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción eliminará el tipo de membresía.',
@@ -77,7 +80,7 @@ deleteModule(id: number): void {
   });
 }
 
-deletePermanentModule(id: number): void {
+deletePermanentMembershipType(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción eliminará el tipo de membresía permanentemente.',
@@ -96,44 +99,75 @@ deletePermanentModule(id: number): void {
     }
   });
 }
+// Funciones para las estadísticas del header
+  getTotalMembershipTypes(): number {
+    return this.originalData.length;
+  }
 
-getActiveMemberships(): number {
-  return this.dataSource.data.filter(m => m.asset && !m.isDeleted).length;
-}
+  getActiveMembershipTypes(): number {
+    return this.originalData.filter(membershipType => membershipType.asset && !membershipType.isDeleted).length;
+  }
 
-getDeletedMemberships(): number {
-  return this.dataSource.data.filter(m => m.isDeleted).length;
-}
+  getDeletedMembershipTypes(): number {
+    return this.originalData.filter(membershipType => membershipType.isDeleted).length;
+  }
 
-getTotalRevenue(): number {
-  return this.dataSource.data
-    .filter(m => m.asset && !m.isDeleted)
-    .reduce((total, m) => total + m.price, 0);
-}
+  // Función para aplicar filtro de búsqueda
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
-getDailyRate(membership: MembershipsType): number {
-  return membership.duration > 0 ? membership.price / membership.duration : 0;
-}
+    let filteredData = this.originalData;
 
-isPremiumPlan(membership: MembershipsType): boolean {
-  return membership.price > 100 || membership.duration > 365;
-}
+    // Aplicar filtro de búsqueda
+    if (filterValue) {
+      filteredData = filteredData.filter(membershipType =>
+        membershipType.name?.toLowerCase().includes(filterValue) ||
+        membershipType.description?.toLowerCase().includes(filterValue)
+      );
+    }
 
-isBasicPlan(membership: MembershipsType): boolean {
-  return membership.price <= 50 && membership.duration <= 30;
-}
+    // Aplicar filtro de estado si hay uno activo
+    filteredData = this.applyStatusFilter(filteredData);
 
-getMembershipIcon(membership: MembershipsType): string {
-  if (this.isPremiumPlan(membership)) return 'workspace_premium';
-  if (this.isBasicPlan(membership)) return 'card_membership';
-  if (membership.duration > 180) return 'verified';
-  return 'local_offer';
-}
+    this.dataSource.data = filteredData;
+  }
 
-getMembershipIconClass(membership: MembershipsType): string {
-  if (this.isPremiumPlan(membership)) return 'icon-premium';
-  if (this.isBasicPlan(membership)) return 'icon-basic';
-  if (membership.duration > 180) return 'icon-standard';
-  return 'icon-offer';
-}
+  // Función para filtrar por estado
+  filterByStatus(status: string): void {
+    this.selectedFilter = status;
+
+    // Obtener el valor actual del input de búsqueda
+    const searchInput = document.querySelector('.search-input') as HTMLInputElement;
+    const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+    let filteredData = this.originalData;
+
+    // Aplicar filtro de búsqueda primero si existe
+    if (searchValue) {
+      filteredData = filteredData.filter(membershipType =>
+        membershipType.name?.toLowerCase().includes(searchValue) ||
+        membershipType.description?.toLowerCase().includes(searchValue)
+      );
+    }
+
+    // Aplicar filtro de estado
+    filteredData = this.applyStatusFilter(filteredData);
+
+    this.dataSource.data = filteredData;
+  }
+
+  // Función auxiliar para aplicar filtro de estado
+  private applyStatusFilter(data: MembershipsType[]): MembershipsType[] {
+    switch (this.selectedFilter) {
+      case 'active':
+        return data.filter(membershipType => membershipType.asset && !membershipType.isDeleted);
+      case 'inactive':
+        return data.filter(membershipType => !membershipType.asset && !membershipType.isDeleted);
+      case 'deleted':
+        return data.filter(membershipType => membershipType.isDeleted);
+      case 'all':
+      default:
+        return data;
+    }
+  }
 }

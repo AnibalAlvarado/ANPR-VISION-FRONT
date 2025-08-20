@@ -4,5 +4,5 @@ export interface Zones {
   isDeleted: boolean;
   name: string;
   parkingId: number;
-  parkingName: string;
+  parking: string;
 }

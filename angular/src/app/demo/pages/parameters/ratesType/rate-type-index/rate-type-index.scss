@@ -1,466 +1,692 @@
-/* CSS Mejorado */
-.rate-type-container {
-  padding: 24px;
-  // background: white;
+.parking-container {
   min-height: 100vh;
-  background-color: transparent;
+  position: relative;
+
+  padding: 20px;
+
+    background-color: transparent;
   border-radius: 16px;
   box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.4),
     0 2px 8px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="parking-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23parking-pattern)"/></svg>');
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  // Hero Section
+  .hero-section {
+    position: relative;
+    z-index: 1;
+    padding: 40px 24px;
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .hero-text {
+        flex: 1;
+
+        .main-title {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          font-size: 48px;
+          font-weight: 800;
+          color: white;
+          margin: 0 0 16px 0;
+          text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+
+          .title-icon {
+            font-size: 56px;
+            width: 56px;
+            height: 56px;
+            color: #ffd700;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+          }
+        }
+
+        .hero-subtitle {
+          font-size: 20px;
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0 0 32px 0;
+          font-weight: 300;
+        }
+
+        .stats-bar {
+          display: flex;
+          gap: 32px;
+
+          .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 80px;
+
+            .stat-number {
+              font-size: 28px;
+              font-weight: 700;
+              color: #2d9bce;
+              line-height: 1;
+            }
+
+            .stat-label {
+              font-size: 12px;
+              color: rgba(255, 255, 255, 0.8);
+              font-weight: 500;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-top: 4px;
+            }
+          }
+        }
+      }
+
+      .hero-actions {
+        .create-parking-btn {
+          background: linear-gradient(135deg, #25afc4, #1ec4f7);
+          color: rgb(4, 4, 4);
+          font-weight: 600;
+          font-size: 16px;
+          padding: 16px 32px;
+          border-radius: 50px;
+          // box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-4px);
+            // box-shadow: 0 16px 48px rgba(255, 107, 53, 0.6);
+          }
+
+          mat-icon {
+            margin-right: 8px;
+            font-size: 24px;
+          }
+        }
+      }
+    }
+  }
+
+  // Toolbar Section
+  .toolbar-section {
+    padding: 0 24px 24px;
+    position: relative;
+    z-index: 1;
+
+    .toolbar-card {
+      max-width: 1200px;
+      margin: 0 auto;
+      // background: rgba(255, 255, 255, 0.95);
+      background: transparent;
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 16px 64px rgba(0, 0, 0, 0.1);
+
+      .toolbar-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+
+        .search-section {
+          .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 50px;
+            padding: 16px 24px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+
+            &:focus-within {
+              border-color: #2196f3;
+              background: white;
+              box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+            }
+
+            .search-icon {
+              color: #666;
+              margin-right: 16px;
+              font-size: 24px;
+            }
+
+            .search-input {
+              flex: 1;
+              border: none;
+              outline: none;
+              background: transparent;
+              font-size: 16px;
+              color: #333;
+
+              &::placeholder {
+                color: #999;
+              }
+            }
+          }
+        }
+
+        .filter-chips {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+
+          .filter-chip {
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-weight: 500;
+            border: 2px solid #e0e0e0;
+            color: #666;
+            transition: all 0.3s ease;
+
+            &:hover {
+              border-color: #2196f3;
+              color: #2196f3;
+              transform: translateY(-2px);
+            }
+
+            &.active {
+          background: linear-gradient(135deg, #25afc4, #1ec4f7);
+
+              // background: linear-gradient(135deg, #2196f3, #21cbf3);
+              color: rgb(16, 15, 15);
+              border-color: transparent;
+              box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            }
+
+            &.deleted.active {
+              background: linear-gradient(135deg, #f44336, #d32f2f);
+              box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Parking List
+  .parking-list {
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+     grid-template-columns: repeat(2, 1fr); /* 2 columnas iguales */
+    gap: 20px;
+
+    .parking-item {
+      transition: all 0.3s ease;
+
+      &.deleted-item {
+        opacity: 0.8;
+
+        .parking-card {
+          // background: linear-gradient(135deg, #ffebee 0%, #e1dbdd 100%);
+          background: #141414d1;
+          border-left: 3px solid #f44336;
+          overflow: hidden;
+        }
+        .parking-card::after {
+          content: "";
+          position: absolute;
+          inset: 0; /* Ocupa todo el contenedor */
+          background-color: rgba(0, 0, 0, 0.76); /* Ajusta la opacidad */
+          pointer-events: none; /* No bloquea clicks */
+        }
+      }
+
+      .parking-card {
+        background: #141414d1;
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        height: 230px;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          // background: linear-gradient(90deg, #2196f3, #21cbf3, #ff6b35, #f7931e);
+        }
+
+        &:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+        }
+
+        .parking-header {
+          display: flex;
+          align-items: flex-start;
+          gap: 24px;
+          margin-bottom: 24px;
+
+          .parking-icon-section {
+            .parking-icon-wrapper {
+              width: 80px;
+              height: 80px;
+              background: linear-gradient(135deg, #2196f3, #21cbf3);
+              border-radius: 20px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 8px 32px rgba(33, 150, 243, 0.3);
+
+              &.deleted {
+                background: linear-gradient(135deg, #f44336, #d32f2f);
+                box-shadow: 0 8px 32px rgba(244, 67, 54, 0.3);
+              }
+
+              .parking-main-icon {
+                font-size: 40px;
+                color: white;
+                filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+              }
+            }
+          }
+
+          .parking-info {
+            flex: 1;
+
+            .parking-name {
+              font-size: 28px;
+              font-weight: 700;
+              color: #333;
+              margin: 0 0 16px 0;
+              // background: linear-gradient(135deg, #2196f3, #21cbf3);
+              background: linear-gradient(135deg, #f6fbffd7, #fbfeffc9);
+
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+            }
+
+            .parking-details {
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+
+              .detail-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+
+                .detail-icon {
+                  font-size: 20px;
+                  color: #666;
+                  width: 20px;
+                }
+
+                .detail-text {
+                  font-size: 16px;
+                  color: #8c8b8b;
+                  font-weight: 500;
+                }
+              }
+            }
+          }
+
+          .parking-status-section {
+            .status-wrapper {
+              .status-badge {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 20px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 14px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+                &.active {
+                  background: linear-gradient(135deg, #4caf50, #45a049);
+                  color: white;
+                }
+
+                &.inactive {
+                  background: linear-gradient(135deg, #ff9800, #f57c00);
+                  color: white;
+                }
+
+                &.deleted {
+                  background: linear-gradient(135deg, #f44336, #d32f2f);
+                  color: white;
+                }
+
+                .status-icon {
+                  font-size: 18px;
+                }
+              }
+            }
+          }
+        }
+
+        .deletion-warning {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 16px 20px;
+          background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+          border: 1px solid #ffeaa7;
+          border-radius: 12px;
+          position: absolute;
+          width: 90%;
+          justify-content: center;
+          top: 30%;
+          height: 80px;
+          z-index: 10;
+          // margin-bottom: 24px;
+
+          .warning-icon {
+            color: #ff6b35;
+            font-size: 24px;
+          }
+
+          .warning-text {
+            color: #8b4513;
+            font-weight: 600;
+            font-size: 14px;
+          }
+        }
+
+        .actions-section {
+          .actions-wrapper {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+
+            .action-btn {
+              flex: 1;
+              min-width: 140px;
+              border-radius: 12px;
+              padding: 14px 20px;
+              font-weight: 600;
+              transition: all 0.3s ease;
+
+              span {
+                margin-left: 8px;
+              }
+
+              &:hover:not(:disabled) {
+                transform: translateY(-3px);
+              }
+
+              &.primary-action {
+                // background: linear-gradient(135deg, #2196f3, #21cbf3);
+                box-shadow: 0 3px 20px rgba(119, 189, 246, 0.4);
+
+                &:hover {
+                  box-shadow: 0 3px 30px rgba(33, 150, 243, 0.6);
+                }
+              }
+
+              &.danger-action {
+                background: linear-gradient(135deg, #fc665b, #e64d4d);
+                box-shadow: 0 3px 20px rgba(244, 67, 54, 0.4);
+                color: rgb(24, 23, 23);
+
+                &:hover {
+                  box-shadow: 0 3px 30px rgba(244, 67, 54, 0.6);
+                }
+              }
+
+              &.permanent-action {
+                background: linear-gradient(135deg, #ff5722, #e64a19);
+                box-shadow: 0 6px 20px rgba(255, 87, 34, 0.4);
+                color: white;
+                z-index: 9;
+
+                &:hover {
+                  box-shadow: 0 12px 30px rgba(255, 87, 34, 0.6);
+                }
+              }
+
+              &.disabled-action {
+                background: #e0e0e0 !important;
+                color: #9e9e9e !important;
+                box-shadow: none !important;
+                cursor: not-allowed;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Empty State
+  .empty-state {
+    position: relative;
+    z-index: 1;
+    padding: 80px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .empty-content {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 60px;
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+
+      .empty-illustration {
+        position: relative;
+        margin-bottom: 32px;
+
+        .empty-icon {
+          font-size: 120px;
+          color: #e0e0e0;
+          display: block;
+          margin: 0 auto 20px;
+        }
+
+        .empty-cars {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+
+          .car-icon {
+            font-size: 32px;
+            color: #bbb;
+            opacity: 0.6;
+            animation: float 3s ease-in-out infinite;
+
+            &:nth-child(2) {
+              animation-delay: 0.5s;
+            }
+
+            &:nth-child(3) {
+              animation-delay: 1s;
+            }
+          }
+        }
+      }
+
+      .empty-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 16px 0;
+      }
+
+      .empty-subtitle {
+        font-size: 16px;
+        color: #666;
+        margin: 0 0 32px 0;
+        line-height: 1.5;
+      }
+
+      .empty-action-btn {
+          background: linear-gradient(135deg, #25afc4, #1ec4f7);
+
+        // background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: rgb(27, 26, 26);
+        font-weight: 600;
+        padding: 16px 32px;
+        border-radius: 50px;
+
+        mat-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  // Pagination Section
+  .pagination-section {
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+
+    .pagination-card {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+      .custom-paginator {
+        background: transparent;
+      }
+    }
+  }
 }
 
-/* Header Section */
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 32px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e2e8f0;
+// Animations
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
-.header-content {
-  flex: 1;
+// SweetAlert2 Custom Styles
+:host ::ng-deep {
+  .swal2-popup {
+    border-radius: 24px !important;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .swal2-title {
+    font-weight: 700 !important;
+    font-size: 28px !important;
+  }
+
+  .swal2-confirm {
+    background: linear-gradient(135deg, #f44336, #d32f2f) !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    padding: 12px 24px !important;
+    border: none !important;
+  }
+
+  .swal2-cancel {
+    background: linear-gradient(135deg, #2196f3, #21cbf3) !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    padding: 12px 24px !important;
+    border: none !important;
+  }
 }
 
-.page-title {
-  margin: 0 0 4px 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1e293b;
-  letter-spacing: -0.025em;
+// Responsive Design
+@media (max-width: 1024px) {
+  .parking-container {
+    .hero-section .hero-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 32px;
+
+      .hero-text .stats-bar {
+        justify-content: center;
+      }
+    }
+
+    .toolbar-section .toolbar-card .toolbar-content {
+      .filter-chips {
+        justify-content: center;
+      }
+    }
+  }
 }
 
-.page-subtitle {
-  margin: 0;
-  color: #64748b;
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.create-btn {
-  background: linear-gradient(135deg, #59cee6 0%, #75e6ea 100%);
-  box-shadow: 0 4px 12px rgba(6, 6, 6, 0.3);
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: 600;
-  text-transform: none;
-  transition: all 0.2s ease;
-}
-
-.create-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-}
-
-.create-btn mat-icon {
-  margin-right: 8px;
-}
-
-/* Cards Grid */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 24px;
-}
-
-/* Rate Cards */
-.rate-card {
-  background: white;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.rate-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border-color: #cbd5e1;
-}
-
-/* Status Badge */
-.status-badge {
-  position: absolute;
-  top: 30px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  z-index: 1;
-}
-
-.badge-active {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
-}
-
-.badge-inactive {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-.status-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-}
-
-/* Card Header */
-.card-header {
-  padding: 24px 24px 16px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.header-icon {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  border-radius: 12px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.header-icon mat-icon {
-  color: #475569;
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-}
-
-.header-text {
-  flex: 1;
-  padding-right: 60px; /* Space for status badge */
-}
-
-.card-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-  line-height: 1.2;
-}
-
-.card-subtitle {
-  color: #64748b;
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0;
-}
-
-/* Card Content */
-.card-content {
-  padding: 0 24px 24px 24px;
-}
-
-.description-section {
-  margin-bottom: 16px;
-}
-
-.section-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #475569;
-  font-size: 14px;
-}
-
-.label-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  color: #64748b;
-}
-
-.description-text {
-  margin: 0;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border-left: 3px solid #3fbebe;
-  color: #475569;
-  // font-style: italic;
-  line-height: 1.5;
-}
-
-.metadata-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.metadata-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.metadata-item.warning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
-}
-
-.metadata-item mat-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-}
-
-/* Card Actions */
-.card-actions {
-  padding: 16px 24px;
-  // background: #f8fafc;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid #e2e8f0;
-}
-
-.action-btn {
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  width: 40px;
-  height: 40px;
-}
-
-.edit-btn {
-  background: #f0f9ff;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
-}
-
-.edit-btn:hover {
-  background: #0369a1;
-  color: white;
-  transform: scale(1.05);
-}
-
-.delete-btn {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-.delete-btn:hover {
-  background: #dc2626;
-  color: white;
-  transform: scale(1.05);
-}
-
-.danger-btn {
-  background: #7f1d1d;
-  color: white;
-  border: 1px solid #7f1d1d;
-}
-
-.danger-btn:hover {
-  background: #991b1b;
-  transform: scale(1.05);
-}
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 80px 32px;
-  background: transparent;
-  border-radius: 24px;
-  border: 3px dashed #24d3da;
-  margin-top: 40px;
-  position: relative;
-  overflow: hidden;
-}
-
-.empty-state::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(135deg, #3aedea 0%, #38c2cc 100%);
-}
-
-.empty-animation {
-  position: relative;
-  margin-bottom: 32px;
-}
-
-.membership-animation {
-  background: linear-gradient(135deg, #ddd6fe 0%, #aaeefc 100%);
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  animation: membershipBounce 3s infinite;
-  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.2);
-}
-
-.membership-animation mat-icon {
-  font-size: 60px;
-  width: 60px;
-  height: 60px;
-  color: #363636;
-}
-
-.floating-icons {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-}
-
-.floating-icons mat-icon {
-  position: absolute;
-  color: #c4b5fd;
-  opacity: 0.6;
-}
-
-.float-1 {
-  top: 20%;
-  left: 20%;
-  font-size: 24px;
-  animation: floatLeft 4s infinite;
-}
-
-.float-2 {
-  top: 30%;
-  right: 15%;
-  font-size: 20px;
-  animation: floatRight 3s infinite;
-}
-
-.float-3 {
-  bottom: 30%;
-  left: 25%;
-  font-size: 18px;
-  animation: floatUp 5s infinite;
-}
-
-.empty-state h3 {
-  margin: 0 0 16px 0;
-  // color: #374151;
-  font-size: 28px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #3aedea 0%, #55d7f7 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.empty-state p {
-  margin: 0 0 32px 0;
-  color: #6b7280;
-  font-size: 16px;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
-}
-
-.empty-actions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-/* Opacar tarjeta eliminada */
-.deleted-card {
-  opacity: 0.6;
-  position: relative;
-}
-
-/* Franja inferior */
-.deleted-banner {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #b91c1c;
-  color: white;
-  text-align: center;
-  font-weight: bold;
-  padding: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.deleted-banner mat-icon {
-  font-size: 18px;
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
-  .rate-type-container {
-    padding: 16px;
-  }
+  .parking-container {
+    .hero-section {
+      padding: 24px 16px;
 
-  .header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
+      .hero-content .hero-text {
+        .main-title {
+          font-size: 32px;
 
-  .page-title {
-    font-size: 24px;
-  }
+          .title-icon {
+            font-size: 40px;
+            width: 40px;
+            height: 40px;
+          }
+        }
 
-  .cards-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
+        .stats-bar {
+          flex-direction: column;
+          gap: 16px;
+          align-items: center;
+        }
+      }
+    }
 
-  .card-header {
-    padding: 20px 20px 12px 20px;
-  }
+    .parking-list {
+      padding: 0 16px;
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas iguales */
 
-  .card-content {
-    padding: 0 20px 20px 20px;
-  }
+      .parking-item .parking-card {
+        padding: 24px;
 
-  .card-actions {
-    padding: 12px 20px;
-  }
-}
+        .parking-header {
+          flex-direction: column;
+          text-align: center;
+          gap: 20px;
 
-@media (max-width: 480px) {
-  .header-text {
-    padding-right: 80px;
-  }
+          .parking-info .parking-name {
+            font-size: 24px;
+          }
+        }
 
-  .card-title {
-    font-size: 18px;
-  }
+        .actions-section .actions-wrapper {
+          flex-direction: column;
 
-  .status-badge {
-    top: 12px;
-    right: 12px;
-    padding: 4px 8px;
-    font-size: 11px;
+          .action-btn {
+            min-width: auto;
+          }
+        }
+      }
+    }
   }
 }

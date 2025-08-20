@@ -690,3 +690,56 @@
     }
   }
 }
+
+// Estilos adicionales para los badges de estado y disponibilidad
+.status-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.availability-badge {
+  font-size: 0.85rem !important;
+  padding: 4px 8px !important;
+  min-height: auto !important;
+
+  .status-icon {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 4px !important;
+  }
+
+  .status-text {
+    font-size: 0.85rem !important;
+  }
+}
+
+// Estados para el badge de disponibilidad
+.availability-badge.available {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.availability-badge.occupied {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+// Ajustar el badge principal para que sea más pequeño cuando hay dos badges
+.parking-status-section .status-badge:not(.availability-badge) {
+  margin-bottom: 0;
+}
+
+// Responsive: En pantallas pequeñas, mostrar los badges uno al lado del otro
+@media (max-width: 768px) {
+  .status-wrapper {
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}

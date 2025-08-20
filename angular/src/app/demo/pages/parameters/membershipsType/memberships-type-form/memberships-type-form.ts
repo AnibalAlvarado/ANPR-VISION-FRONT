@@ -17,8 +17,8 @@ export class MembershipsTypeForm implements OnInit {
 formConfig: FieldConfig[] = [
       { name: 'name', label: 'Nombre', type: 'text', required: true },
       { name: 'description', label: 'Descripción', type: 'text', required: true },
-      { name: 'duration', label: 'Duración(días)', type: 'number', required: true },
-      { name: 'price', label: 'Precio', type: 'number', required: true },
+      { name: 'durationDaysBase', label: 'Duración(días)', type: 'number', required: true },
+      { name: 'priceBase', label: 'Precio', type: 'number', required: true },
       { name: 'asset', label: 'Activo', type: 'toggle' }
     ];
 

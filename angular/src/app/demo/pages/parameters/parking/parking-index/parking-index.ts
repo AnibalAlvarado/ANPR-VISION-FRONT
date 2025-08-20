@@ -1,31 +1,31 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-// import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
-import { RateType } from '../rate-type';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
+import { Parking } from '../parking';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-rate-type-index',
-  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule,CommonModule, FormsModule, ],
-  templateUrl: './rate-type-index.html',
-  styleUrl: './rate-type-index.scss'
+  selector: 'app-parking-index',
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, FormsModule,MatPaginator],
+  templateUrl: './parking-index.html',
+  styleUrl: './parking-index.scss'
 })
-export class RateTypeIndex implements OnInit {
-dataSource = new MatTableDataSource<RateType>();
-originalData: RateType[] = [];
-  selectedFilter: string = 'all';
+export class ParkingIndex implements OnInit {
+dataSource = new MatTableDataSource<Parking>();
+ originalData: Parking[] = [];
+ selectedFilter: string = 'all';
 columns = [
   { key: 'name', label: 'Nombre' },
-  { key: 'description', label: 'Descripción' },
+  { key: 'location', label: 'Ubicación' },
+  { key: 'parkingCategory', label: 'Categoría del Parqueadero' },
   { key: 'asset', label: 'Estado' },
   { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];
@@ -38,30 +38,30 @@ columns = [
 
   constructor() {}
  ngOnInit(): void {
-    this.getAllTypeRates();
+    this.getAllParkings();
   }
 
- getAllTypeRates(): void {
-  this._generalService.get<{ data: RateType[] }>('RatesType/select').subscribe(response => {
+ getAllParkings(): void {
+  this._generalService.get<{ data: Parking[] }>('Parking/join').subscribe(response => {
     this.dataSource.data = response.data;
-    this.originalData = response.data;
+     this.originalData = response.data;
     this.dataSource.paginator = this.paginator;
   });
 }
 
 goToCreate(): void {
-  this.router.navigate(['/RatesType-form']);
+  this.router.navigate(['/parking-form']);
 }
 
-goToEdit(RatesType: RateType): void {
-  this.router.navigate(['/RatesType-form', RatesType.id]);
+goToEdit(form: Parking): void {
+  this.router.navigate(['/parking-form', form.id]);
 }
 
 
-deleteRateType(id: number): void {
+deleteParking(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el tipo de tarifa.',
+    text: 'Esta acción eliminará el registro.',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, eliminar',
@@ -70,18 +70,18 @@ deleteRateType(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('RatesType', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El tipo de tarifa ha sido eliminado.', 'success');
-        this.getAllTypeRates();
+      this._generalService.delete('Parking', id).subscribe(() => {
+        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
+        this.getAllParkings();
       });
     }
   });
 }
 
-deletePermanentRateType(id: number): void {
+deletePermanentModule(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el tipo de tarifa permanentemente.',
+    text: 'Esta acción eliminará el registro permanentemente.',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Sí, eliminar',
@@ -90,28 +90,28 @@ deletePermanentRateType(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('RatesType/permanent', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El tipo de tarifa ha sido eliminado permanentemente.', 'success');
-        this.getAllTypeRates();
+      this._generalService.delete('Parking/permanent', id).subscribe(() => {
+        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
+        this.getAllParkings();
       });
     }
   });
 }
 
 // Funciones para las estadísticas del header
-  getTotalRateTypes(): number {
+  getTotalParkings(): number {
     return this.originalData.length;
   }
 
-  getActiveRateTypes(): number {
-    return this.originalData.filter(rateType => rateType.asset && !rateType.isDeleted).length;
+  getActiveParkings(): number {
+    return this.originalData.filter(parking => parking.asset && !parking.isDeleted).length;
   }
 
-  getDeletedRateTypes(): number {
-    return this.originalData.filter(rateType => rateType.isDeleted).length;
+  getDeletedParkings(): number {
+    return this.originalData.filter(parking => parking.isDeleted).length;
   }
 
-  // Función para aplicar filtro de búsqueda
+   // Función para aplicar filtro de búsqueda
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
@@ -119,9 +119,10 @@ deletePermanentRateType(id: number): void {
 
     // Aplicar filtro de búsqueda
     if (filterValue) {
-      filteredData = filteredData.filter(rateType =>
-        rateType.name?.toLowerCase().includes(filterValue) ||
-        rateType.description?.toLowerCase().includes(filterValue)
+      filteredData = filteredData.filter(parking =>
+        parking.name?.toLowerCase().includes(filterValue) ||
+        parking.location?.toLowerCase().includes(filterValue) ||
+        parking.parkingCategory?.toLowerCase().includes(filterValue)
       );
     }
 
@@ -143,9 +144,10 @@ deletePermanentRateType(id: number): void {
 
     // Aplicar filtro de búsqueda primero si existe
     if (searchValue) {
-      filteredData = filteredData.filter(rateType =>
-        rateType.name?.toLowerCase().includes(searchValue) ||
-        rateType.description?.toLowerCase().includes(searchValue)
+      filteredData = filteredData.filter(parking =>
+        parking.name?.toLowerCase().includes(searchValue) ||
+        parking.location?.toLowerCase().includes(searchValue) ||
+        parking.parkingCategory?.toLowerCase().includes(searchValue)
       );
     }
 
@@ -156,14 +158,14 @@ deletePermanentRateType(id: number): void {
   }
 
   // Función auxiliar para aplicar filtro de estado
-  private applyStatusFilter(data: RateType[]): RateType[] {
+  private applyStatusFilter(data: Parking[]): Parking[] {
     switch (this.selectedFilter) {
       case 'active':
-        return data.filter(rateType => rateType.asset && !rateType.isDeleted);
+        return data.filter(parking => parking.asset && !parking.isDeleted);
       case 'inactive':
-        return data.filter(rateType => !rateType.asset && !rateType.isDeleted);
+        return data.filter(parking => !parking.asset && !parking.isDeleted);
       case 'deleted':
-        return data.filter(rateType => rateType.isDeleted);
+        return data.filter(parking => parking.isDeleted);
       case 'all':
       default:
         return data;

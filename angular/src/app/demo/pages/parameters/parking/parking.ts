@@ -5,5 +5,5 @@ export interface Parking {
   name: string;
   location: string;
   parkingCategoryId: number;
-  parkingCategoryName: string;
+  parkingCategory: string;
 }

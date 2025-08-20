@@ -33,6 +33,12 @@ import { ParkingCategoryForm } from './demo/pages/parameters/parkingCategory/par
 import { BackListIndex } from './demo/pages/segurity/backlist/back-list-index/back-list-index';
 import { ZonesIndex } from './demo/pages/parameters/zones/zones-index/zones-index';
 import { ZonesForm } from './demo/pages/parameters/zones/zones-form/zones-form';
+import { ParkingForm } from './demo/pages/parameters/parking/parking-form/parking-form';
+import { ParkingIndex } from './demo/pages/parameters/parking/parking-index/parking-index';
+import { SectorsIndex } from './demo/pages/parameters/sectors/sectors-index/sectors-index';
+import { SectorsForm } from './demo/pages/parameters/sectors/sectors-form/sectors-form';
+import { SlotsIndex } from './demo/pages/parameters/slots/slots-index/slots-index';
+import { SlotsForm } from './demo/pages/parameters/slots/slots-form/slots-form';
 
 const routes: Routes = [
   {
@@ -95,6 +101,15 @@ const routes: Routes = [
       {path: 'Zones-index', component: ZonesIndex},
       {path: 'Zones-form', component: ZonesForm},
       {path: 'Zones-form/:id', component: ZonesForm},
+      {path: 'parking-index', component: ParkingIndex},
+      {path: 'parking-form', component: ParkingForm},
+      {path: 'parking-form/:id', component: ParkingForm},
+      {path: 'sectors-index', component: SectorsIndex},
+      {path: 'sectors-form', component: SectorsForm},
+      {path: 'sectors-form/:id', component: SectorsForm},
+      {path: 'slots-index', component: SlotsIndex},
+      {path: 'slots-form', component: SlotsForm},
+      {path: 'slots-form/:id', component: SlotsForm},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

@@ -62,7 +62,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'Zonas',
         title: 'Zonas',
         type: 'item',
-        url: '/Zones-index',
+        url: '/Zone-index',
         classes: 'nav-item',
         icon: 'feather icon-map-pin'
       },
@@ -150,6 +150,12 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/ParkingCategory-index'
           },
+          {
+            id: 'parking',
+            title: 'Parqueaderos',
+            type: 'item',
+            url: '/parking-index'
+          },
             {
             id: 'Zones',
             title: 'Zonas',
@@ -160,13 +166,13 @@ export const NavigationItems: NavigationItem[] = [
             id: 'Sectors',
             title: 'Sectores',
             type: 'item',
-            url: '/Sectors-index'
+            url: '/sectors-index'
           },
           {
             id: 'Slots',
             title: 'Espacios',
             type: 'item',
-            url: '/Slots-index'
+            url: '/slots-index'
           },
 
         ]
@@ -255,7 +261,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'apexchart',
         title: 'Configuración',
         type: 'item',
-        url: '/chart',
+        url: '/configuracion',
         classes: 'nav-item',
         icon: 'feather icon-settings'
       },
@@ -263,19 +269,19 @@ export const NavigationItems: NavigationItem[] = [
         id: 'apexchart',
         title: 'Ayuda',
         type: 'item',
-        url: '/chart',
+        url: '/ayuda',
         classes: 'nav-item',
         icon: 'feather icon-help-circle'
       },
 
-      {
-        id: 'apexchart',
-        title: 'Cerrar sesión',
-        type: 'item',
-        url: '/chart',
-        classes: 'nav-item',
-        icon: 'feather icon-log-out'
-      },
+      // {
+      //   id: 'apexchart',
+      //   title: 'Cerrar sesión',
+      //   type: 'item',
+      //   url: '/chart',
+      //   classes: 'nav-item',
+      //   icon: 'feather icon-log-out'
+      // },
 
     ]
   },

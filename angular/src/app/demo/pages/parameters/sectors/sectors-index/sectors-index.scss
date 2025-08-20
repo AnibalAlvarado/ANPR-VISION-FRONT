@@ -19,6 +19,8 @@
     left: 0;
     right: 0;
     bottom: 0;
+        // background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sectors-pattern" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="21" height="21" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/><rect x="7" y="7" width="11" height="11" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23sectors-pattern)"/></svg>');
+
     // background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="parking-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23parking-pattern)"/></svg>');
     opacity: 0.4;
     pointer-events: none;
@@ -263,7 +265,7 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        height: 230px;
+        height: 260px;
 
         &::before {
           content: '';

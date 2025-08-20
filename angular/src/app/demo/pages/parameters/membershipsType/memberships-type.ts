@@ -2,8 +2,8 @@ export interface MembershipsType {
   id: number;
   name: string;
   description: string;
-  duration: number;
-  price: number;
+  durationDaysBase: number;
+  priceBase: number;
   asset: boolean;
   isDeleted: boolean;
 }

@@ -22,6 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class ParkingCategoryIndex implements OnInit {
 dataSource = new MatTableDataSource<ParkingCtegory>();
+originalData: ParkingCtegory[] = [];
+  selectedFilter: string = 'all';
 columns = [
   { key: 'name', label: 'Nombre' },
   { key: 'description', label: 'Descripción' },
@@ -44,6 +46,7 @@ columns = [
  getAllTypeRates(): void {
   this._generalService.get<{ data: ParkingCtegory[] }>('ParkingCategory/select').subscribe(response => {
     this.dataSource.data = response.data;
+    this.originalData = response.data;
     this.dataSource.paginator = this.paginator;
   });
 }
@@ -57,7 +60,7 @@ goToEdit(RatesType: RateType): void {
 }
 
 
-deleteTypeVehicle(id: number): void {
+deleteCategory(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción eliminará la categoría del parqueadero.',
@@ -77,7 +80,7 @@ deleteTypeVehicle(id: number): void {
   });
 }
 
-deletePermanentTypeVehicle(id: number): void {
+deletePermanentCategory(id: number): void {
   Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción eliminará la categoría del parqueadero permanentemente.',
@@ -96,93 +99,77 @@ deletePermanentTypeVehicle(id: number): void {
     }
   });
 }
+// Funciones para las estadísticas del header
+  getTotalCategories(): number {
+    return this.originalData.length;
+  }
 
-getActiveCategories(): number {
-  return this.dataSource.data.filter(c => c.asset && !c.isDeleted).length;
-}
+  getActiveCategories(): number {
+    return this.originalData.filter(category => category.asset && !category.isDeleted).length;
+  }
 
-getDeletedCategories(): number {
-  return this.dataSource.data.filter(c => c.isDeleted).length;
-}
+  getDeletedCategories(): number {
+    return this.originalData.filter(category => category.isDeleted).length;
+  }
 
-getUniqueCodes(): number {
-  const uniqueCodes = new Set(this.dataSource.data.filter(c => c.code).map(c => c.code));
-  return uniqueCodes.size;
-}
+  // Función para aplicar filtro de búsqueda
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
-isPremiumCategory(category: ParkingCtegory): boolean {
-  const premiumCodes = ['VIP', 'PREMIUM', 'EJECUTIVO', 'PLATINUM'];
-  return premiumCodes.some(code => category.code?.toUpperCase().includes(code) || category.name?.toUpperCase().includes(code));
-}
+    let filteredData = this.originalData;
 
-isVIPCategory(category: ParkingCtegory): boolean {
-  return category.code?.toUpperCase() === 'VIP' || category.name?.toUpperCase().includes('VIP');
-}
+    // Aplicar filtro de búsqueda
+    if (filterValue) {
+      filteredData = filteredData.filter(category =>
+        category.name?.toLowerCase().includes(filterValue) ||
+        category.code?.toLowerCase().includes(filterValue) ||
+        category.description?.toLowerCase().includes(filterValue)
+      );
+    }
 
-isStandardCategory(category: ParkingCtegory): boolean {
-  const standardCodes = ['A', 'B', 'C', 'D', 'E'];
-  return standardCodes.includes(category.code?.toUpperCase());
-}
+    // Aplicar filtro de estado si hay uno activo
+    filteredData = this.applyStatusFilter(filteredData);
 
-getCategoryIcon(category: ParkingCtegory): string {
-  if (this.isVIPCategory(category)) return 'star';
-  if (this.isPremiumCategory(category)) return 'workspace_premium';
-  if (category.code?.toUpperCase() === 'A') return 'looks_one';
-  if (category.code?.toUpperCase() === 'B') return 'looks_two';
-  if (category.code?.toUpperCase() === 'C') return 'looks_3';
-  return 'category';
-}
+    this.dataSource.data = filteredData;
+  }
 
-getCategoryIconClass(category: ParkingCtegory): string {
-  if (this.isVIPCategory(category)) return 'icon-vip';
-  if (this.isPremiumCategory(category)) return 'icon-premium';
-  if (this.isStandardCategory(category)) return 'icon-standard';
-  return 'icon-general';
-}
+  // Función para filtrar por estado
+  filterByStatus(status: string): void {
+    this.selectedFilter = status;
 
-getCategoryCodeIcon(code: string): string {
-  if (!code) return 'tag';
-  const upperCode = code.toUpperCase();
-  if (upperCode === 'VIP') return 'star';
-  if (upperCode.includes('PREMIUM')) return 'workspace_premium';
-  if (['A', 'B', 'C', 'D', 'E'].includes(upperCode)) return 'badge';
-  return 'qr_code';
-}
+    // Obtener el valor actual del input de búsqueda
+    const searchInput = document.querySelector('.search-input') as HTMLInputElement;
+    const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-getCategoryCodeClass(code: string): string {
-  if (!code) return 'code-default';
-  const upperCode = code.toUpperCase();
-  if (upperCode === 'VIP') return 'code-vip';
-  if (upperCode.includes('PREMIUM')) return 'code-premium';
-  if (upperCode === 'A') return 'code-a';
-  if (upperCode === 'B') return 'code-b';
-  if (upperCode === 'C') return 'code-c';
-  return 'code-standard';
-}
+    let filteredData = this.originalData;
 
-getCategoryTypeLabel(category: ParkingCtegory): string {
-  if (this.isVIPCategory(category)) return 'VIP';
-  if (this.isPremiumCategory(category)) return 'Premium';
-  if (this.isStandardCategory(category)) return 'Estándar';
-  return 'General';
-}
+    // Aplicar filtro de búsqueda primero si existe
+    if (searchValue) {
+      filteredData = filteredData.filter(category =>
+        category.name?.toLowerCase().includes(searchValue) ||
+        category.code?.toLowerCase().includes(searchValue) ||
+        category.description?.toLowerCase().includes(searchValue)
+      );
+    }
 
-getPriorityIcon(category: ParkingCtegory): string {
-  if (this.isVIPCategory(category)) return 'priority_high';
-  if (this.isPremiumCategory(category)) return 'star_rate';
-  return 'radio_button_unchecked';
-}
+    // Aplicar filtro de estado
+    filteredData = this.applyStatusFilter(filteredData);
 
-getPriorityClass(category: ParkingCtegory): string {
-  if (this.isVIPCategory(category)) return 'priority-vip';
-  if (this.isPremiumCategory(category)) return 'priority-premium';
-  return 'priority-standard';
-}
+    this.dataSource.data = filteredData;
+  }
 
-getCategoryLevelClass(category: ParkingCtegory): string {
-  if (this.isVIPCategory(category)) return 'level-vip';
-  if (this.isPremiumCategory(category)) return 'level-premium';
-  if (this.isStandardCategory(category)) return 'level-standard';
-  return 'level-general';
-}
+  // Función auxiliar para aplicar filtro de estado
+  private applyStatusFilter(data: ParkingCtegory[]): ParkingCtegory[] {
+    switch (this.selectedFilter) {
+      case 'active':
+        return data.filter(category => category.asset && !category.isDeleted);
+      case 'inactive':
+        return data.filter(category => !category.asset && !category.isDeleted);
+      case 'deleted':
+        return data.filter(category => category.isDeleted);
+      case 'all':
+      default:
+        return data;
+    }
+  }
 }
