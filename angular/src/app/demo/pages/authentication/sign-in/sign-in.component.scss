@@ -1,1 +1,169 @@
 // This file is intentionally left empty to allow customers to add custom CSS if needed.
+// This file is intentionally left empty to allow customers to add custom CSS if needed.
+html,body{
+    margin: 0;
+    padding: 0;
+}
+.lado-derecho {
+  overflow: hidden !important;
+  margin: auto;
+  padding: 0px;
+  width: 100vw;
+  height: 100vh;
+  background: url("../../../../../assets/imagen-parqueadero/1.png") no-repeat center center/cover 50%;
+  background-size: cover;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  box-sizing: content-box;
+    color:white;
+  animation: cambiarImagen 15s infinite;
+}
+
+@keyframes cambiarImagen {
+  0% {
+    background-image: url("../../../../../assets/imagen-parqueadero/1.png");
+  }
+  33% {
+    background-image: url("../../../../../assets/imagen-parqueadero/2.png");
+  }
+  66% {
+    background-image: url("../../../../../assets/imagen-parqueadero/3.webp");
+  }
+  100% {
+    background-image: url("../../../../../assets/imagen-parqueadero/1.png");
+  }
+}
+
+.mini-contener {
+  height: 100%;
+  width: 40%;
+  margin: 0px;
+  padding: .32 .20%;
+  background: #041130;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #30CFD0;
+  div div div div h4,h5{
+
+      color:#30CFD0 !important;
+  }
+  // ✨ Sisa animada
+  clip-path: polygon(
+    100% 0%,
+    90% 10%,
+    100% 20%,
+    90% 30%,
+    100% 40%,
+    90% 50%,
+    100% 60%,
+    90% 70%,
+    100% 80%,
+    90% 90%,
+    100% 100%,
+    0% 100%,
+    0% 0%
+  );
+  
+  transition: all 1s ease;
+  animation: animarSisaDerecha 3s infinite ease-in-out;
+}
+.mini-contener:hover{
+  box-shadow: 0px 0px 10px 4px #30CFD0  !important;
+
+}
+.mini-contener:hover > div div div div:hover > h4{
+    transition: all 1s ease;
+    text-shadow: 0px 0px 10px #30CFD0 ;
+  }
+.mini-contener:hover > div div div div:hover > h5{
+    transition: all 1s ease;
+    text-shadow: 0px 0px 10px #30CFD0 ;
+}
+.mini-contener > div div div div  p{
+    transition: all 1s ease;
+    color:white;
+    text-shadow: 0px 0px 10px #30CFD0 ;
+}
+
+@keyframes animarSisaDerecha {
+  0%, 100% {
+    clip-path: polygon(
+      100% 0%,
+      90% 10%,
+      100% 20%,
+      90% 30%,
+      100% 40%,
+      90% 50%,
+      100% 60%,
+      90% 70%,
+      100% 80%,
+      90% 90%,
+      100% 100%,
+      0% 100%,
+      0% 0%
+    );
+  }
+
+  50% {
+    clip-path: polygon(
+      100% 0%,
+      88% 8%,
+      100% 22%,
+      88% 28%,
+      100% 42%,
+      88% 48%,
+      100% 62%,
+      88% 68%,
+      100% 82%,
+      88% 88%,
+      100% 100%,
+      0% 100%,
+      0% 0%
+    );
+  }
+}
+.color-p{
+    color:white !important;
+}
+.Formulario-login{
+    border: none;
+    outline: none;
+    line-height: 25px;
+    background: transparent;
+    border-radius: 15px;
+    color:white;
+    border: 1px solid #30CFD0;
+    box-shadow: 0px 0px 1px 0px #30CFD0  !important;
+    transition: all 1s ease;
+}
+.Formulario-login:hover{
+  transition: all 1s ease;
+  box-shadow: 0px 0px 10px 1px #30CFD0  !important;
+}
+.input-registro{
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid #30CFD0;
+}
+.mini-contener:hover > div div div div div:hover > .input-registro{
+  box-shadow: 0px 5px 10px 1px #30CFD0  !important;
+
+}
+.fondo-icono{
+    background: #30CFD0;
+    color: #041130;
+    box-shadow: 0px 0px 5px 1px #30CFD0  !important;
+    border:none;
+    outline: none;
+}
+.bttn-inicio-sesion button{
+    color: #30CFD0;
+    background: transparent;
+     box-shadow: 0px 5px 10px 1px #30CFD0  !important;
+
+    border-bottom: 2px solid #30CFD0;
+}     

@@ -1,0 +1,278 @@
+// /* === Fondo del menú y estilo general === */
+// .navbar-content {
+//   background: linear-gradient(180deg, #1a1d23 0%, #1e222a 100%);
+//   color: #e8eaed;
+//   padding: 1.5rem 0;
+//   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+//   font-size: 0.875rem;
+//   min-height: 100%;
+// }
+
+// /* === Encabezados de grupo (Secciones) === */
+// .navbar-content .nav-group-title,
+// .navbar-content h6:not(app-card h6),
+// .navbar-content .group-title {
+//   font-weight: 600;
+//   font-size: 0.75rem;
+//   color: #9ca3af;
+//   margin: 2rem 1.5rem 0.75rem;
+//   text-transform: uppercase;
+//   letter-spacing: 1px;
+//   position: relative;
+// }
+
+// .navbar-content .nav-group-title::after,
+// .navbar-content h6:not(app-card h6)::after,
+// .navbar-content .group-title::after {
+//   content: '';
+//   position: absolute;
+//   bottom: -0.5rem;
+//   left: 0;
+//   width: 24px;
+//   height: 2px;
+//   background: linear-gradient(90deg, #00d4aa, #00bcd4);
+//   border-radius: 1px;
+// }
+
+// /* === Lista de navegación === */
+// ul.nav {
+//   list-style: none;
+//   padding: 0;
+//   margin: 0;
+// }
+
+// ul.nav li {
+//   margin: 0.25rem 0;
+//   position: relative;
+// }
+
+// /* === Enlaces === */
+// ul.nav li a {
+//   display: flex;
+//   align-items: center;
+//   padding: 0.875rem 1.5rem;
+//   margin: 0 0.75rem;
+//   border-radius: 12px;
+//   color: #d1d5db;
+//   text-decoration: none;
+//   font-weight: 500;
+//   font-size: 0.875rem;
+//   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+//   position: relative;
+//   overflow: hidden;
+// }
+
+// /* === Estados de interacción === */
+// ul.nav li a::before {
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(0, 188, 212, 0.1));
+//   opacity: 0;
+//   transition: opacity 0.2s ease;
+// }
+
+// ul.nav li a:hover {
+//   background-color: rgba(55, 65, 81, 0.6);
+//   color: #ffffff;
+//   transform: translateX(4px);
+// }
+
+// ul.nav li a:hover::before {
+//   opacity: 1;
+// }
+
+// /* === Íconos === */
+// ul.nav li a i,
+// ul.nav li a .nav-icon {
+//   font-size: 1.125rem;
+//   margin-right: 0.875rem;
+//   color: #9ca3af;
+//   transition: all 0.2s ease;
+//   width: 20px;
+//   text-align: center;
+// }
+
+// ul.nav li a:hover i,
+// ul.nav li a:hover .nav-icon {
+//   color: #00d4aa;
+//   transform: scale(1.1);
+// }
+
+// /* === Elemento Activo === */
+// ul.nav li.active a,
+// ul.nav li a.active,
+// ul.nav li.pcoded-hasmenu.pcoded-trigger a {
+//   background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 188, 212, 0.15));
+//   color: #ffffff !important;
+//   font-weight: 600;
+//   border-left: 3px solid #00d4aa;
+//   box-shadow:
+//     0 4px 12px rgba(0, 212, 170, 0.2),
+//     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+//   transform: translateX(0);
+// }
+
+// ul.nav li.active a::before,
+// ul.nav li a.active::before {
+//   opacity: 1;
+// }
+
+// ul.nav li.active a i,
+// ul.nav li a.active i,
+// ul.nav li.active a .nav-icon,
+// ul.nav li a.active .nav-icon {
+//   color: #00d4aa !important;
+//   transform: scale(1.05);
+// }
+
+// /* === Submenús === */
+// ul.nav li ul {
+//   background-color: rgba(17, 20, 24, 0.8);
+//   border-radius: 8px;
+//   margin: 0.5rem 0 0.5rem 2rem;
+//   padding: 0.5rem 0;
+//   border-left: 2px solid rgba(0, 212, 170, 0.3);
+// }
+
+// ul.nav li ul li a {
+//   padding: 0.5rem 1rem;
+//   font-size: 0.8rem;
+//   margin: 0;
+//   border-radius: 6px;
+// }
+
+// /* === Separadores === */
+// .nav-separator,
+// hr {
+//   border: 0;
+//   height: 1px;
+//   background: linear-gradient(90deg, transparent, rgba(156, 163, 175, 0.3), transparent);
+//   margin: 1.5rem 1.5rem;
+// }
+
+// /* === Card de ayuda === */
+// app-card {
+//   background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+//   border-radius: 16px;
+//   padding: 1.5rem;
+//   margin: 2rem 1rem 1rem;
+//   color: #ffffff;
+//   box-shadow:
+//     0 8px 24px rgba(0, 0, 0, 0.4),
+//     0 4px 8px rgba(0, 0, 0, 0.2);
+//   border: 1px solid rgba(255, 255, 255, 0.1);
+// }
+
+// app-card i.feather {
+//   color: #fbbf24;
+//   font-size: 2.5rem !important;
+//   margin-bottom: 0.5rem;
+// }
+
+// app-card h6 {
+//   margin: 1rem 0 0.75rem !important;
+//   font-weight: 700 !important;
+//   font-size: 1.125rem !important;
+//   color: #ffffff !important;
+//   text-transform: none !important;
+//   letter-spacing: normal !important;
+// }
+
+// app-card h6::after {
+//   display: none !important;
+// }
+
+// app-card p {
+//   font-size: 0.875rem;
+//   color: #d1d5db;
+//   line-height: 1.5;
+//   margin-bottom: 1.25rem;
+// }
+
+// app-card .btn {
+//   background: linear-gradient(135deg, #00d4aa, #00bcd4);
+//   color: #ffffff;
+//   font-weight: 600;
+//   padding: 0.75rem 1.5rem;
+//   border-radius: 8px;
+//   text-transform: none;
+//   font-size: 0.875rem;
+//   border: none;
+//   box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+//   transition: all 0.2s ease;
+// }
+
+// app-card .btn:hover {
+//   background: linear-gradient(135deg, #00bca8, #00acc1);
+//   transform: translateY(-1px);
+//   box-shadow: 0 6px 16px rgba(0, 212, 170, 0.4);
+// }
+
+// /* === Scrollbar personalizado === */
+// ng-scrollbar ::ng-deep .ng-scrollbar-wrapper {
+//   background-color: transparent;
+// }
+
+// ng-scrollbar ::ng-deep .ng-scrollbar-track {
+//   background-color: rgba(31, 41, 55, 0.3);
+//   border-radius: 4px;
+//   width: 6px;
+// }
+
+// ng-scrollbar ::ng-deep .ng-scrollbar-thumb {
+//   background: linear-gradient(180deg, #00d4aa, #00bcd4);
+//   border-radius: 4px;
+//   width: 6px;
+//   transition: background 0.2s ease;
+// }
+
+// ng-scrollbar ::ng-deep .ng-scrollbar-thumb:hover {
+//   background: linear-gradient(180deg, #00bca8, #00acc1);
+//   width: 8px;
+// }
+
+// /* === Versión (si se descomenta) === */
+// .version {
+//   position: absolute;
+//   bottom: 1rem;
+//   left: 1.5rem;
+//   right: 1.5rem;
+//   text-align: center;
+// }
+
+// .version label {
+//   font-size: 0.75rem;
+//   color: #6b7280;
+//   background-color: rgba(17, 20, 24, 0.6);
+//   padding: 0.5rem 1rem;
+//   border-radius: 20px;
+//   border: 1px solid rgba(107, 114, 128, 0.2);
+// }
+
+// /* === Responsive === */
+// @media (max-width: 768px) {
+//   .navbar-content {
+//     padding: 1rem 0;
+//   }
+
+//   ul.nav li a {
+//     padding: 0.75rem 1rem;
+//     margin: 0 0.5rem;
+//     font-size: 0.875rem;
+//   }
+
+//   .navbar-content .nav-group-title,
+//   .navbar-content h6:not(app-card h6) {
+//     margin: 1.5rem 1rem 0.5rem;
+//     font-size: 0.7rem;
+//   }
+
+//   app-card {
+//     margin: 1.5rem 0.5rem 0.5rem;
+//     padding: 1.25rem;
+//   }
+// }

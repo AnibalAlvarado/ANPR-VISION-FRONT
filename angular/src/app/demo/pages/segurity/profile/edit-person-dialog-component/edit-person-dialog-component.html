@@ -1,0 +1,26 @@
+<div class="edit-user-modal">
+  <h1 mat-dialog-title>Editar Información personal</h1>
+    <div mat-dialog-content>
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Nombres</mat-label>
+        <input matInput [(ngModel)]="data.firstName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Apellidos</mat-label>
+        <input matInput [(ngModel)]="data.lastName">
+      </mat-form-field>
+
+       <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Numero de telefono</mat-label>
+        <input matInput [(ngModel)]="data.phoneNumber">
+      </mat-form-field>
+
+
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button (click)="onCancel()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+    </div>
+</div>
+

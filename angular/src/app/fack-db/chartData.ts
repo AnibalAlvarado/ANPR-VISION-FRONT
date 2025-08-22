@@ -168,24 +168,24 @@ export class ChartDB {
     },
     series: [
       {
-        name: 'Net Profit',
+        name: 'Motos',
         data: [44, 55, 57, 56, 61, 58, 63]
       },
       {
-        name: 'Revenue',
+        name: 'Carros',
         data: [76, 85, 101, 98, 87, 105, 91]
       },
       {
-        name: 'Free Cash Flow',
+        name: 'Bicicletas',
         data: [35, 41, 36, 26, 45, 48, 52]
       }
     ],
     xaxis: {
-      categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
+      categories: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']
     },
     yaxis: {
       title: {
-        text: '$ (thousands)'
+        text: '(Slots)'
       }
     },
     fill: {
@@ -193,7 +193,7 @@ export class ChartDB {
     },
     tooltip: {
       y: {
-        formatter: (val: string) => '$ ' + val + ' thousands'
+        formatter: (val: string) =>  val + ' vehículos'
       }
     }
   };

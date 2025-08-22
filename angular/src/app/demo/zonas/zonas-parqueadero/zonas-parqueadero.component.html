@@ -1,0 +1,131 @@
+<div class="container zones-container">
+  <!-- Header -->
+  <div class="row zones-header align-items-center mb-4">
+    <div class="col-md-6">
+      <h1 class="mb-0">Gestión de Zonas</h1>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end gap-2">
+      <select class="form-select filter w-auto">
+        <option>Todas las zonas</option>
+        <option>Zona A</option>
+        <option>Zona B</option>
+      </select>
+      <input type="text" class="form-control search w-auto" placeholder="Buscar cámara..." />
+      <button class="btn btn-primary add-zone">+ Agregar Zona</button>
+    </div>
+  </div>
+
+  <!-- Lista de Zonas -->
+  <div class="zone-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center zone-header mb-2">
+      <h2>Zona A</h2>
+      <span class="badge bg-success status">Activa</span>
+    </div>
+    <p class="zone-info mb-3">
+      Capacidad Total: 45 vehículos - Nivel: 1 - Cámaras: 2
+    </p>
+
+    <!-- Sectores -->
+    <div class="row sector-list g-3">
+      <div class="col-md-6">
+        <div class="sector-card disponible p-3 h-100">
+          <div class="d-flex justify-content-between align-items-start">
+            <h3>Sector A1</h3>
+            <span class="badge bg-success">DISPONIBLE</span>
+          </div>
+          <p>Capacidad: 28 espacios</p>
+          <p>Cámaras: Entrada Principal</p>
+          <p>Acceso: Vehículos + Motos</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="sector-card mantenimiento p-3 h-100">
+          <div class="d-flex justify-content-between align-items-start">
+            <h3>Sector A2</h3>
+            <span class="badge bg-danger">EN MANTENIMIENTO</span>
+          </div>
+          <p>Capacidad: 25 espacios</p>
+          <p>Cámaras: Lateral Este</p>
+          <p>Acceso: Solo Vehículos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Otra zona -->
+  <div class="zone-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center zone-header mb-2">
+      <h2>Zona B</h2>
+      <span class="badge bg-success status">Activa</span>
+    </div>
+    <p class="zone-info mb-3">
+      Capacidad Total: 60 vehículos - Nivel: 2 - Cámaras: 3
+    </p>
+
+    <!-- Sectores -->
+    <div class="row sector-list g-3">
+      <div class="col-md-6">
+        <div class="sector-card disponible p-3 h-100">
+          <div class="d-flex justify-content-between align-items-start">
+            <h3>Sector B1</h3>
+            <span class="badge bg-success">DISPONIBLE</span>
+          </div>
+          <p>Capacidad: 30 espacios</p>
+          <p>Cámaras: Entrada Oeste</p>
+          <p>Acceso: Vehículos + Motos</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="sector-card ocupacion p-3 h-100">
+          <div class="d-flex justify-content-between align-items-start">
+            <h3>Sector B2</h3>
+            <span class="badge bg-warning text-dark">AL OCUPACIÓN</span>
+          </div>
+          <p>Capacidad: 30 espacios</p>
+          <p>Cámaras: Salida Oeste</p>
+          <p>Acceso: Vehículos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cámaras -->
+  <div class="camera-section mt-4">
+    <h2 class="mb-3">Gestión de Cámaras</h2>
+    <div class="row camera-list g-3">
+      <div class="col-md-4">
+        <div class="camera-card p-3 h-100 text-center">
+          <div class="camera-icon fs-2 mb-2">📷</div>
+          <h4>Cámara Entrada Principal</h4>
+          <p>Modelo: XBR-1001</p>
+          <p>Resolución: HD</p>
+          <p>IP: 192.168.0.10</p>
+          <button class="btn btn-sm btn-outline-primary">Ver</button>
+          <button class="btn btn-sm btn-primary ms-2">Configurar</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="camera-card p-3 h-100 text-center">
+          <div class="camera-icon fs-2 mb-2">📷</div>
+          <h4>Cámara Salida Principal</h4>
+          <p>Modelo: XBR-2002</p>
+          <p>Resolución: Full HD</p>
+          <p>IP: 192.168.0.11</p>
+          <button class="btn btn-sm btn-outline-primary">Ver</button>
+          <button class="btn btn-sm btn-primary ms-2">Configurar</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="camera-card p-3 h-100 text-center">
+          <div class="camera-icon fs-2 mb-2">📷</div>
+          <h4>Cámara Nivel 3</h4>
+          <p>Modelo: XBR-3003</p>
+          <p>Resolución: 4K</p>
+          <p>IP: 192.168.0.12</p>
+          <button class="btn btn-sm btn-outline-primary">Ver</button>
+          <button class="btn btn-sm btn-primary ms-2">Configurar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

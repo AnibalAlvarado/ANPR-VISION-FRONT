@@ -3,18 +3,23 @@ import { Component, viewChild } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { ProductSaleComponent } from './product-sale/product-sale.component';
+// import { ProductSaleComponent } from './product-sale/product-sale.component';
+
+import { ChartDB } from 'src/app/fack-db/chartData';
 
 // 3rd party import
 
 import { ApexOptions, ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 @Component({
   selector: 'app-dash-analytics',
-  imports: [SharedModule, NgApexchartsModule, ProductSaleComponent],
+  imports: [SharedModule, NgApexchartsModule],
   templateUrl: './dash-analytics.component.html',
   styleUrls: ['./dash-analytics.component.scss']
 })
 export class DashAnalyticsComponent {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  chartDB: any;
+
   // public props
   chart = viewChild<ChartComponent>('chart');
   customerChart = viewChild<ChartComponent>('customerChart');
@@ -22,9 +27,22 @@ export class DashAnalyticsComponent {
   chartOptions_1!: Partial<ApexOptions>;
   chartOptions_2!: Partial<ApexOptions>;
   chartOptions_3!: Partial<ApexOptions>;
+  bar1CAC: ApexOptions;
+  radialBar1CAC: ApexOptions;
+
 
   // constructor
   constructor() {
+    this.chartDB = ChartDB;
+    const {
+      bar1CAC,
+      radialBar1CAC,
+
+    } = this.chartDB;
+     this.bar1CAC = bar1CAC;
+    this.radialBar1CAC = radialBar1CAC;
+
+
     this.chartOptions = {
       chart: {
         height: 205,
@@ -213,35 +231,27 @@ export class DashAnalyticsComponent {
   cards = [
     {
       background: 'bg-c-blue',
-      title: 'Orders Received',
-      icon: 'icon-shopping-cart',
-      text: 'Completed Orders',
-      number: '486',
-      no: '351'
+      title: 'Vehículos estacionados hoy',
+      icon: 'fas fa-car',
+      number: '48',
     },
     {
       background: 'bg-c-green',
-      title: 'Total Sales',
-      icon: 'icon-tag',
-      text: 'This Month',
-      number: '1641',
-      no: '213'
+      title: 'Ingresos del día',
+      icon: 'fas fa-dollar-sign',
+      number: '5.641',
     },
     {
       background: 'bg-c-yellow',
-      title: 'Revenue',
-      icon: 'icon-repeat',
-      text: 'This Month',
-      number: '$42,56',
-      no: '$5,032'
+      title: 'Slots disponibles',
+      icon: 'fas fa-draw-polygon',
+      number: '150',
     },
     {
       background: 'bg-c-red',
-      title: 'Total Profit',
-      icon: 'icon-shopping-cart',
-      text: 'This Month',
-      number: '$9,562',
-      no: '$542'
+      title: 'Membresías activas',
+      icon: 'fas fa-credit-card',
+      number: '120',
     }
   ];
 

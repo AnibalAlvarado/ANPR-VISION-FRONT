@@ -83,40 +83,47 @@
   <li>
     <div class="dropdown drp-user" ngbDropdown placement="auto">
       <a href="javascript:" ngbDropdownToggle>
-        <img src="assets/images/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image" />
+         <div class="patient-photo">
+              {{ firstLetter }}
+          </div>
+        <!-- <img src="assets/images/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image" /> -->
       </a>
       <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
         <div class="pro-head">
-          <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
-          <span>John Doe</span>
-          <a href="javascript:" class="dud-logout" title="Logout">
+          <!-- <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" /> -->
+          <span>{{userName}}</span>
+          <!-- <a href="javascript:" class="dud-logout" title="Logout">
             <i class="feather icon-log-out"></i>
-          </a>
+          </a> -->
         </div>
         <ul class="pro-body">
           <li>
-            <a href="javascript:" class="dropdown-item">
+             <button class="dropdown-item" (click)="viewProfile()" >
               <i class="feather icon-user"></i>
-              Profile
-            </a>
+              Perfil
+            </button>
           </li>
-          <li>
+          <!-- <li>
             <a href="javascript:" class="dropdown-item">
               <i class="feather icon-mail"></i>
               My Messages
             </a>
+          </li> -->
+          <li>
+            <!-- <a href="javascript:" class="dropdown-item">
+              <i class="feather icon-settings"></i>
+              Configuración
+            </a> -->
+            <button class="dropdown-item" >
+              <i class="feather icon-settings"></i>
+              Configuración
+            </button>
           </li>
           <li>
-            <a href="javascript:" class="dropdown-item">
+            <button class="dropdown-item" (click)="cerrarSesion()" >
               <i class="feather icon-lock"></i>
-              Lock Screen
-            </a>
-          </li>
-          <li>
-            <a href="javascript:" class="dropdown-item">
-              <i class="feather icon-lock"></i>
-              Logout
-            </a>
+              Cerrar sesión
+            </button>
           </li>
         </ul>
       </div>
