@@ -10,7 +10,7 @@ html,body{
   padding: 0px;
   width: 100vw;
   height: 100vh;
-  background: url("../../../../../assets/imagen-parqueadero/descarga.jpeg") no-repeat center center/cover 50%;
+  background: url("../../../../../assets/imagen-parqueadero/1.png") no-repeat center center/cover 50%;
   background-size: cover;
   background-attachment: fixed;
   display: flex;
@@ -23,16 +23,16 @@ html,body{
 
 @keyframes cambiarImagen {
   0% {
-    background-image: url("../../../../../assets/imagen-parqueadero/descarga\ \(1\).jpeg");
+    background-image: url("../../../../../assets/imagen-parqueadero/1.png");
   }
   33% {
-    background-image: url("../../../../../assets/imagen-parqueadero/descarga\ \(2\).jpeg");
+    background-image: url("../../../../../assets/imagen-parqueadero/2.png");
   }
   66% {
-    background-image: url("../../../../../assets/imagen-parqueadero/images.jpeg");
+    background-image: url("../../../../../assets/imagen-parqueadero/3.webp");
   }
   100% {
-    background-image: url("../../../../../assets/imagen-parqueadero/images\ \(1\).jpeg");
+    background-image: url("../../../../../assets/imagen-parqueadero/1.png");
   }
 }
 
@@ -46,6 +46,7 @@ html,body{
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid #30CFD0;
   div div div div h4,h5{
 
       color:#30CFD0 !important;
@@ -135,8 +136,14 @@ html,body{
     background: transparent;
     border-radius: 15px;
     color:white;
+    border: 1px solid #30CFD0;
+    box-shadow: 0px 0px 1px 0px #30CFD0  !important;
+    transition: all 1s ease;
 }
-
+.Formulario-login:hover{
+  transition: all 1s ease;
+  box-shadow: 0px 0px 10px 1px #30CFD0  !important;
+}
 .input-registro{
     border: none;
     background: transparent;
