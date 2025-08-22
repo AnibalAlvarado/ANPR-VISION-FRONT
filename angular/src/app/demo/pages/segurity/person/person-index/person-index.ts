@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
-import { Person } from '../person';
 import { General } from 'src/app/generic/general.service';
 import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
+import { Person } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-person-prueba',

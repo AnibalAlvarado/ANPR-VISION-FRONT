@@ -4,9 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FieldConfig } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
-import { Module } from '../../module/module-index/module';
-import { Form } from '../../form/form';
 import Swal from 'sweetalert2';
+import { Form, Module } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-form-module-form',

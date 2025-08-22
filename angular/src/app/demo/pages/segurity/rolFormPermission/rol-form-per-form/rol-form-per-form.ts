@@ -5,9 +5,7 @@ import { FieldConfig } from 'src/app/demo/ui-element/generic-form/field-config.m
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
-import { Role } from '../../role/role';
-import { Permission } from '../../permission/permission';
-import { Form } from '../../form/form';
+import { Form, Permission, Role } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-rol-form-per-form',

@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Person } from '../../person/person';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
+import { Person } from 'src/app/generic/Models/Entitys';
 import Swal from 'sweetalert2';
 
 @Component({

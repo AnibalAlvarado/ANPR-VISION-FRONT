@@ -1,13 +1,13 @@
 /* eslint-disable @angular-eslint/prefer-inject */
 import { Component, inject, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { User } from '../../user/user';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { User } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-edit-user-dialog-component',

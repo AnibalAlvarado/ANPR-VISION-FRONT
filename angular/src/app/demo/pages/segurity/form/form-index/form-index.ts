@@ -4,8 +4,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
 import { General } from 'src/app/generic/general.service';
+import { Form } from 'src/app/generic/Models/Entitys';
 import Swal from 'sweetalert2';
-import { Form } from '../form';
+// import { Form } from '../form';
 
 @Component({
   selector: 'app-form-index',

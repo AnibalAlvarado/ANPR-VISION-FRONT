@@ -10,14 +10,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { General } from 'src/app/generic/general.service';
-import { User } from '../../user/user';
-import { Person } from '../../person/person';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog-component/edit-user-dialog-component';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { EditPersonDialogComponent } from '../edit-person-dialog-component/edit-person-dialog-component';
+import { Person, User } from 'src/app/generic/Models/Entitys';
 
 
 @Component({

@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
-import { Permission } from '../permission';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
+import { Permission } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-permission-index',

@@ -5,13 +5,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
-import { User } from '../user';
 import Swal from 'sweetalert2';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
+import { User } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-user-form',

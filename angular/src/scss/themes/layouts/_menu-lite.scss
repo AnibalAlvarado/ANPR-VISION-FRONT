@@ -87,12 +87,12 @@
   padding: 0;
   top: 0;
   // background: $header-light-background;
-  border-bottom:2px solid #30CFD0 !important;
+  border-bottom:1px solid #909292 !important;
   background: #23272F !important;
   color: #30CFD0 !important;
   width: 100%;
   transition: all 0.15s ease-in-out;
-  box-shadow: 0 0 20px 5px #30CFD0 !important;
+  // box-shadow: 0 0 10px 5px #30CFD0 !important;
 
   .m-header {
     width: $Menu-width;

@@ -4,8 +4,8 @@ import { General } from 'src/app/generic/general.service';
 import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import Swal from 'sweetalert2';
-import { User } from '../user';
 import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
+import { User } from 'src/app/generic/Models/Entitys';
 @Component({
   selector: 'app-user-index',
   imports: [GenericTable],
