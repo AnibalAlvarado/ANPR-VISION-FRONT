@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @angular-eslint/prefer-inject */
 // angular import
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild,TemplateRef, inject, OnInit, ViewChild  } from '@angular/core';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -10,13 +12,34 @@ import { ChartDB } from 'src/app/fack-db/chartData';
 // 3rd party import
 
 import { ApexOptions, ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatError, MatFormFieldModule, MatLabel,  } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { General } from 'src/app/generic/general.service';
+import { Client } from 'src/app/generic/Models/Entitys';
+import { VehicleType } from '../pages/parameters/vehicleType/vehicle-type';
+import Swal from 'sweetalert2';
+import { MatOptionModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-dash-analytics',
-  imports: [SharedModule, NgApexchartsModule],
+  imports: [SharedModule, NgApexchartsModule, MatDialogModule, MatFormFieldModule,MatLabel,MatError,MatButtonModule,MatInputModule,MatOptionModule,CommonModule,MatSelectModule],
   templateUrl: './dash-analytics.component.html',
   styleUrls: ['./dash-analytics.component.scss']
 })
-export class DashAnalyticsComponent {
+export class DashAnalyticsComponent implements OnInit {
+  formData: any = {};
+  vehicleTypes: { value: number; label: string }[] = [];
+  clients: { value: number; label: string }[] = [];
+ private service = inject(General);
+
+  // 👀 referenciamos los templates
+  @ViewChild('vehicleFormModal') vehicleFormModal!: TemplateRef<any>;
+  @ViewChild('secondModal') secondModal!: TemplateRef<any>;
+
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chartDB: any;
 
@@ -32,7 +55,7 @@ export class DashAnalyticsComponent {
 
 
   // constructor
-  constructor() {
+  constructor(private dialog: MatDialog) {
     this.chartDB = ChartDB;
     const {
       bar1CAC,
@@ -272,4 +295,61 @@ export class DashAnalyticsComponent {
       size: 'PNG-150KB'
     }
   ];
+ngOnInit(): void {
+    // Cargar tipos de vehículo
+    this.service.get<{ data: VehicleType[] }>('TypeVehicle/select')
+      .subscribe(res => {
+        if (res.data) {
+          this.vehicleTypes = res.data.map(item => ({
+            value: item.id,
+            label: item.name
+          }));
+        }
+      });
+
+    // Cargar clientes
+    this.service.get<{ data: Client[] }>('Client/join')
+      .subscribe(res => {
+        if (res.data) {
+          this.clients = res.data.map(item => ({
+            value: item.id,
+            label: item.name
+          }));
+        }
+      });
+  }
+
+//  openFormDialog(templateRef: any) {
+//     this.formData = {}; // reset para crear
+//     this.dialog.open(templateRef, { width: '600px' });
+//   }
+
+   // abrir modal principal
+  openFormDialog(templateRef: TemplateRef<any>) {
+    this.formData = {}; // reset para crear
+    this.dialog.open(templateRef, { width: '600px' });
+  }
+ save(data: any) {
+    delete data.id; // por si acaso
+    this.service.post('Vehicle', data).subscribe(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Vehículo creado exitosamente',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true
+      }).then(() => {
+        // 🚀 cerrar modal del form
+        this.dialog.closeAll();
+
+        // 🚀 abrir modal 2 después del Swal
+        this.dialog.open(this.secondModal, { width: '400px' });
+      });
+    });
+  }
+
+
+
+
+
 }

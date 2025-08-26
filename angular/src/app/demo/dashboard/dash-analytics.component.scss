@@ -61,3 +61,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.616) !important; // borde interior claro
 
 }
+.vehicle-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.mat-dialog-title {
+  text-align: center;
+}

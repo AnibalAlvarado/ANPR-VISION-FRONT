@@ -144,10 +144,91 @@
 
     <div class="row">
       <div class="col-6 d-flex justify-content-center">
-        <button type="button" class="btn btn-secondary">
-          <i class="feather icon-camera me-1"></i>
-          Registrar placa manual
+
+        <button mat-raised-button color="primary" (click)="openFormDialog(vehicleFormModal)">🚗 Añadir Vehículo
         </button>
+
+
+
+
+       <!-- Modal -->
+    <ng-template #vehicleFormModal>
+      <h2 mat-dialog-title>Nuevo Vehículo</h2>
+
+      <mat-dialog-content>
+        <form #vehicleForm="ngForm" class="vehicle-form">
+
+          <!-- Placa -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Placa</mat-label>
+            <input matInput name="plate" [(ngModel)]="formData.plate" #plateCtrl="ngModel" required>
+            <mat-error *ngIf="plateCtrl.invalid && plateCtrl.touched">
+              La placa es obligatoria
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Color -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Color</mat-label>
+            <input matInput name="color" [(ngModel)]="formData.color" #colorCtrl="ngModel" required>
+            <mat-error *ngIf="colorCtrl.invalid && colorCtrl.touched">
+              El color es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Tipo de Vehículo -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tipo de Vehículo</mat-label>
+            <mat-select name="typeVehicleId" [(ngModel)]="formData.typeVehicleId" #typeCtrl="ngModel" required>
+              <mat-option *ngFor="let type of vehicleTypes" [value]="type.value">
+                {{ type.label }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="typeCtrl.invalid && typeCtrl.touched">
+              El tipo de vehículo es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Dueño -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Dueño del Vehículo</mat-label>
+            <mat-select name="clientId" [(ngModel)]="formData.clientId" #clientCtrl="ngModel" required>
+              <mat-option *ngFor="let client of clients" [value]="client.value">
+                {{ client.label }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="clientCtrl.invalid && clientCtrl.touched">
+              El dueño es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Toggle activo -->
+          <!-- <mat-slide-toggle [(ngModel)]="formData.asset" name="asset">Activo</mat-slide-toggle> -->
+
+        </form>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end">
+        <button mat-stroked-button mat-dialog-close color="warn">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="save(formData)" [disabled]="!vehicleForm.valid">
+          Guardar
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
+
+    <!-- Modal 2: el que se abre automáticamente -->
+    <ng-template #secondModal>
+      <h2 mat-dialog-title>Hola 👋</h2>
+      <mat-dialog-content>
+        <p>Este es el segundo modal abierto automáticamente 🚀</p>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cerrar</button>
+      </mat-dialog-actions>
+    </ng-template>
+
+
+
       </div>
        <div class="col-6 d-flex justify-content-center">
         <button type="button" class="btn btn-secondary">

@@ -39,3 +39,19 @@ export interface User extends IBaseEntity {
   personId: number;
   personName: string;
 }
+
+export interface Vehicle extends IBaseEntity {
+  plate: string;
+  color: string;
+  typeVehicleId: number;
+  clientId: number;
+  client: string;
+  typeVehicle: string;
+}
+
+export interface Client extends IBaseEntity {
+  personaId: number;
+  person: string;
+  name: string;
+}
+

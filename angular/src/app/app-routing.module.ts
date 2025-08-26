@@ -39,6 +39,9 @@ import { SectorsIndex } from './demo/pages/parameters/sectors/sectors-index/sect
 import { SectorsForm } from './demo/pages/parameters/sectors/sectors-form/sectors-form';
 import { SlotsIndex } from './demo/pages/parameters/slots/slots-index/slots-index';
 import { SlotsForm } from './demo/pages/parameters/slots/slots-form/slots-form';
+import { VehicleIndex } from './demo/pages/operational/vehicles/vehicle-index/vehicle-index';
+import { VehicleForm } from './demo/pages/operational/vehicles/vehicle-form/vehicle-form';
+import { ParkingManagement } from './demo/pages/parking-zone/parking-management/parking-management';
 
 const routes: Routes = [
   {
@@ -110,6 +113,10 @@ const routes: Routes = [
       {path: 'slots-index', component: SlotsIndex},
       {path: 'slots-form', component: SlotsForm},
       {path: 'slots-form/:id', component: SlotsForm},
+      {path: 'vehicles-index', component: VehicleIndex},
+      {path: 'vehicles-form', component: VehicleForm},
+      {path: 'vehicles-form/:id', component: VehicleForm},
+      {path: 'parking-management', component: ParkingManagement},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

@@ -52,7 +52,7 @@ export const NavigationItems: NavigationItem[] = [
         "id": "Vehículos",
         "title": "Vehículos",
         "type": "item",
-        "url": "/Vehículos",
+        "url": "/vehicles-index",
         "classes": "nav-item",
         "icon": "feather icon-map-pin"
       }
@@ -62,7 +62,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'Zonas',
         title: 'Zonas',
         type: 'item',
-        url: '/Zone-index',
+        url: '/parking-management',
         classes: 'nav-item',
         icon: 'feather icon-map-pin'
       },

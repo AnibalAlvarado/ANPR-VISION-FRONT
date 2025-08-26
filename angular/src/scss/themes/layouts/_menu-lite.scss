@@ -810,9 +810,9 @@
               content: '';
               position: absolute;
               top: 20px;
-              left: 26px;
-              width: 20px;
-              height: 1px;
+              left: 16px;
+              width: 10px;
+              height: 2px;
               background: transparentize($menu-dark-text-color, 0.8);
             }
 
@@ -1611,12 +1611,15 @@
 
     li.pcoded-hasmenu .pcoded-submenu {
       &:after {
-        background: transparentize($menu-dark-text-color, 0.5);
+        // background: transparentize($menu-dark-text-color, 0.5);}
+           background-color: #00000000;
+
       }
 
       li {
         &:after {
           background: transparentize($menu-dark-text-color, 0.5);
+          // background-color: #000;
         }
 
         &.active,
