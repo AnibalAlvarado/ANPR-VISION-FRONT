@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-edit-person-dialog-component',
   imports: [
-     FormsModule,
+    FormsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule
@@ -21,7 +21,7 @@ import Swal from 'sweetalert2';
   styleUrl: './edit-person-dialog-component.scss'
 })
 export class EditPersonDialogComponent {
- constructor(
+  constructor(
     public dialogRef: MatDialogRef<EditPersonDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Person
   ) {}
@@ -29,15 +29,53 @@ export class EditPersonDialogComponent {
   private service = inject(General);
   private route = inject(Router);
 
-
   onCancel(): void {
     this.dialogRef.close();
   }
 
   onSave(): void {
-      // this.dialogRef.close();
 
-    this.service.put('Person', this.data).subscribe(() => {
+    if (!this.data.firstName || this.data.firstName.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campo requerido',
+        text: 'Por favor, ingresa tu nombre'
+      });
+      return;
+    }
+
+    if (!this.data.lastName || this.data.lastName.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campo requerido',
+        text: 'Por favor, ingresa tu apellido'
+      });
+      return;
+    }
+
+    if (!this.data.phoneNumber || this.data.phoneNumber.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campo requerido',
+        text: 'Por favor, ingresa tu número de teléfono'
+      });
+      return;
+    }
+
+
+    const phoneRegex = /^[0-9]{7,15}$/;
+    if (!phoneRegex.test(this.data.phoneNumber)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Número inválido',
+        text: 'El número de teléfono debe tener entre 7 y 15 dígitos'
+      });
+      return;
+    }
+
+ 
+    this.service.put('Person', this.data).subscribe({
+      next: () => {
         Swal.fire({
           icon: 'success',
           title: 'Registro actualizado exitosamente',
@@ -45,8 +83,15 @@ export class EditPersonDialogComponent {
           timer: 2000,
           timerProgressBar: true
         });
-         this.dialogRef.close('updated');
-        // this.route.navigate(['/profile-index']);
-      });
+        this.dialogRef.close('updated');
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar',
+          text: 'Ocurrió un problema, intenta de nuevo más tarde'
+        });
+      }
+    });
   }
 }

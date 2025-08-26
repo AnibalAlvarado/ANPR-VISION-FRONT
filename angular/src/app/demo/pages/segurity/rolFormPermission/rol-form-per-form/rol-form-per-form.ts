@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FieldConfig } from 'src/app/demo/ui-element/generic-form/field-config.model';
+import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
@@ -14,30 +14,42 @@ import { Form, Permission, Role } from 'src/app/generic/Models/Entitys';
   styleUrl: './rol-form-per-form.scss'
 })
 export class RolFormPerForm implements OnInit {
- formConfig: FieldConfig[] = [
+  formConfig: FieldConfig[] = [
     {
       name: 'rolId',
       label: 'Rol',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un rol.' }
+      ]
     },
     {
       name: 'permissionId',
       label: 'Permiso',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un permiso.' }
+      ]
     },
-     {
+    {
       name: 'formId',
       label: 'Formulario',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un formulario.' }
+      ]
     },
-      { name: 'asset', label: 'Activo', type: 'toggle' }
-
+    {
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle'
+    }
   ];
 
   isEdit = false;
@@ -52,72 +64,45 @@ export class RolFormPerForm implements OnInit {
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    // Cargar roles
-    this.service.get<{ data: Role[]}>('Rol/select')
-      .subscribe(response => {
-        if ( response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'rolId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              };
-            }
-            return field;
-          });
-        }
-      });
-
-
-
-    // Cargar permisos
-    this.service.get<{ data: Permission[] }>('Permission/select').subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'permissionId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              };
-            }
-            return field;
-          });
-        }
-      });
-
-       // Cargar formularios
-    this.service.get<{ data: Form[] }>('Form/select').subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'formId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              };
-            }
-            return field;
-          });
-        }
-      });
+    // Cargar opciones dinámicas
+    this.loadSelectOptions<Role>('Rol/select', 'rolId');
+    this.loadSelectOptions<Permission>('Permission/select', 'permissionId');
+    this.loadSelectOptions<Form>('Form/select', 'formId');
 
     if (id) {
       this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('RolFormPermission', id)
+      this.service
+        .getById<{ success: boolean; data: any }>('RolFormPermission', id)
         .subscribe(response => {
           if (response.success) {
             this.initialData = response.data;
           }
         });
     }
+  }
+
+  /**
+   * Método genérico para cargar las opciones de los selects dinámicos.
+   */
+  private loadSelectOptions<T extends { id: number; name: string }>(
+    endpoint: string,
+    fieldName: string
+  ) {
+    this.service.get<{ data: T[] }>(endpoint).subscribe(response => {
+      if (response.data) {
+        this.formConfig = this.formConfig.map(field =>
+          field.name === fieldName
+            ? {
+                ...field,
+                options: response.data.map(item => ({
+                  value: item.id,
+                  label: item.name
+                }))
+              }
+            : field
+        );
+      }
+    });
   }
 
   save(data: any) {

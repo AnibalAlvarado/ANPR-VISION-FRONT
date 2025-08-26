@@ -1,27 +1,65 @@
 <form [formGroup]="form" (ngSubmit)="save()">
+  <!-- Nombre de Usuario -->
   <mat-form-field appearance="outline">
     <mat-label>Nombre de Usuario</mat-label>
     <input matInput formControlName="userName">
+    <mat-error *ngIf="form.get('userName')?.hasError('required')">
+      El nombre de usuario es obligatorio
+    </mat-error>
+    <mat-error *ngIf="form.get('userName')?.hasError('minlength')">
+      Debe tener al menos 3 caracteres
+    </mat-error>
+    <mat-error *ngIf="form.get('userName')?.hasError('maxlength')">
+      No puede superar los 30 caracteres
+    </mat-error>
+    <mat-error *ngIf="form.get('userName')?.hasError('pattern')">
+      Solo se permiten letras, números, guiones y guion bajo
+    </mat-error>
   </mat-form-field>
 
+  <!-- Email -->
   <mat-form-field appearance="outline">
     <mat-label>Email</mat-label>
     <input matInput formControlName="email">
+    <mat-error *ngIf="form.get('email')?.hasError('required')">
+      El correo es obligatorio
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.hasError('email')">
+      Debe ser un correo válido
+    </mat-error>
   </mat-form-field>
 
+  <!-- Contraseña -->
   <mat-form-field appearance="outline">
     <mat-label>Contraseña</mat-label>
-    <input matInput formControlName="password">
+    <input matInput formControlName="password" [type]="form.get('hidePassword')?.value ? 'password' : 'text'">
+    <mat-error *ngIf="form.get('password')?.hasError('required')">
+      La contraseña es obligatoria
+    </mat-error>
+    <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+      Debe tener al menos 8 caracteres
+    </mat-error>
+    <mat-error *ngIf="form.get('password')?.hasError('maxlength')">
+      No puede superar los 20 caracteres
+    </mat-error>
+    <mat-error *ngIf="form.get('password')?.hasError('pattern')">
+      Debe incluir al menos una mayúscula, un número y un carácter especial
+    </mat-error>
   </mat-form-field>
 
+  <!-- Persona -->
   <mat-form-field appearance="outline">
-  <mat-label>Persona</mat-label>
-  <mat-select formControlName="personId">
-    <mat-option *ngFor="let person of persons" [value]="person.id">
-      {{ person.firstName }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    <mat-label>Persona</mat-label>
+    <mat-select formControlName="personId">
+      <mat-option *ngFor="let person of persons" [value]="person.id">
+        {{ person.firstName }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('personId')?.hasError('required')">
+      Debe seleccionar una persona
+    </mat-error>
+  </mat-form-field>
+
 
 
   <!-- <mat-slide-toggle formControlName="asset" color="white">
