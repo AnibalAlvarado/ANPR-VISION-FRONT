@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
@@ -50,7 +51,7 @@ export class UserForm implements OnInit {
   userId: string = '';
 
       onCancelar(): void {
-    this.route.navigate(['/user-index']); 
+    this.route.navigate(['/user-index']);
   }
   constructor() {
     this.form = this.FormBuilder.group({
@@ -86,7 +87,7 @@ export class UserForm implements OnInit {
       personId: ['', Validators.required],
       asset: [true]
     });
-  
+
   }
 
   ngOnInit(): void {
@@ -228,5 +229,5 @@ export class UserForm implements OnInit {
     }
   }
 
-   
+
 }

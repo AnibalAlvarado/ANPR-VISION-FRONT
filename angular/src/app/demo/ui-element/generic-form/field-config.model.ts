@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type FieldType = 'text' | 'tel' | 'number' | 'toggle' | 'textarea' | 'select';
 
 export interface FieldConfig {
@@ -16,7 +17,7 @@ export interface FieldConfig {
     message: string;
     value?: any;
   }[];
-hidden?: boolean; 
+hidden?: boolean;
 
 }
 export enum ValidatorNames {

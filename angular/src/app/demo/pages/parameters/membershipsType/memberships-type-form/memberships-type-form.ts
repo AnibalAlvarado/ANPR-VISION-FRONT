@@ -49,7 +49,6 @@ export class MembershipsTypeForm implements OnInit {
       { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'La duración debe ser al menos 1 día.' },
       { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^(?=.*[0-9]).+$', message: 'Debe contener al menos un número.' },
       { name: ValidatorNames.Max, validator: ValidatorNames.Max, value: 365, message: 'La duración debe ser al menos 1 día.' },
-      { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
     ]
   },
   {
