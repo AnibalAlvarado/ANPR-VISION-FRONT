@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FieldConfig } from 'src/app/demo/ui-element/generic-form/field-config.model';
+import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
@@ -14,19 +14,57 @@ import { ParkingCtegory } from '../../parkingCategory/parking-ctegory';
   styleUrl: './parking-form.scss'
 })
 export class ParkingForm implements OnInit {
- formConfig: FieldConfig[] = [
-      { name: 'name', label: 'Nombre', type: 'text', required: true },
-      { name: 'location', label: 'Ubicación', type: 'text', required: true },
-
+  formConfig: FieldConfig[] = [
+    {
+      name: 'name',
+      label: 'Nombre',
+      type: 'text',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
+        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'El nombre debe tener al menos 3 caracteres.' },
+        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+      ]
+    },
+    {
+      name: 'location',
+      label: 'Ubicación',
+      type: 'text',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La ubicación es obligatoria.' },
+        { 
+          name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'La ubicación debe tener al menos 3 caracteres.' 
+        },
+        { 
+          name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 100, message: 'La ubicación no puede tener más de 100 caracteres.' 
+        },
+        { 
+          name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ0-9\\s,.-]{3,100}$', message: 'La ubicación solo puede contener letras, números, espacios, comas, puntos y guiones.' 
+        },
+        { 
+          name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^(?!\\s*$).+', message: 'La ubicación no puede estar vacía o contener solo espacios.' 
+        }
+      ]
+    },
     {
       name: 'parkingCategoryId',
       label: 'Categoría del Parqueadero',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar una categoría.' }
+      ]
     },
-      { name: 'asset', label: 'Activo', type: 'toggle' }
-
+    {
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true   // <-- Esto lo mantiene oculto
+    }
   ];
 
   isEdit = false;
@@ -41,10 +79,10 @@ export class ParkingForm implements OnInit {
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    // Cargar categorias de parqueadero
-    this.service.get<{ data: ParkingCtegory[]}>('ParkingCategory/select')
+    // Cargar categorías de parqueadero
+    this.service.get<{ data: ParkingCtegory[] }>('ParkingCategory/select')
       .subscribe(response => {
-        if ( response.data) {
+        if (response.data) {
           this.formConfig = this.formConfig.map(field => {
             if (field.name === 'parkingCategoryId') {
               return {
@@ -59,10 +97,6 @@ export class ParkingForm implements OnInit {
           });
         }
       });
-
-
-
-
 
     if (id) {
       this.isEdit = true;

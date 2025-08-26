@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatSlideToggleModule,
     MatButtonModule,
     MatSelectModule
-    ],
+  ],
   templateUrl: './generic-form.html',
   styleUrl: './generic-form.scss'
 })
@@ -27,12 +27,12 @@ export class GenericForm implements OnInit, OnChanges {
   @Input() config: FieldConfig[] = [];
   @Input() isEdit = false;
   @Input() initialData: any = {};
-
+  @Input() title: string = ''; 
   @Output() saveForm = new EventEmitter<any>();
   @Output() cancelForm = new EventEmitter<void>();
 
   form!: FormGroup;
-    private fb = inject(FormBuilder);
+  private fb = inject(FormBuilder);
 
   constructor() {}
 
@@ -44,40 +44,60 @@ export class GenericForm implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['initialData'] && !changes['initialData'].isFirstChange()) {
+    if (changes['initialData'] && changes['initialData'].currentValue && Object.keys(changes['initialData'].currentValue).length) {
       if (!this.form) this.buildForm();
       this.patchInitialData();
     }
     if (changes['config'] && !changes['config'].isFirstChange()) {
-      // si cambias config en caliente
       this.buildForm();
       this.patchInitialData();
     }
   }
 
-  // private buildForm(): void {
-  //   const group: any = {};
-  //   this.config.forEach(f => {
-  //     group[f.name] = [f.value ?? '', f.required ? Validators.required : []];
-  //   });
-
-  //   // Si initialData trae id pero config no lo incluye, crear control id
-  //   if (!group['id'] && this.initialData && this.initialData.id !== undefined) {
-  //     group['id'] = [this.initialData.id];
-  //   }
-
-  //   this.form = this.fb.group(group);
-  // }
-
   private buildForm(): void {
     const group: any = {};
+
     this.config.forEach(f => {
       const defaultValue = f.type === 'toggle'
         ? false
         : f.type === 'select' && (f as any).multiple
           ? []
           : (f.value ?? '');
-      const validators = f.required ? [Validators.required] : [];
+
+      const validators: ValidatorFn[] = []; 
+  
+      if (f.required) {
+        validators.push(Validators.required);
+      }
+
+      if (f.validations && f.validations.length > 0) {
+        f.validations.forEach(val => {
+          switch (val.validator) {
+            case 'minlength':
+              validators.push(Validators.minLength(val.value));
+              break;
+            case 'maxlength':
+              validators.push(Validators.maxLength(val.value));
+              break;
+            case 'pattern':
+              validators.push(Validators.pattern(val.value));
+              break;
+            case 'required':
+              if (!validators.includes(Validators.required)) {
+                validators.push(Validators.required);
+              }
+              break;
+            case 'min':
+              validators.push(Validators.min(val.value));
+              break;
+            case 'max':
+              validators.push(Validators.max(val.value));
+              break;
+          }
+
+        });
+      }
+
       group[f.name] = [defaultValue, validators];
     });
 
@@ -89,7 +109,6 @@ export class GenericForm implements OnInit, OnChanges {
   }
 
   private patchInitialData(): void {
-    // si el form no tiene control id pero initialData sí, lo agrego
     if (this.initialData.id !== undefined && !this.form.get('id')) {
       this.form.addControl('id', new FormControl(this.initialData.id));
     }
@@ -101,7 +120,7 @@ export class GenericForm implements OnInit, OnChanges {
       this.form.markAllAsTouched();
       return;
     }
-    console.log('Payload que se va a emitir:', this.form.value); // depuración
+    console.log('Payload que se va a emitir:', this.form.value); 
     this.saveForm.emit(this.form.value);
   }
 
@@ -109,7 +128,7 @@ export class GenericForm implements OnInit, OnChanges {
     this.cancelForm.emit();
   }
 
-   compareByValue = (o1: any, o2: any): boolean => {
+  compareByValue = (o1: any, o2: any): boolean => {
     if (o1 === o2) return true;
     if (!o1 || !o2) return false;
     if (o1.id !== undefined && o2.id !== undefined) return o1.id === o2.id;

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FieldConfig } from 'src/app/demo/ui-element/generic-form/field-config.model';
+import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
-import Swal from 'sweetalert2';
 import { Form, Module } from 'src/app/generic/Models/Entitys';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-form-module-form',
@@ -14,23 +14,42 @@ import { Form, Module } from 'src/app/generic/Models/Entitys';
   styleUrl: './form-module-form.scss'
 })
 export class FormModuleForm implements OnInit {
- formConfig: FieldConfig[] = [
+  formConfig: FieldConfig[] = [
     {
       name: 'formId',
       label: 'Formulario',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { 
+          name: ValidatorNames.Required, 
+          validator: ValidatorNames.Required, 
+          message: 'Debe seleccionar un formulario.' 
+        }
+      ]
     },
     {
       name: 'moduleId',
       label: 'Módulo',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { 
+          name: ValidatorNames.Required, 
+          validator: ValidatorNames.Required, 
+          message: 'Debe seleccionar un módulo.' 
+        }
+      ]
     },
-      { name: 'asset', label: 'Activo', type: 'toggle' }
-
+    {
+        name: 'asset',
+        label: 'Activo',
+        type: 'toggle',
+        value: true,
+        hidden: true   // <-- Esto lo mantiene oculto
+    }
   ];
 
   isEdit = false;
@@ -46,9 +65,9 @@ export class FormModuleForm implements OnInit {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
     // Cargar formularios
-    this.service.get<{ data: Form[]}>('Form/select')
+    this.service.get<{ data: Form[] }>('Form/select')
       .subscribe(response => {
-        if ( response.data) {
+        if (response.data) {
           this.formConfig = this.formConfig.map(field => {
             if (field.name === 'formId') {
               return {
@@ -64,10 +83,9 @@ export class FormModuleForm implements OnInit {
         }
       });
 
-
-
     // Cargar módulos
-    this.service.get<{ data: Module[] }>('Module/select').subscribe(response => {
+    this.service.get<{ data: Module[] }>('Module/select')
+      .subscribe(response => {
         if (response.data) {
           this.formConfig = this.formConfig.map(field => {
             if (field.name === 'moduleId') {
@@ -84,6 +102,7 @@ export class FormModuleForm implements OnInit {
         }
       });
 
+    // Modo edición
     if (id) {
       this.isEdit = true;
       this.service.getById<{ success: boolean; data: any }>('FormModule', id)

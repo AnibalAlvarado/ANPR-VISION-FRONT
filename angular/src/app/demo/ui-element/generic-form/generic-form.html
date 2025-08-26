@@ -1,18 +1,28 @@
+<h2 *ngIf="title" class="form-title">
+  {{ title }}
+</h2>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <ng-container *ngFor="let field of config">
 
     <!-- Campos de texto / número / teléfono -->
-    <mat-form-field *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"
-                    appearance="outline" style="width: 100%;">
+    <mat-form-field *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"appearance="outline" style="width: 100%;">
       <mat-label>{{ field.label }}</mat-label>
       <input
         matInput
         [type]="field.type"
         [formControlName]="field.name"
         [required]="!!field.required">
-      <mat-error *ngIf="form.get(field.name)?.hasError('required')">
-        {{ field.label }} es obligatorio
-      </mat-error>
+
+      <!-- Itera sobre todas las validaciones del campo para mostrar los mensajes -->
+      <!-- <mat-error *ngFor="let val of field.validations" 
+                 [ngIf]="form.get(field.name)?.hasError(val.validator)">
+        {{ val.message }}
+      </mat-error> -->
+        <mat-error *ngFor="let validation of field.validations" >
+          <span *ngIf="form.get(field.name)?.hasError(validation.validator)" class="error-message">
+            {{ validation.message }}
+          </span>
+        </mat-error>
     </mat-form-field>
 
     <!-- Textarea -->
@@ -23,13 +33,21 @@
         [formControlName]="field.name"
         [required]="!!field.required"
         rows="4"></textarea>
-      <mat-error *ngIf="form.get(field.name)?.hasError('required')">
-        {{ field.label }} es obligatorio
+
+      <!-- Itera sobre todas las validaciones del campo para mostrar los mensajes -->
+      <!-- <mat-error *ngFor="let val of field.validations" 
+                 [ngIf]="form.get(field.name)?.hasError(val.validator)">
+        {{ val.message }}
+      </mat-error> -->
+      <mat-error *ngFor="let validation of field.validations"  >
+        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" class="error-message">
+          {{ validation.message }}
+        </span>
       </mat-error>
     </mat-form-field>
 
     <!-- Select (soporta multiple) -->
-    <mat-form-field *ngIf="field.type === 'select'" appearance="outline" style="width: 100%;">
+    <mat-form-field *ngIf="field.type === 'select'" appearance="outline" >
       <mat-label>{{ field.label }}</mat-label>
       <mat-select
         [formControlName]="field.name"
@@ -40,14 +58,22 @@
           {{ opt.label }}
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="form.get(field.name)?.hasError('required')">
-        {{ field.label }} es obligatorio
+
+      <!-- Itera sobre todas las validaciones del campo para mostrar los mensajes -->
+      <!-- <mat-error *ngFor="let val of field.validations"  
+                 [ngIf]="form.get(field.name)?.hasError(val.validator)">
+        {{ val.message }}
+      </mat-error> -->
+      <mat-error *ngFor="let validation of field.validations">
+        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" class="error-message">
+          {{ validation.message }}
+        </span>
       </mat-error>
     </mat-form-field>
 
     <!-- Toggle -->
     <mat-slide-toggle
-      *ngIf="field.type === 'toggle'"
+      *ngIf="field.type === 'toggle' && !field.hidden"
       [formControlName]="field.name"
       color="primary">
       {{ field.label }}

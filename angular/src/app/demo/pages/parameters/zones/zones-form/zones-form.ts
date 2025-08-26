@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FieldConfig } from 'src/app/demo/ui-element/generic-form/field-config.model';
+import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
@@ -14,17 +14,36 @@ import { Parking } from '../../parking/parking';
   styleUrl: './zones-form.scss'
 })
 export class ZonesForm implements OnInit {
- formConfig: FieldConfig[] = [
-      { name: 'name', label: 'Nombre', type: 'text', required: true },
+  formConfig: FieldConfig[] = [
+    {
+      name: 'name',
+      label: 'Nombre',
+      type: 'text',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
+        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'El nombre debe tener al menos 3 caracteres.' },
+        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+      ]
+    },
     {
       name: 'parkingId',
       label: 'Parqueadero',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un parqueadero.' }
+      ]
     },
-      { name: 'asset', label: 'Activo', type: 'toggle' }
-
+    {
+     name: 'asset',
+    label: 'Activo',
+    type: 'toggle',
+    value: true,
+    hidden: true   // <-- Esto lo mantiene oculto
+    }
   ];
 
   isEdit = false;
@@ -39,10 +58,10 @@ export class ZonesForm implements OnInit {
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    // Cargar formularios
-    this.service.get<{ data: Parking[]}>('Parking/select')
+    // Cargar parqueaderos
+    this.service.get<{ data: Parking[] }>('Parking/select')
       .subscribe(response => {
-        if ( response.data) {
+        if (response.data) {
           this.formConfig = this.formConfig.map(field => {
             if (field.name === 'parkingId') {
               return {
@@ -57,10 +76,6 @@ export class ZonesForm implements OnInit {
           });
         }
       });
-
-
-
-
 
     if (id) {
       this.isEdit = true;
