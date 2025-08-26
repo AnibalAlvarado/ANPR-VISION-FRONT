@@ -34,8 +34,18 @@ export class ParkingForm implements OnInit {
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La ubicación es obligatoria.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La ubicación debe tener al menos 5 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La ubicación no puede exceder los 200 caracteres.' }
+        { 
+          name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'La ubicación debe tener al menos 3 caracteres.' 
+        },
+        { 
+          name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 100, message: 'La ubicación no puede tener más de 100 caracteres.' 
+        },
+        { 
+          name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ0-9\\s,.-]{3,100}$', message: 'La ubicación solo puede contener letras, números, espacios, comas, puntos y guiones.' 
+        },
+        { 
+          name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^(?!\\s*$).+', message: 'La ubicación no puede estar vacía o contener solo espacios.' 
+        }
       ]
     },
     {
@@ -51,7 +61,9 @@ export class ParkingForm implements OnInit {
     {
       name: 'asset',
       label: 'Activo',
-      type: 'toggle'
+      type: 'toggle',
+      value: true,
+      hidden: true   // <-- Esto lo mantiene oculto
     }
   ];
 

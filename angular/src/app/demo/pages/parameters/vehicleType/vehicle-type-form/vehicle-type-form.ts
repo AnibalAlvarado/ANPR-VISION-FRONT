@@ -30,7 +30,9 @@ export class VehicleTypeForm implements OnInit {
     {
       name: 'asset',
       label: 'Activo',
-      type: 'toggle'
+      type: 'toggle',
+      value: true,
+      hidden: true   // <-- Esto lo mantiene oculto
     }
   ];
 

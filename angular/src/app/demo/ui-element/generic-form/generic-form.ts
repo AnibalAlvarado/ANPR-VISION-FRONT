@@ -27,7 +27,7 @@ export class GenericForm implements OnInit, OnChanges {
   @Input() config: FieldConfig[] = [];
   @Input() isEdit = false;
   @Input() initialData: any = {};
-
+  @Input() title: string = ''; 
   @Output() saveForm = new EventEmitter<any>();
   @Output() cancelForm = new EventEmitter<void>();
 

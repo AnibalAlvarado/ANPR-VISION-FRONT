@@ -16,7 +16,7 @@ export interface FieldConfig {
     message: string;
     value?: any;
   }[];
-
+hidden?: boolean; 
 
 }
 export enum ValidatorNames {

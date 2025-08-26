@@ -35,7 +35,10 @@ export class SectorsForm implements OnInit {
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La capacidad es obligatoria.' },
-        { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'La capacidad debe ser al menos 1.' }
+        { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'La capacidad debe ser al menos 1.' }, 
+        { name: ValidatorNames.Max, validator: ValidatorNames.Max, value: 10000, message: 'La capacidad no puede ser mayor a 10,000.' },
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]+$', message: 'La capacidad solo puede contener números enteros.' },  
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[1-9][0-9]{0,3}$', message: 'La capacidad debe ser un número válido entre 1 y 9999.' },
       ]
     },
     {
@@ -59,9 +62,11 @@ export class SectorsForm implements OnInit {
       ]
     },
     {
-      name: 'asset',
-      label: 'Activo',
-      type: 'toggle'
+    name: 'asset',
+    label: 'Activo',
+    type: 'toggle',
+    value: true,
+    hidden: true   // <-- Esto lo mantiene oculto
     }
   ];
 

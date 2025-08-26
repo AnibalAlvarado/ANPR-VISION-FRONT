@@ -1,3 +1,6 @@
+<h2 *ngIf="title" class="form-title">
+  {{ title }}
+</h2>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <ng-container *ngFor="let field of config">
 
@@ -70,7 +73,7 @@
 
     <!-- Toggle -->
     <mat-slide-toggle
-      *ngIf="field.type === 'toggle'"
+      *ngIf="field.type === 'toggle' && !field.hidden"
       [formControlName]="field.name"
       color="primary">
       {{ field.label }}

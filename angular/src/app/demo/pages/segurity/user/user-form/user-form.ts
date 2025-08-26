@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { User } from 'src/app/generic/Models/Entitys';
-
 @Component({
   selector: 'app-user-form',
   imports: [
@@ -50,6 +49,9 @@ export class UserForm implements OnInit {
   private service = inject(General);
   userId: string = '';
 
+      onCancelar(): void {
+    this.route.navigate(['/user-index']); 
+  }
   constructor() {
     this.form = this.FormBuilder.group({
       id: [null],
@@ -59,7 +61,8 @@ export class UserForm implements OnInit {
           Validators.required,
           Validators.minLength(3),
           Validators.maxLength(30),
-          Validators.pattern(/^[a-zA-Z0-9_-]+$/) // Solo letras, números, guiones y guion bajo
+          Validators.pattern(/^[a-zA-Z0-9_-]+$/)
+           // Solo letras, números, guiones y guion bajo
         ]
       ],
       email: [
@@ -81,8 +84,9 @@ export class UserForm implements OnInit {
         ]
       ],
       personId: ['', Validators.required],
-      asset: [false]
+      asset: [true]
     });
+  
   }
 
   ngOnInit(): void {
@@ -95,7 +99,6 @@ export class UserForm implements OnInit {
       this.getAllRoles();
       this.loadUserRoles(id);
 
-      // Si estás editando: no requerir la contraseña
       this.form.get('password')?.clearValidators();
       this.form.get('password')?.updateValueAndValidity();
 
@@ -107,7 +110,6 @@ export class UserForm implements OnInit {
         }
       });
     } else {
-      // Si estás creando: la contraseña es requerida
       this.form.get('password')?.setValidators([
         Validators.required,
         Validators.minLength(8),
@@ -225,4 +227,6 @@ export class UserForm implements OnInit {
       });
     }
   }
+
+   
 }

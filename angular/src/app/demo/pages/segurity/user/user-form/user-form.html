@@ -1,3 +1,6 @@
+<h2 class="form-title">
+  {{ isEdit ? 'Editar Usuario' : 'Usuarios' }}
+</h2>
 <form [formGroup]="form" (ngSubmit)="save()">
   <!-- Nombre de Usuario -->
   <mat-form-field appearance="outline">
@@ -66,15 +69,16 @@
   Activo
   </mat-slide-toggle> -->
 
-  <mat-slide-toggle formControlName="asset" color="primary" aria-label="Usuario activo">
+  <!-- <mat-slide-toggle formControlName="asset" color="primary" aria-label="Usuario activo">
   <span style="color: #ffffff;">Activo</span>
-</mat-slide-toggle>
+</mat-slide-toggle> -->
 
 
 
   <button mat-raised-button color="primary" type="submit">
     {{ isEdit ? 'Actualizar' : 'Crear' }}
   </button>
+ <button mat-button type="button" (click)="onCancelar()">Cancelar</button>
 </form>
 
 <div *ngIf="isEdit" class="mt-4">

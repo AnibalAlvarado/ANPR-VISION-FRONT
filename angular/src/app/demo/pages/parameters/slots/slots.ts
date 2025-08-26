@@ -6,4 +6,5 @@ export interface Slots {
   sectorsId: number;
   sectors: string;
   isAvailable: boolean;
+  hidden?: boolean
 }

@@ -285,3 +285,12 @@ h5 {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(102, 126, 234, 0.8);
 }
+
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #ffffffff; // Azul Material
+  text-transform: capitalize;
+}

@@ -37,15 +37,13 @@ export class SlotsForm implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un sector.' }
       ]
     },
+
     {
-      name: 'isAvailable',
-      label: 'Disponible',
-      type: 'toggle'
-    },
-    {
-      name: 'asset',
-      label: 'Activo',
-      type: 'toggle'
+    name: 'asset',
+    label: 'Activo',
+    type: 'toggle',
+    value: true,
+    hidden: true   // <-- Esto lo mantiene oculto
     }
   ];
 

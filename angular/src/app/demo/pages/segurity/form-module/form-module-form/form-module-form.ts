@@ -44,9 +44,11 @@ export class FormModuleForm implements OnInit {
       ]
     },
     {
-      name: 'asset',
-      label: 'Activo',
-      type: 'toggle'
+        name: 'asset',
+        label: 'Activo',
+        type: 'toggle',
+        value: true,
+        hidden: true   // <-- Esto lo mantiene oculto
     }
   ];
 

@@ -23,7 +23,8 @@ export class PersonPrueba implements OnInit {
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El nombre debe tener al menos 2 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' }
+        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
+         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -34,7 +35,8 @@ export class PersonPrueba implements OnInit {
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El apellido es obligatorio.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El apellido debe tener al menos 2 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El apellido no puede exceder los 50 caracteres.' }
+        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El apellido no puede exceder los 50 caracteres.' },
+         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -42,13 +44,21 @@ export class PersonPrueba implements OnInit {
       label: 'Teléfono',
       type: 'tel',
       validations: [
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]{7,15}$', message: 'El teléfono debe tener entre 7 y 15 dígitos.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]{7,15}$', message: 'El teléfono debe tener entre 7 y 15 dígitos.' },
+         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]+$', message: 'El teléfono solo debe contener números.' },
+         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^\\+?[0-9]+$', message: 'El teléfono solo debe contener números y puede iniciar con +.' }
       ]
     },
     { 
-      name: 'asset', 
-      label: 'Activo', 
-      type: 'toggle' 
+      // name: 'asset', 
+      // label: 'Activo', 
+      // type: 'toggle' 
+
+       name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true   // <-- Esto lo mantiene oculto
     }
   ];
 
