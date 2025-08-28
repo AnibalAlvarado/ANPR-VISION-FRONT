@@ -18,8 +18,8 @@
                  [ngIf]="form.get(field.name)?.hasError(val.validator)">
         {{ val.message }}
       </mat-error> -->
-        <mat-error *ngFor="let validation of field.validations" >
-          <span *ngIf="form.get(field.name)?.hasError(validation.validator)" class="error-message">
+        <mat-error *ngFor="let validation of field.validations" class="error-message">
+          <span *ngIf="form.get(field.name)?.hasError(validation.validator)" >
             {{ validation.message }}
           </span>
         </mat-error>
@@ -39,8 +39,8 @@
                  [ngIf]="form.get(field.name)?.hasError(val.validator)">
         {{ val.message }}
       </mat-error> -->
-      <mat-error *ngFor="let validation of field.validations"  >
-        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" class="error-message">
+      <mat-error *ngFor="let validation of field.validations" class="error-message" >
+        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" >
           {{ validation.message }}
         </span>
       </mat-error>
@@ -64,8 +64,8 @@
                  [ngIf]="form.get(field.name)?.hasError(val.validator)">
         {{ val.message }}
       </mat-error> -->
-      <mat-error *ngFor="let validation of field.validations">
-        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" class="error-message">
+      <mat-error *ngFor="let validation of field.validations" class="error-message">
+        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" >
           {{ validation.message }}
         </span>
       </mat-error>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { HttpParams } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,AbstractControl, AsyncValidatorFn  } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -13,6 +14,32 @@ import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import { User } from 'src/app/generic/Models/Entitys';
+import { of } from 'rxjs';
+import { debounceTime, map, switchMap, catchError } from 'rxjs/operators';
+
+/* --- VALIDADOR ASÍNCRONO --- */
+export function usernameExistsValidator(service: General, currentUserId?: string): AsyncValidatorFn {
+  
+  return (control: AbstractControl) => {
+    if (!control.value) return of(null);
+
+    return of(control.value).pipe(
+      debounceTime(300),
+      switchMap(username => {
+        const params = new HttpParams().set('username', username);
+        return service.get<{ success: boolean; exists: boolean }>('User/check-username',  params );
+      }),
+      map(res => {
+        if (res.success && res.exists && control.parent?.get('id')?.value !== currentUserId) {
+          return { usernameExists: true };
+        }
+        return null;
+      }),
+      catchError(() => of(null))
+    );
+  };
+}
+
 @Component({
   selector: 'app-user-form',
   imports: [
@@ -31,6 +58,8 @@ import { User } from 'src/app/generic/Models/Entitys';
   templateUrl: './user-form.html',
   styleUrl: './user-form.scss'
 })
+
+
 export class UserForm implements OnInit {
 [x: string]: any;
   form: FormGroup;
@@ -63,8 +92,8 @@ export class UserForm implements OnInit {
           Validators.minLength(3),
           Validators.maxLength(30),
           Validators.pattern(/^[a-zA-Z0-9_-]+$/)
-           // Solo letras, números, guiones y guion bajo
-        ]
+        ],
+         [usernameExistsValidator(this.service, this.userId)]
       ],
       email: [
         '',
@@ -90,6 +119,7 @@ export class UserForm implements OnInit {
 
   }
 
+  
   ngOnInit(): void {
     this.getAllPersons();
     const id = this.ActivatedRoute.snapshot.paramMap.get('id');
@@ -229,5 +259,5 @@ export class UserForm implements OnInit {
     }
   }
 
-
+  
 }

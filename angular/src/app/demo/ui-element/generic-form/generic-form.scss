@@ -286,8 +286,12 @@ h5 {
   background: rgba(102, 126, 234, 0.8);
 }
 .error-message{
-  position: absolute !important;
-  top: 10px !important;
+   font-size: 0.85rem;          /* Un poco más pequeño que el input */
+  color: #f44336;              /* Rojo Material Design */
+  margin-top: 4px;             /* Espacio pequeño debajo del campo */
+  display: block;              /* Ocupa su propia línea */
+  position: absolute;          /* Para que no se monte */
+  background:  rgba(30, 30, 30, 0.95);
 }
 
 

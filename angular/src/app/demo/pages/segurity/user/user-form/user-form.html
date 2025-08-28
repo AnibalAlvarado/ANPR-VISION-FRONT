@@ -18,6 +18,10 @@
     <mat-error *ngIf="form.get('userName')?.hasError('pattern')">
       Solo se permiten letras, números, guiones y guion bajo
     </mat-error>
+
+    <mat-error *ngIf="form.get('userName')?.hasError('usernameExists')">
+      Este nombre de usuario ya está registrado
+    </mat-error>
   </mat-form-field>
 
   <!-- Email -->
