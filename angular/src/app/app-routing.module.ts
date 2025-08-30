@@ -43,6 +43,10 @@ import { VehicleIndex } from './demo/pages/operational/vehicles/vehicle-index/ve
 import { VehicleForm } from './demo/pages/operational/vehicles/vehicle-form/vehicle-form';
 import { ParkingManagement } from './demo/pages/parking-zone/parking-management/parking-management';
 
+
+
+
+
 const routes: Routes = [
   {
     path: '',
@@ -52,6 +56,11 @@ const routes: Routes = [
         path: '',
         redirectTo: '/login',
         pathMatch: 'full'
+      },
+     {
+        path: 'help',
+        loadChildren: () =>
+          import('./help/help.module').then(m => m.HelpModule)
       },
       {
         path: 'analytics',
@@ -117,6 +126,8 @@ const routes: Routes = [
       {path: 'vehicles-form', component: VehicleForm},
       {path: 'vehicles-form/:id', component: VehicleForm},
       {path: 'parking-management', component: ParkingManagement},
+      
+      
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

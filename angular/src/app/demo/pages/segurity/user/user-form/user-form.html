@@ -15,25 +15,31 @@
     <mat-error *ngIf="form.get('userName')?.hasError('maxlength')">
       No puede superar los 30 caracteres
     </mat-error>
-    <mat-error *ngIf="form.get('userName')?.hasError('pattern')">
-      Solo se permiten letras, números, guiones y guion bajo
-    </mat-error>
-
+      <!-- <mat-error *ngIf="form.get('userName')?.hasError('pattern')">
+        El nombre solo puede contener letras y espacios.
+      </mat-error> -->
     <mat-error *ngIf="form.get('userName')?.hasError('usernameExists')">
-      Este nombre de usuario ya está registrado
-    </mat-error>
+        El nombre de usuario ya se encuentra registrado.
+      </mat-error>
   </mat-form-field>
 
   <!-- Email -->
   <mat-form-field appearance="outline">
     <mat-label>Email</mat-label>
     <input matInput formControlName="email">
+    <mat-error *ngIf="form.get('email')?.hasError('emailExists')">
+      El correo de usuario ya se encuentra registrado.
+    </mat-error>
+
     <mat-error *ngIf="form.get('email')?.hasError('required')">
       El correo es obligatorio
     </mat-error>
     <mat-error *ngIf="form.get('email')?.hasError('email')">
       Debe ser un correo válido
     </mat-error>
+
+  
+
   </mat-form-field>
 
   <!-- Contraseña -->
