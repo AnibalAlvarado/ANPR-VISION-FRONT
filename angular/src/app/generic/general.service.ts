@@ -32,7 +32,7 @@ getUserId(): string | null {
 
   // GET
   get<T>(endpoint: string, params?: HttpParams): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params });
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params }); 
   }
 
   getById<T>(endpoint: string, id: number | string): Observable<T> {

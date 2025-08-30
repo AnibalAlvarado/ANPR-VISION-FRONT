@@ -18,7 +18,7 @@ export class UserIndex implements OnInit {
 
 
 columns = [
-  { key: 'userName', label: 'Nombre de Usuario' },
+  { key: 'username', label: 'Nombre de Usuario' },
   { key: 'email', label: 'Email' },
   { key: 'personName', label: 'Persona' },
   { key: 'asset', label: 'Estado' },

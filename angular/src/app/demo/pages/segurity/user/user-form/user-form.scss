@@ -34,7 +34,9 @@ form {
   border-color: rgba(255, 255, 255, 0.3) !important;
   border-radius: 16px !important;
 }
-
+mat-error{
+  font-size: 1rem !important;
+}
 ::ng-deep mat-form-field .mat-mdc-form-field-outline-gap {
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
