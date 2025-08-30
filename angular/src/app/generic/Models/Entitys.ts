@@ -55,3 +55,13 @@ export interface Client extends IBaseEntity {
   name: string;
 }
 
+export interface RegisteredVehicle extends IBaseEntity {
+entryDate: string; // ISO 8601 format date string
+exitDate: string | null; // ISO 8601 format date string or null
+vehicleId: number;
+vehicle: string;
+slotsId: number;
+slots: string;
+}
+
+      

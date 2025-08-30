@@ -99,7 +99,7 @@ export const NavigationItems: NavigationItem[] = [
             id: 'RegisteredVehicles',
             title: 'Registros de Vehículos',
             type: 'item',
-            url: '/RegisteredVehicles-index'
+            url: '/registeredVehicle-index'
           },
 
            {
