@@ -43,6 +43,8 @@ import { VehicleIndex } from './demo/pages/operational/vehicles/vehicle-index/ve
 import { VehicleForm } from './demo/pages/operational/vehicles/vehicle-form/vehicle-form';
 import { ParkingManagement } from './demo/pages/parking-zone/parking-management/parking-management';
 import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
+import { HelpCenterComponent } from './help/help-center.component';
+import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
 
 const routes: Routes = [
   {
@@ -133,6 +135,10 @@ const routes: Routes = [
       {
         path: 'zonas-parqueadero',
         loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
+      },
+      {
+        path: 'help-center',
+        component: HelpCenterComponent
       }
     ]
   },
@@ -147,7 +153,9 @@ const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./demo/pages/authentication/sign-in/sign-in.component').then((c) => c.SignInComponent)
-      }
+      },
+      {path: 'reset-password', component: ResetPassword},
+
     ]
   }
 ];

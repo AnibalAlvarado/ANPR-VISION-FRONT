@@ -86,6 +86,11 @@ export class SignInComponent {
   });
 }
 
+restablecerContrasena() {
+    // Navega a la ruta de restablecimiento
+    this.router.navigate(['/reset-password']);
+  }
+
 }
 
 
