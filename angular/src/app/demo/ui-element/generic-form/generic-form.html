@@ -1,11 +1,14 @@
 <h2 *ngIf="title" class="form-title">
   {{ title }}
 </h2>
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <ng-container *ngFor="let field of config">
 
-    <!-- Campos de texto / número / teléfono -->
-    <mat-form-field *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"appearance="outline" style="width: 100%;">
+    <!-- Text, Tel, Number inputs -->
+    <mat-form-field *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"
+                    appearance="outline"
+                    style="width: 100%;">
       <mat-label>{{ field.label }}</mat-label>
       <input
         matInput
@@ -13,20 +16,28 @@
         [formControlName]="field.name"
         [required]="!!field.required">
 
-      <!-- Itera sobre todas las validaciones del campo para mostrar los mensajes -->
-      <!-- <mat-error *ngFor="let val of field.validations" 
-                 [ngIf]="form.get(field.name)?.hasError(val.validator)">
-        {{ val.message }}
-      </mat-error> -->
-        <mat-error *ngFor="let validation of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(validation.validator)" >
-            {{ validation.message }}
+      <!-- Errores de validaciones configuradas -->
+      <mat-error *ngFor="let validation of field.validations" class="error-message">
+        <ng-container *ngIf="form.get(field.name)?.hasError(validation.validator)">
+          <span *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else objectError">
+            {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
           </span>
-        </mat-error>
+          <ng-template #objectError>
+            {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+          </ng-template>
+        </ng-container>
+      </mat-error>
+
+      <!-- Error específico de uniqueName (agregar clase error-message) -->
+      <mat-error *ngIf="form.get(field.name)?.hasError('uniqueName')" class="error-message">
+        {{ form.get(field.name)?.getError('uniqueName') }}
+      </mat-error>
     </mat-form-field>
 
     <!-- Textarea -->
-    <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline" style="width: 100%;">
+    <mat-form-field *ngIf="field.type === 'textarea'"
+                    appearance="outline"
+                    style="width: 100%;">
       <mat-label>{{ field.label }}</mat-label>
       <textarea
         matInput
@@ -34,20 +45,26 @@
         [required]="!!field.required"
         rows="4"></textarea>
 
-      <!-- Itera sobre todas las validaciones del campo para mostrar los mensajes -->
-      <!-- <mat-error *ngFor="let val of field.validations" 
-                 [ngIf]="form.get(field.name)?.hasError(val.validator)">
-        {{ val.message }}
-      </mat-error> -->
-      <mat-error *ngFor="let validation of field.validations" class="error-message" >
-        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" >
-          {{ validation.message }}
-        </span>
+      <!-- Errores de validaciones configuradas -->
+      <mat-error *ngFor="let validation of field.validations" class="error-message">
+        <ng-container *ngIf="form.get(field.name)?.hasError(validation.validator)">
+          <span *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else objectError">
+            {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+          </span>
+          <ng-template #objectError>
+            {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+          </ng-template>
+        </ng-container>
+      </mat-error>
+
+      <!-- Error específico de uniqueName -->
+      <mat-error *ngIf="form.get(field.name)?.hasError('uniqueName')" class="error-message">
+        {{ form.get(field.name)?.getError('uniqueName') }}
       </mat-error>
     </mat-form-field>
 
-    <!-- Select (soporta multiple) -->
-    <mat-form-field *ngIf="field.type === 'select'" appearance="outline" >
+    <!-- Select -->
+    <mat-form-field *ngIf="field.type === 'select'" appearance="outline" style="width: 100%;">
       <mat-label>{{ field.label }}</mat-label>
       <mat-select
         [formControlName]="field.name"
@@ -59,15 +76,21 @@
         </mat-option>
       </mat-select>
 
-      <!-- Itera sobre todas las validaciones del campo para mostrar los mensajes -->
-      <!-- <mat-error *ngFor="let val of field.validations"  
-                 [ngIf]="form.get(field.name)?.hasError(val.validator)">
-        {{ val.message }}
-      </mat-error> -->
+      <!-- Errores de validaciones configuradas -->
       <mat-error *ngFor="let validation of field.validations" class="error-message">
-        <span *ngIf="form.get(field.name)?.hasError(validation.validator)" >
-          {{ validation.message }}
-        </span>
+        <ng-container *ngIf="form.get(field.name)?.hasError(validation.validator)">
+          <span *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else objectError">
+            {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+          </span>
+          <ng-template #objectError>
+            {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+          </ng-template>
+        </ng-container>
+      </mat-error>
+
+      <!-- Error específico de uniqueName -->
+      <mat-error *ngIf="form.get(field.name)?.hasError('uniqueName')" class="error-message">
+        {{ form.get(field.name)?.getError('uniqueName') }}
       </mat-error>
     </mat-form-field>
 
@@ -82,7 +105,7 @@
   </ng-container>
 
   <div style="margin-top: 1rem;">
-    <button mat-raised-button color="primary" type="submit">
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || form.pending">
       {{ isEdit ? 'Actualizar' : 'Crear' }}
     </button>
     <button mat-button type="button" (click)="cancelForm.emit()">Cancelar</button>

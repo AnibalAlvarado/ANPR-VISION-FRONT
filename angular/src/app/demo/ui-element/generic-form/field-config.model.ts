@@ -26,5 +26,12 @@ export enum ValidatorNames {
   MaxLength = 'maxlength',
   Pattern = 'pattern',
   Min = 'min',
-  Max = 'max'
+  Max = 'max',
+   UniqueName = 'uniqueName' // <- Para verificar nombres duplicados
+}
+export interface FieldValidation {
+  validator: ValidatorNames | string; // Permitimos custom names
+  value?: any; 
+  message: string;
+  custom?: boolean; // true si el validador es propio del sistema   // Mensaje de error por defecto
 }

@@ -1,9 +1,9 @@
-
 <app-generic-form
-   [title]="'Formularios'"
+  [title]="'Formularios'"
   [config]="formConfig"
   [isEdit]="isEdit"
   [initialData]="initialData"
+  [uniqueCheck]="uniqueCheck"   
   (saveForm)="save($event)"
   (cancelForm)="cancel()">
 </app-generic-form>
