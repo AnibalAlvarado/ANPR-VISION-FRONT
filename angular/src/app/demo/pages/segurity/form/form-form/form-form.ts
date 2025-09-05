@@ -9,6 +9,7 @@ import { UniqueCheckService } from 'src/app/demo/ui-element/generic-form/unique-
 
 @Component({
   selector: 'app-form-form',
+  standalone: true,                
   imports: [GenericForm],
   templateUrl: './form-form.html',
   styleUrl: './form-form.scss'
@@ -21,10 +22,10 @@ export class FormForm implements OnInit {
       type: 'text',
       required: true,
       validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'El nombre debe tener al menos 3 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' },
+        { name: ValidatorNames.Required,   validator: ValidatorNames.Required,   message: 'El nombre es obligatorio.' },
+        { name: ValidatorNames.MinLength,  validator: ValidatorNames.MinLength,  value: 3,  message: 'El nombre debe tener al menos 3 caracteres.' },
+        { name: ValidatorNames.MaxLength,  validator: ValidatorNames.MaxLength,  value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
+        { name: ValidatorNames.Pattern,    validator: ValidatorNames.Pattern,    value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' },
         { name: ValidatorNames.UniqueName, validator: ValidatorNames.UniqueName, message: 'El nombre ya existe.' }
       ]
     },
@@ -34,10 +35,10 @@ export class FormForm implements OnInit {
       type: 'text',
       required: true,
       validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Required,   validator: ValidatorNames.Required,   message: 'La descripción es obligatoria.' },
+        { name: ValidatorNames.MinLength,  validator: ValidatorNames.MinLength,  value: 5,   message: 'La descripción debe tener al menos 5 caracteres.' },
+        { name: ValidatorNames.MaxLength,  validator: ValidatorNames.MaxLength,  value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
+        { name: ValidatorNames.Pattern,    validator: ValidatorNames.Pattern,    value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -50,15 +51,15 @@ export class FormForm implements OnInit {
   ];
 
   isEdit = false;
-  initialData: unknown = {};
+  initialData: Partial<Form> = {};   
 
-  private service = inject(General);
-  private route = inject(Router);
+  private service        = inject(General);
+  private router         = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-  private uniqueService = inject(UniqueCheckService); 
+  private uniqueService  = inject(UniqueCheckService); 
 
   constructor() {
-    console.log('FormForm constructor - uniqueService injected:', this.uniqueService);
+  
   }
 
   ngOnInit(): void {
@@ -73,53 +74,50 @@ export class FormForm implements OnInit {
         });
     }
   }
-
-  // Función que usará el GenericForm para validar unicidad
-  uniqueCheck = (fieldName: string, value: unknown, formValue: unknown) => {
-    console.log(`FormForm uniqueCheck called - Field: ${fieldName}, Value: ${value}`);
-    console.log('FormValue:', formValue);
-    
-    const result = this.uniqueService.checkUnique('Form', fieldName, value, formValue);
-    
-    // Agregar logging para ver qué responde la API
-    result.subscribe(
-      response => console.log(`UniqueCheck response for ${fieldName}:`, response),
-      error => console.error(`UniqueCheck error for ${fieldName}:`, error)
-    );
-    
-    return result;
-  };
+  uniqueCheck = (fieldName: string, value: unknown, formValue: unknown) =>
+    this.uniqueService.checkUnique('Form', fieldName, value, formValue);
 
   save(data: unknown) {
-    console.log('FormForm save called with data:', data);
-    
     if (this.isEdit) {
-      this.service.put('Form', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/form-index']);
+      this.service.put('Form', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/form-index']);
+        },
+        error: (err) => {
+          
+          console.error('POST/PUT error:', err);
+          Swal.fire('Error', 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
       delete (data as { id?: unknown }).id;
-      this.service.post('Form', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/form-index']);
+      this.service.post('Form', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/form-index']);
+        },
+        error: (err) => {
+          console.error('POST/PUT error:', err);
+          Swal.fire('Error', 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/form-index']);
+    this.router.navigate(['/form-index']);
   }
 }

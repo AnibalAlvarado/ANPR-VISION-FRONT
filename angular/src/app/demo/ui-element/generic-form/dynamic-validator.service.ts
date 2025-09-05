@@ -8,9 +8,8 @@ import {
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import {  map } from 'rxjs/operators';
-import { ValidatorNames } from './field-config.model'; // tu enum
+import { ValidatorNames } from './field-config.model'; 
 
-// Tipo que debe respetar la función que el padre pase
 export type UniqueCheckFn = (
   fieldName: string,
   value: unknown,
@@ -24,10 +23,7 @@ export class DynamicValidatorService {
 
   constructor() {}
 
-  /**
-   * Retorna sync y async validators basados en la configuración.
-   * Si se pasa uniqueCheck, se crea un AsyncValidator para uniqueName.
-   */
+
   getValidators(
     validations?: { name: string; validator: string; message: string; value?: unknown }[],
     uniqueCheck?: UniqueCheckFn,
@@ -99,7 +95,7 @@ private uniqueNameAsyncValidator(uniqueCheck: UniqueCheckFn, fieldName: string):
     return uniqueCheck(fieldName, raw, formValue).pipe(
       map(res => {
         if (res.exists) {
-          return { uniqueName: res.message }; 
+          return { uniqueName: { message: res.message ?? `${fieldName} ya está en uso` } };
         }
         return null;
       })
@@ -107,12 +103,6 @@ private uniqueNameAsyncValidator(uniqueCheck: UniqueCheckFn, fieldName: string):
   };
 }
 
-
-
-  /**
-   * Fallback síncrono para pruebas: compara contra una lista fija.
-   * Devuelve objeto con string para que la plantilla pueda mostrarlo.
-   */
   private uniqueNameSyncFallback(message?: string): ValidatorFn {
     const nombresExistentes = ['Dashboard', 'Usuarios', 'Reportes'];
     return (control: AbstractControl) => {

@@ -1,9 +1,9 @@
-
 <app-generic-form
-  [title]="'Categorías del Parqueadero'"
+  [title]="isEdit ? 'Editar Categorías del Parqueadero' : 'Crear Categorías del Parqueadero'"
   [config]="formConfig"
   [isEdit]="isEdit"
   [initialData]="initialData"
+  [uniqueCheck]="uniqueCheck"
   (saveForm)="save($event)"
   (cancelForm)="cancel()">
 </app-generic-form>

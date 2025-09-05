@@ -6,9 +6,11 @@ import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
 import { Module } from 'src/app/generic/Models/Entitys';
+import { UniqueCheckService } from 'src/app/demo/ui-element/generic-form/unique-check.service';
 
 @Component({
   selector: 'app-module-form',
+  standalone: true,
   imports: [GenericForm],
   templateUrl: './module-form.html',
   styleUrl: './module-form.scss'
@@ -21,10 +23,11 @@ export class ModuleForm implements OnInit {
       type: 'text',
       required: true,
       validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'El nombre debe tener al menos 3 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Required,   validator: ValidatorNames.Required,   message: 'El nombre es obligatorio.' },
+        { name: ValidatorNames.MinLength,  validator: ValidatorNames.MinLength,  value: 3,  message: 'El nombre debe tener al menos 3 caracteres.' },
+        { name: ValidatorNames.MaxLength,  validator: ValidatorNames.MaxLength,  value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
+        { name: ValidatorNames.Pattern,    validator: ValidatorNames.Pattern,    value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' },
+        { name: ValidatorNames.UniqueName, validator: ValidatorNames.UniqueName, message: 'El nombre ya existe.' }
       ]
     },
     {
@@ -33,27 +36,28 @@ export class ModuleForm implements OnInit {
       type: 'text',
       required: true,
       validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Required,   validator: ValidatorNames.Required,   message: 'La descripción es obligatoria.' },
+        { name: ValidatorNames.MinLength,  validator: ValidatorNames.MinLength,  value: 5,   message: 'La descripción debe tener al menos 5 caracteres.' },
+        { name: ValidatorNames.MaxLength,  validator: ValidatorNames.MaxLength,  value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
+        { name: ValidatorNames.Pattern,    validator: ValidatorNames.Pattern,    value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
     {
-       name: 'asset',
-        label: 'Activo',
-        type: 'toggle',
-        value: true,
-        hidden: true   // <-- Esto lo mantiene oculto
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
     }
   ];
 
   isEdit = false;
-  initialData: any = {};
+  initialData: Partial<Module> = {};
 
-  private service = inject(General);
-  private route = inject(Router);
+  private service        = inject(General);
+  private router         = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private uniqueService  = inject(UniqueCheckService);
 
   constructor() {}
 
@@ -70,34 +74,49 @@ export class ModuleForm implements OnInit {
     }
   }
 
-  save(data: any) {
+   uniqueCheck = (fieldName: string, value: unknown, formValue: unknown) =>
+    this.uniqueService.checkUnique('Module', fieldName, value, formValue);
+
+  save(data: unknown) {
     if (this.isEdit) {
-      this.service.put('Module', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/module-index']);
+      this.service.put('Module', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/module-index']);
+        },
+        error: (err) => {
+          console.error('POST/PUT error:', err);
+          Swal.fire('Error', 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Module', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/module-index']);
+      delete (data as { id?: unknown }).id;
+      this.service.post('Module', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/module-index']);
+        },
+        error: (err) => {
+          console.error('POST/PUT error:', err);
+          Swal.fire('Error', 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/module-index']);
+    this.router.navigate(['/module-index']);
   }
 }

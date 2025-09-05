@@ -1,9 +1,10 @@
 
 <app-generic-form
-  [title]="' Modulos'"
+  [title]="isEdit ? 'Editar Modulo' : 'Crear Modulo'"
   [config]="formConfig"
   [isEdit]="isEdit"
   [initialData]="initialData"
+  [uniqueCheck]="uniqueCheck"
   (saveForm)="save($event)"
   (cancelForm)="cancel()">
 </app-generic-form>

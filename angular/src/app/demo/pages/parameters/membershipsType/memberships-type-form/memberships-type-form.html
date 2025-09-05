@@ -1,9 +1,9 @@
-
 <app-generic-form
-  [title]="'Tipo de Membresías'"
+  [title]="isEdit ? 'Editar tipo Membresías' : 'Crear tipo Membresías'"
   [config]="formConfig"
   [isEdit]="isEdit"
   [initialData]="initialData"
+  [uniqueCheck]="uniqueCheck"
   (saveForm)="save($event)"
   (cancelForm)="cancel()">
 </app-generic-form>

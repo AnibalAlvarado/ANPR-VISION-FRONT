@@ -2,95 +2,124 @@
   {{ title }}
 </h2>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <ng-container *ngFor="let field of config">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <ng-container *ngFor="let field of config; trackBy: trackByName">
 
-    <!-- Text, Tel, Number inputs -->
-    <mat-form-field *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"
-                    appearance="outline"
-                    style="width: 100%;">
+    <!-- Text, Tel, Number -->
+    <mat-form-field
+      *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"
+      appearance="outline"
+      style="width: 100%;"
+    >
       <mat-label>{{ field.label }}</mat-label>
       <input
         matInput
         [type]="field.type"
         [formControlName]="field.name"
-        [required]="!!field.required">
+        [required]="!!field.required"
+      />
 
-      <!-- Errores de validaciones configuradas -->
-      <mat-error *ngFor="let validation of field.validations" class="error-message">
-        <ng-container *ngIf="form.get(field.name)?.hasError(validation.validator)">
-          <span *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else objectError">
-            {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
-          </span>
-          <ng-template #objectError>
-            {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
-          </ng-template>
+      <!-- Errores (excluye uniqueName) -->
+      <ng-container *ngFor="let validation of field.validations">
+        <ng-container *ngIf="validation.validator !== 'uniqueName'">
+          <mat-error class="error-message"
+            *ngIf="form.get(field.name)?.hasError(validation.validator)
+                   && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+            <ng-container *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else textErrObj">
+              {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+            </ng-container>
+            <ng-template #textErrObj>
+              {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+            </ng-template>
+          </mat-error>
         </ng-container>
-      </mat-error>
+      </ng-container>
 
-      <!-- Error específico de uniqueName (agregar clase error-message) -->
-      <mat-error *ngIf="form.get(field.name)?.hasError('uniqueName')" class="error-message">
-        {{ form.get(field.name)?.getError('uniqueName') }}
+      <!-- Único bloque para uniqueName -->
+      <mat-error class="error-message"
+        *ngIf="form.get(field.name)?.hasError('uniqueName')
+               && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+        {{ form.get(field.name)?.getError('uniqueName')?.message }}
       </mat-error>
     </mat-form-field>
 
     <!-- Textarea -->
-    <mat-form-field *ngIf="field.type === 'textarea'"
-                    appearance="outline"
-                    style="width: 100%;">
+    <mat-form-field
+      *ngIf="field.type === 'textarea'"
+      appearance="outline"
+      style="width: 100%;"
+    >
       <mat-label>{{ field.label }}</mat-label>
       <textarea
         matInput
         [formControlName]="field.name"
         [required]="!!field.required"
-        rows="4"></textarea>
+        rows="4"
+      ></textarea>
 
-      <!-- Errores de validaciones configuradas -->
-      <mat-error *ngFor="let validation of field.validations" class="error-message">
-        <ng-container *ngIf="form.get(field.name)?.hasError(validation.validator)">
-          <span *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else objectError">
-            {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
-          </span>
-          <ng-template #objectError>
-            {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
-          </ng-template>
+      <!-- Errores (excluye uniqueName) -->
+      <ng-container *ngFor="let validation of field.validations">
+        <ng-container *ngIf="validation.validator !== 'uniqueName'">
+          <mat-error class="error-message"
+            *ngIf="form.get(field.name)?.hasError(validation.validator)
+                   && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+            <ng-container *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else areaErrObj">
+              {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+            </ng-container>
+            <ng-template #areaErrObj>
+              {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+            </ng-template>
+          </mat-error>
         </ng-container>
-      </mat-error>
+      </ng-container>
 
-      <!-- Error específico de uniqueName -->
-      <mat-error *ngIf="form.get(field.name)?.hasError('uniqueName')" class="error-message">
-        {{ form.get(field.name)?.getError('uniqueName') }}
+      <!-- Único bloque para uniqueName -->
+      <mat-error class="error-message"
+        *ngIf="form.get(field.name)?.hasError('uniqueName')
+               && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+        {{ form.get(field.name)?.getError('uniqueName')?.message }}
       </mat-error>
     </mat-form-field>
 
     <!-- Select -->
-    <mat-form-field *ngIf="field.type === 'select'" appearance="outline" style="width: 100%;">
+    <mat-form-field
+      *ngIf="field.type === 'select'"
+      appearance="outline"
+      style="width: 100%;"
+    >
       <mat-label>{{ field.label }}</mat-label>
       <mat-select
         [formControlName]="field.name"
         [required]="!!field.required"
         [multiple]="!!field.multiple"
-        [compareWith]="compareByValue">
+        [compareWith]="compareByValue"
+      >
         <mat-option *ngFor="let opt of field.options" [value]="opt.value">
           {{ opt.label }}
         </mat-option>
       </mat-select>
 
-      <!-- Errores de validaciones configuradas -->
-      <mat-error *ngFor="let validation of field.validations" class="error-message">
-        <ng-container *ngIf="form.get(field.name)?.hasError(validation.validator)">
-          <span *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else objectError">
-            {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
-          </span>
-          <ng-template #objectError>
-            {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
-          </ng-template>
+      <!-- Errores (excluye uniqueName) -->
+      <ng-container *ngFor="let validation of field.validations">
+        <ng-container *ngIf="validation.validator !== 'uniqueName'">
+          <mat-error class="error-message"
+            *ngIf="form.get(field.name)?.hasError(validation.validator)
+                   && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+            <ng-container *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else selectErrObj">
+              {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+            </ng-container>
+            <ng-template #selectErrObj>
+              {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+            </ng-template>
+          </mat-error>
         </ng-container>
-      </mat-error>
+      </ng-container>
 
-      <!-- Error específico de uniqueName -->
-      <mat-error *ngIf="form.get(field.name)?.hasError('uniqueName')" class="error-message">
-        {{ form.get(field.name)?.getError('uniqueName') }}
+      <!-- Único bloque para uniqueName -->
+      <mat-error class="error-message"
+        *ngIf="form.get(field.name)?.hasError('uniqueName')
+               && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+        {{ form.get(field.name)?.getError('uniqueName')?.message }}
       </mat-error>
     </mat-form-field>
 
@@ -98,13 +127,15 @@
     <mat-slide-toggle
       *ngIf="field.type === 'toggle' && !field.hidden"
       [formControlName]="field.name"
-      color="primary">
+      color="primary"
+    >
       {{ field.label }}
     </mat-slide-toggle>
 
   </ng-container>
 
   <div style="margin-top: 1rem;">
+    <!-- Puedes dejarlo así, el submit esperará PENDING -->
     <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || form.pending">
       {{ isEdit ? 'Actualizar' : 'Crear' }}
     </button>

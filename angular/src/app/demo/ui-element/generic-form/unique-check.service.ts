@@ -1,19 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpParams } from '@angular/common/http';
+import { HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { General } from 'src/app/generic/general.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class UniqueCheckService {
   private generalService = inject(General);
 
-  /**
-   * Verifica si un valor ya existe para cualquier entidad.
-   * Captura el mensaje del backend incluso si success = false.
-   */
   checkUnique(
     entity: string,
     fieldName: string,
@@ -25,35 +19,35 @@ export class UniqueCheckService {
     }
 
     const params = new HttpParams()
-      .set(fieldName, String(value))
-      .set('currentId', (formValue as { id?: string })?.id ?? '');
+      .set('field', fieldName)                                     
+      .set('value', String(value))                                  
+      .set('currentId', (formValue as { id?: string })?.id ?? '');  
 
     return this.generalService
       .get<{ success: boolean; exists?: boolean; message?: string }>(
-        `${entity}/check`,
+        `${entity}/check`,  
         params
       )
       .pipe(
         map((r) => {
-          // Si la API devuelve success=false, lo tratamos como error
           if (!r.success) {
-            return { exists: true, message: r.message };
+            return { exists: true, message: r.message ?? `${fieldName} ya está en uso` };
           }
           return { exists: !!r.exists, message: r.message ?? `${fieldName} ya está en uso` };
         }),
-        catchError(() =>
-          of({
-            exists: false,
-            message: `Error validando el ${fieldName}`
-          })
-        )
-      );
-  }
+       catchError((err: HttpErrorResponse) => {
+        const serverError = err.status >= 500 && err.status < 600;
+        const apiMsg =
+        (err?.error?.errors?.value?.[0]) ||
+        (err?.error?.errors?.field?.[0]) ||
+        err?.error?.title ||
+        `Error validando el ${fieldName}`;
+        return of({
+        exists: serverError ? false : true, 
+        message: apiMsg
+        });
+      })
 
-  /**
-   * Verifica si el valor es string.
-   */
-  isString(value: unknown): value is string {
-    return typeof value === 'string';
+      );
   }
 }
