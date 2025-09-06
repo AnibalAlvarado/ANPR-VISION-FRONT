@@ -14,7 +14,6 @@ Iniciar sesión</h4>
        [(ngModel)]="LoginDto.username"
        name="username"
        required />
-              <!-- <input type="email" class="form-control input-registro" placeholder="Nombre de Usuario" aria-label="Username" aria-describedby="basic-addon1" /> -->
             </div>
             <div class="input-group mb-4">
               <span class="input-group-text fondo-icono" id="basic-addon3"><i class="feather icon-lock"></i></span>
@@ -23,16 +22,9 @@ Iniciar sesión</h4>
        [(ngModel)]="LoginDto.password"
        name="password"
        required />
-              <!-- <input type="password" class="form-control input-registro" placeholder="
-Contraseña" aria-label="Username" aria-describedby="basic-addon3" /> -->
+
             </div>
-            <!-- <div class="form-group text-start mt-2">
-              <div class="checkbox checkbox-primary d-inline">
-                <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="" />
-                <label for="checkbox-fill-a1" class="cr">
-Guardar credenciales</label>
-              </div>
-            </div> -->
+
             <div class="d-grid bttn-inicio-sesion">
               <button class="btn btn-block btn-primary mb-4" (click)="login()">Iniciar sesión
 </button>
@@ -40,12 +32,11 @@ Guardar credenciales</label>
             <p class="mb-2 text-muted color-p"
             >
               ¿Olvidaste tu contraseña?
-              <a href="javascriprt:" class="f-w-400">Restablecer</a>
+               <button type="button" class="btn btn-primary btn-sm f-w-400" (click)="restablecerContrasena()">
+                Restablecer
+              </button>
             </p>
-            <!-- <p class="mb-0 text-muted color-p">
-             ¿No tienes cuenta?
-              <a [routerLink]="['/register']" class="f-w-400">Regístrate</a>
-            </p> -->
+
           </div>
         </div>
       </div>

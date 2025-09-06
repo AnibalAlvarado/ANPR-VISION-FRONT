@@ -99,7 +99,7 @@ export const NavigationItems: NavigationItem[] = [
             id: 'RegisteredVehicles',
             title: 'Registros de Vehículos',
             type: 'item',
-            url: '/RegisteredVehicles-index'
+            url: '/registeredVehicle-index'
           },
 
            {
@@ -269,7 +269,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'apexchart',
         title: 'Ayuda',
         type: 'item',
-        url: '/ayuda',
+        url: '/help-center',
         classes: 'nav-item',
         icon: 'feather icon-help-circle'
       },

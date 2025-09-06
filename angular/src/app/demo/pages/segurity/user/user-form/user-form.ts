@@ -159,7 +159,7 @@ export class UserForm implements OnInit {
 
   }
 
-  
+
   ngOnInit(): void {
     this.getAllPersons();
     this.form.get('userName')?.updateValueAndValidity();
@@ -179,7 +179,7 @@ export class UserForm implements OnInit {
           const userData = { ...response.data, password: '' };
           this.originalPassword = response.data.password;
           this.form.patchValue(userData);
-        
+
            this.form.get('email')?.updateValueAndValidity({ onlySelf: true, emitEvent: true });
         }
       });
@@ -324,5 +324,5 @@ save(): void {
     }
   }
 
-  
+
 }

@@ -42,10 +42,9 @@ import { SlotsForm } from './demo/pages/parameters/slots/slots-form/slots-form';
 import { VehicleIndex } from './demo/pages/operational/vehicles/vehicle-index/vehicle-index';
 import { VehicleForm } from './demo/pages/operational/vehicles/vehicle-form/vehicle-form';
 import { ParkingManagement } from './demo/pages/parking-zone/parking-management/parking-management';
-
-
-
-
+import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
+import { HelpCenterComponent } from './help/help-center.component';
+import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
 
 const routes: Routes = [
   {
@@ -56,11 +55,6 @@ const routes: Routes = [
         path: '',
         redirectTo: '/login',
         pathMatch: 'full'
-      },
-     {
-        path: 'help',
-        loadChildren: () =>
-          import('./help/help.module').then(m => m.HelpModule)
       },
       {
         path: 'analytics',
@@ -126,8 +120,7 @@ const routes: Routes = [
       {path: 'vehicles-form', component: VehicleForm},
       {path: 'vehicles-form/:id', component: VehicleForm},
       {path: 'parking-management', component: ParkingManagement},
-      
-      
+      {path: 'registeredVehicle-index', component: RegisteredVehicleIndex},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
@@ -142,6 +135,10 @@ const routes: Routes = [
       {
         path: 'zonas-parqueadero',
         loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
+      },
+      {
+        path: 'help-center',
+        component: HelpCenterComponent
       }
     ]
   },
@@ -156,7 +153,9 @@ const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./demo/pages/authentication/sign-in/sign-in.component').then((c) => c.SignInComponent)
-      }
+      },
+      {path: 'reset-password', component: ResetPassword},
+
     ]
   }
 ];
