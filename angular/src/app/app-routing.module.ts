@@ -45,6 +45,8 @@ import { ParkingManagement } from './demo/pages/parking-zone/parking-management/
 import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
 import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
+import { ClientIndex } from './demo/pages/segurity/client/client-index/client-index';
+import { ClientForm } from './demo/pages/segurity/client/client-form/client-form';
 
 const routes: Routes = [
   {
@@ -121,6 +123,9 @@ const routes: Routes = [
       {path: 'vehicles-form/:id', component: VehicleForm},
       {path: 'parking-management', component: ParkingManagement},
       {path: 'registeredVehicle-index', component: RegisteredVehicleIndex},
+      {path: 'client-index', component: ClientIndex},
+      {path: 'client-form', component: ClientForm},
+      {path: 'client-form/:id', component: ClientForm},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

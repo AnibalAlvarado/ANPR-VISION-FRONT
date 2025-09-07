@@ -21,6 +21,8 @@ export class ResetPassword {
   loading = false;
   message = '';
   email = '';
+  rateLimited = false;
+
 
   // === INYECCIÓN DE DEPENDENCIAS ===
   private fb = inject(FormBuilder);
@@ -158,12 +160,29 @@ export class ResetPassword {
     });
   }
 
+  // private getErrorMessage(error: any, defaultMessage: string): string {
+  //   if (error?.error?.message) {
+  //     return `❌ ${error.error.message}`;
+  //   }
+  //   return `❌ ${defaultMessage}`;
+  // }
+
   private getErrorMessage(error: any, defaultMessage: string): string {
-    if (error?.error?.message) {
-      return `❌ ${error.error.message}`;
-    }
-    return `❌ ${defaultMessage}`;
+  let msg = `❌ ${defaultMessage}`;
+
+  if (error?.error?.message) {
+    msg = `❌ ${error.error.message}`;
   }
+
+  // ✅ Detectar si es el mensaje del límite de 5 códigos
+  const normalized = (error?.error?.message || '').toLowerCase();
+  if (normalized.includes('límite de 5 códigos')) {
+    this.rateLimited = true;   // <-- bandera para deshabilitar el botón
+  }
+
+  return msg;
+}
+
 
   private startCodeTimer(): void {
     // Timer para reenvío de código (opcional)

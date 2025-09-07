@@ -246,6 +246,12 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/BackList-index'
           },
+          {
+            id: 'Clientes',
+            title: 'Clientes',
+            type: 'item',
+            url: '/client-index'
+          },
 
         ]
       }

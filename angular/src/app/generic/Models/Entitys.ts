@@ -50,7 +50,7 @@ export interface Vehicle extends IBaseEntity {
 }
 
 export interface Client extends IBaseEntity {
-  personaId: number;
+  personId: number;
   person: string;
   name: string;
 }
@@ -63,5 +63,3 @@ vehicle: string;
 slotsId: number;
 slots: string;
 }
-
-      
