@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GenericForm } from './generic-form';
+import { CameraForm } from './camera-form';
 
-describe('GenericForm', () => {
-  let component: GenericForm;
-  let fixture: ComponentFixture<GenericForm>;
+describe('CameraForm', () => {
+  let component: CameraForm;
+  let fixture: ComponentFixture<CameraForm>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GenericForm]
+      imports: [CameraForm]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(GenericForm);
+    fixture = TestBed.createComponent(CameraForm);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

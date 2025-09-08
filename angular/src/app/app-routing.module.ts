@@ -47,6 +47,13 @@ import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
 import { ClientIndex } from './demo/pages/segurity/client/client-index/client-index';
 import { ClientForm } from './demo/pages/segurity/client/client-form/client-form';
+import { BlackListForm } from './demo/pages/segurity/backlist/black-list-form/black-list-form';
+import { CameraIndex } from './demo/pages/cameras/camera-index/camera-index';
+import { CameraForm } from './demo/pages/cameras/camera-form/camera-form';
+import { MemberShipsIndex } from './demo/pages/operational/memberShips/member-ships-index/member-ships-index';
+import { MemberShipsForm } from './demo/pages/operational/memberShips/member-ships-form/member-ships-form';
+import { RatesIndex } from './demo/pages/operational/rates/rates-index/rates-index';
+import { RatesForm } from './demo/pages/operational/rates/rates-form/rates-form';
 
 const routes: Routes = [
   {
@@ -126,6 +133,18 @@ const routes: Routes = [
       {path: 'client-index', component: ClientIndex},
       {path: 'client-form', component: ClientForm},
       {path: 'client-form/:id', component: ClientForm},
+      {path: 'blackList-index', component: BackListIndex},
+      {path: 'blackList-form', component: BlackListForm},
+      {path: 'blackList-form/:id', component: BlackListForm},
+      {path: 'cameras-index', component: CameraIndex},
+      {path: 'cameras-form', component: CameraForm},
+      {path: 'cameras-form/:id', component: CameraForm},
+      {path: 'memberShips-index', component: MemberShipsIndex},
+      {path: 'memberShips-form', component: MemberShipsForm},
+      {path: 'memberShips-form/:id', component: MemberShipsForm},
+      {path: 'rates-index', component: RatesIndex},
+      {path: 'rates-form', component: RatesForm},
+      {path: 'rates-form/:id', component: RatesForm},
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

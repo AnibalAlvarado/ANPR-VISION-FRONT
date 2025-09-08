@@ -63,3 +63,47 @@ vehicle: string;
 slotsId: number;
 slots: string;
 }
+
+export interface BlackList extends IBaseEntity {
+  vehicleId: number;
+  vehicle: string;
+  reason: string;
+  restrictionDate: string; // ISO 8601 format date string
+}
+
+export interface Camera extends IBaseEntity {
+  name: string;
+  resolution: string;
+  url: string;
+   parkingId: number;
+  parking: string;
+}
+
+export interface MemberShips extends IBaseEntity {
+startDate: string; // ISO 8601 format date string
+EndDate: string; // ISO 8601 format date string or null
+priceAtPurchase: number;
+durationDays: number;
+currency: string;
+membershipTypeId: number;
+membershipType: string;
+vehicleId: number;
+vehicle: string;
+}
+
+export interface Rates extends IBaseEntity {
+type: string;
+amount: number;
+starHour: string; // ISO 8601 format date string
+endHour: string; // ISO 8601 format date string
+year: number;
+parkingId: number;
+ratesTypeId: number;
+typeVehicleId: number;
+ratesType: string;
+typeVehicle: string;
+parking: string;
+name: string;
+}
+
+

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type FieldType = 'text' | 'tel' | 'number' | 'toggle' | 'textarea' | 'select';
+export type FieldType = 'text' | 'tel' | 'number' | 'toggle' | 'textarea' | 'select'| 'date' | 'time' ;
 
 export interface FieldConfig {
   name: string;
@@ -26,5 +26,6 @@ export enum ValidatorNames {
   MaxLength = 'maxlength',
   Pattern = 'pattern',
   Min = 'min',
-  Max = 'max'
+  Max = 'max',
+  MinDate = "MinDate"
 }

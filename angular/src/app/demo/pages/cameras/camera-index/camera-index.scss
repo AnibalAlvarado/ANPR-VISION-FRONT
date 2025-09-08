@@ -1,0 +1,146 @@
+.page { display: flex; flex-direction: column; gap: 16px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+  @media (max-width: 1100px) { grid-template-columns: 1fr; }
+}
+
+/* VISOR */
+.viewer {
+  background: #0f172a; color: #e5e7eb; border-radius: 12px; padding: 0;
+
+  .viewer-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.06);
+
+    .title {
+      min-width: 0;
+  gap: 10px;
+
+  span:nth-of-type(1), /* nombre */
+  .muted {             /* parking */
+    max-width: clamp(120px, 40vw, 520px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+    }
+    .muted { opacity: .7; font-weight: 500; }
+    .pill { margin-left: 10px; padding: 2px 8px; border-radius: 999px; background: #374151; font-size: .75rem; }
+    .pill.on { background: #064e3b; color: #86efac; }
+    .actions { display: flex; gap: 8px; }
+  }
+
+  .viewer .viewer-body {        /* por defecto: solo el stream */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 16px;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.viewer .viewer-body.has-details {  /* cuando se muestran detalles */
+  grid-template-columns: minmax(320px, 1fr) minmax(260px, 420px);
+}
+
+  .stream {
+    display: grid; place-items: center; height: 360px; border-radius: 10px;
+    background: #111827; border: 1px dashed rgba(255,255,255,.08);
+    mat-icon { font-size: 90px; height: 90px; width: 90px; opacity: .35; }
+  }
+
+.info {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.03);
+  margin-top: 20px;
+
+  .kv {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr); /* <- clave para ellipsis */
+    align-items: center;
+    gap: 12px;
+  }
+
+  .key { color: #9fb0c5; white-space: nowrap; }
+
+  .val {
+    justify-self: end;
+    text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;      /* … en desktop */
+    max-width: 100%;
+  }
+
+  .val.url {        /* valor URL: estilo mono y clickeable */
+    text-decoration: none;
+    color: #e5e7eb;
+  }
+
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .ok { color: #86efac; }
+
+  /* En pantallas pequeñas, deja que la URL haga wrap bonito */
+  @media (max-width: 640px) {
+    .val.url {
+      text-align: left;
+      justify-self: start;
+      white-space: normal;          /* permite varias líneas */
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+  }
+}
+}
+
+/* SIDEBAR */
+.sidebar {
+  padding: 12px; background: #0b1220; color: #e5e7eb; border-radius: 12px;
+
+  .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .label { font-weight: 600; }
+  .search { width: 100%; }
+
+  .cam-list { max-height: 560px; overflow: auto; }
+  .mat-list-option { border-radius: 10px; margin: 4px 0; background: rgba(255,255,255,.02); }
+
+  .cam-item {
+    display: grid; grid-template-columns: 1fr auto; gap: 8px; width: 100%;
+    .left { display: grid; gap: 3px; .name { font-weight: 600; } .meta { color: #93a3b5; } .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; } }
+    .right { display: flex; align-items: center; gap: 8px; }
+    .chip { padding: 2px 8px; border-radius: 999px; font-size: .75rem; background: #374151; color: #e5e7eb; }
+    .chip.on { background: #064e3b; color: #86efac; }
+  }
+}
+
+/* EMPTY */
+.empty {
+  display: grid; place-items: center; gap: 8px; padding: 40px;
+  color: #9fb0c5; background: #0b1220; border-radius: 12px;
+  mat-icon { font-size: 48px; width: 48px; height: 48px; opacity: .6; }
+}
+
+/* DRAWER */
+.drawer ::ng-deep .mat-drawer { width: 360px; background: #0f172a; color: #e5e7eb; }
+.drawer-content { padding: 16px; display: grid; gap: 12px; }
+.drawer-content h3 { margin: 0 0 10px 0; }
+.drawer-content .kv { display: flex; justify-content: space-between; }
+.drawer-content .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.drawer-actions { display: flex; gap: 8px; margin-top: 8px; }
+.cam-list .mat-list-item { cursor: default; }         /* la fila no es clickeable */
+.cam-list .mat-list-item.active {                      /* resalta la cámara activa */
+  background: rgba(255,255,255,.04);
+  border-radius: 10px;
+}
+
+/* Si quieres que literalmente solo el ojo reciba clics */
+.cam-item { display: grid; grid-template-columns: 1fr auto; gap: 8px; width: 100%; }
+.cam-item { pointer-events: none; }                   /* bloquea clics en el resto */
+.cam-item .right button { pointer-events: auto; }     /* permite clic en el ojo */

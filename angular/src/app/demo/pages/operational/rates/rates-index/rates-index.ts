@@ -4,21 +4,27 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
 import { General } from 'src/app/generic/general.service';
-import { BlackList } from 'src/app/generic/Models/Entitys';
+import { Rates } from 'src/app/generic/Models/Entitys';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-back-list-index',
+  selector: 'app-rates-index',
   imports: [GenericTable],
-  templateUrl: './back-list-index.html',
-  styleUrl: './back-list-index.scss'
+  templateUrl: './rates-index.html',
+  styleUrl: './rates-index.scss'
 })
-export class BackListIndex implements OnInit {
-dataSource = new MatTableDataSource<BlackList>();
+export class RatesIndex implements OnInit {
+dataSource = new MatTableDataSource<Rates>();
 columns = [
-  { key: 'vehicle', label: 'Vehículo' },
-  { key: 'reason', label: 'Razón' },
-  { key: 'restrictionDate', label: 'Fecha de Restriccion' },
+ { key: 'name', label: 'Nombre' },
+  { key: 'type', label: 'Tipo' },
+  { key: 'amount', label: 'Cantidad' },
+  { key: 'starHour', label: 'Hora de Inicio' },
+  { key: 'endHour', label: 'Hora de Fin' },
+  { key: 'year', label: 'Año' },
+    { key: 'ratesType', label: 'Tipo de Tarifa' },
+  { key: 'typeVehicle', label: 'Tipo de Vehículo' },
+  { key: 'parking', label: 'Parqueadero' },
   { key: 'asset', label: 'Estado' },
   { key: 'isDeleted', label: 'Eliminado Lógicamente' }
 ];
@@ -31,22 +37,22 @@ columns = [
 
   constructor() {}
  ngOnInit(): void {
-    this.getAllBlackList();
+    this.getAllMemberShips();
   }
 
- getAllBlackList(): void {
-  this._generalService.get<{ data: BlackList[] }>('BlackList/join').subscribe(response => {
+ getAllMemberShips(): void {
+  this._generalService.get<{ data: Rates[] }>('Rates/join').subscribe(response => {
     this.dataSource.data = response.data;
     this.dataSource.paginator = this.paginator;
   });
 }
 
 goToCreate(): void {
-  this.router.navigate(['/blackList-form']);
+  this.router.navigate(['/rates-form']);
 }
 
-goToEdit(form: BlackList): void {
-  this.router.navigate(['/blackList-form', form.id]);
+goToEdit(form: Rates): void {
+  this.router.navigate(['/rates-form', form.id]);
 }
 
 
@@ -62,9 +68,9 @@ deleteModule(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('BlackList', id).subscribe(() => {
+      this._generalService.delete('Rates', id).subscribe(() => {
         Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
-        this.getAllBlackList();
+        this.getAllMemberShips();
       });
     }
   });
@@ -82,9 +88,9 @@ deletePermanentModule(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('BlackList/permanent', id).subscribe(() => {
+      this._generalService.delete('Rates/permanent', id).subscribe(() => {
         Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
-        this.getAllBlackList();
+        this.getAllMemberShips();
       });
     }
   });

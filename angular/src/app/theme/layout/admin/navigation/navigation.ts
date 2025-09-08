@@ -44,7 +44,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'Cámaras',
         title: 'Cámaras',
         type: 'item',
-        url: '/Cámaras-index',
+        url: '/cameras-index',
         classes: 'nav-item',
         icon: 'feather icon-camera'
       },
@@ -87,13 +87,13 @@ export const NavigationItems: NavigationItem[] = [
             id: 'Memberships',
             title: 'Membresías',
             type: 'item',
-            url: '/Memberships-index'
+            url: '/memberShips-index'
           },
           {
             id: 'Rates',
             title: 'Tarifas',
             type: 'item',
-            url: '/Rates-index'
+            url: '/rates-index'
           },
           {
             id: 'RegisteredVehicles',
@@ -102,12 +102,12 @@ export const NavigationItems: NavigationItem[] = [
             url: '/registeredVehicle-index'
           },
 
-           {
-            id: 'HistoryVehicle',
-            title: 'Historial de Vehículos',
-            type: 'item',
-            url: '/HistoryVehicle-index'
-          },
+          //  {
+          //   id: 'HistoryVehicle',
+          //   title: 'Historial de Vehículos',
+          //   type: 'item',
+          //   url: '/HistoryVehicle-index'
+          // },
 
 
         ]
@@ -244,7 +244,7 @@ export const NavigationItems: NavigationItem[] = [
             id: 'BackList',
             title: 'Lista Negra',
             type: 'item',
-            url: '/BackList-index'
+            url: '/blackList-index'
           },
           {
             id: 'Clientes',
