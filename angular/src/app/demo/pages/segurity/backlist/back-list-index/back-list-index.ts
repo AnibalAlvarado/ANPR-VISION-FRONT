@@ -34,10 +34,12 @@ columns = [
     this.getAllBlackList();
   }
 
- getAllBlackList(): void {
+getAllBlackList(): void {
   this._generalService.get<{ data: BlackList[] }>('BlackList/join').subscribe(response => {
-    this.dataSource.data = response.data;
+    console.log('Nueva data:', response.data); // 🔍 revisar qué devuelve
+    this.dataSource.data = [...response.data]; // forzar refresh
     this.dataSource.paginator = this.paginator;
+    this.paginator.firstPage(); // asegurar que no quede en página vacía
   });
 }
 
