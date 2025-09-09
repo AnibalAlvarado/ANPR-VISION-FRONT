@@ -61,6 +61,15 @@ export class ResetPassword {
     });
   }
 
+
+  // (opcional) en (mousemove) del botón: setear las CSS vars
+onBtnMove(e: MouseEvent) {
+  const t = e.target as HTMLElement;
+  const rect = t.getBoundingClientRect();
+  t.style.setProperty('--x', `${e.clientX - rect.left}px`);
+  t.style.setProperty('--y', `${e.clientY - rect.top}px`);
+}
+
   // === VALIDADORES PERSONALIZADOS ===
   passwordsMatchValidator(form: FormGroup) {
     const newPassword = form.get('newPassword')?.value;

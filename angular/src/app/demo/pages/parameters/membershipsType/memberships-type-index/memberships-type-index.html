@@ -88,14 +88,13 @@
       class="parking-item"
       *ngFor="let membershipType of dataSource.data"
       [class.deleted-item]="membershipType.isDeleted">
-
-      <!-- Membership Type Card -->
-      <mat-card class="parking-card">
+      
+      <!-- Al hacer clic en la tarjeta se abre el panel de detalles -->
+      <mat-card class="parking-card" (click)="openDetails(membershipType)">
         <div class="parking-header">
           <div class="parking-info">
             <h2 class="parking-name">{{ membershipType.name }}</h2>
             <div class="parking-details">
-             
               <div class="detail-row" *ngIf="membershipType.description">
                 <mat-icon class="detail-icon">description</mat-icon>
                 <span class="detail-text">{{ membershipType.description }}</span>
@@ -112,7 +111,6 @@
           </div>
 
           <div class="parking-status-section">
-            <!-- Status Badge -->
             <div class="status-wrapper">
               <div
                 class="status-badge"
@@ -130,22 +128,20 @@
           </div>
         </div>
 
-        <!-- Deletion Warning -->
-        <div class="deletion-warning" *ngIf="membershipType.isDeleted">
+        <!-- Evita que el clic dentro de estas secciones abra el panel -->
+        <div class="deletion-warning" *ngIf="membershipType.isDeleted" (click)="$event.stopPropagation()">
           <mat-icon class="warning-icon">warning_amber</mat-icon>
           <span class="warning-text">Este tipo de membresía ha sido eliminado lógicamente del sistema</span>
         </div>
 
-        <!-- Actions Section -->
-        <div class="actions-section">
+        <div class="actions-section" (click)="$event.stopPropagation()">
           <div class="actions-wrapper">
-            <!-- Normal State Actions -->
             <ng-container *ngIf="!membershipType.isDeleted">
               <button
                 mat-raised-button
                 color="primary"
                 class="action-btn primary-action"
-                (click)="goToEdit(membershipType)"
+                (click)="goToEdit(membershipType); $event.stopPropagation()"
                 matTooltip="Editar tipo de membresía">
                 <mat-icon>edit</mat-icon>
                 <span>Editar</span>
@@ -155,14 +151,13 @@
                 mat-raised-button
                 color="warn"
                 class="action-btn danger-action"
-                (click)="deleteMembershipType(membershipType.id!)"
+                (click)="deleteMembershipType(membershipType.id!); $event.stopPropagation()"
                 matTooltip="Eliminar tipo de membresía">
                 <mat-icon>delete_outline</mat-icon>
                 <span>Eliminar</span>
               </button>
             </ng-container>
 
-            <!-- Deleted State Actions -->
             <ng-container *ngIf="membershipType.isDeleted">
               <button
                 mat-raised-button
@@ -186,7 +181,7 @@
                 mat-raised-button
                 color="accent"
                 class="action-btn permanent-action"
-                (click)="deletePermanentMembershipType(membershipType.id!)"
+                (click)="deletePermanentMembershipType(membershipType.id!); $event.stopPropagation()"
                 matTooltip="Eliminar permanentemente del sistema">
                 <mat-icon>delete_forever</mat-icon>
                 <span>Eliminar Permanente</span>
@@ -221,4 +216,91 @@
     </div>
   </div>
 
+  <!-- ========= OVERLAY DE DETALLES ========= -->
+  <div
+    class="detail-overlay"
+    *ngIf="selectedMembership"
+    tabindex="0"
+    (click)="closeDetails()"
+    (keydown.escape)="closeDetails()">
+
+    <div class="detail-panel" (click)="$event.stopPropagation()">
+      <div class="detail-header">
+        <div class="detail-title">
+          <mat-icon class="detail-title-icon">
+            {{ selectedMembership?.isDeleted ? 'delete' : (selectedMembership?.asset ? 'verified' : 'info') }}
+          </mat-icon>
+          <div class="detail-title-text">
+            <h3>{{ selectedMembership?.name }}</h3>
+            <span class="badge"
+                  [class.ok]="selectedMembership?.asset && !selectedMembership?.isDeleted"
+                  [class.warn]="!selectedMembership?.asset && !selectedMembership?.isDeleted"
+                  [class.err]="selectedMembership?.isDeleted">
+              {{ selectedMembership?.isDeleted ? 'Eliminado' : (selectedMembership?.asset ? 'Activo' : 'Inactivo') }}
+            </span>
+          </div>
+        </div>
+        <button type="button" class="detail-close" (click)="closeDetails()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-grid">
+          <div class="detail-card">
+            <mat-icon>description</mat-icon>
+            <div>
+              <div class="label">Descripción</div>
+              <div class="value">{{ selectedMembership?.description || '—' }}</div>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <div class="label">Duración</div>
+              <div class="value">{{ selectedMembership?.durationDaysBase }} días</div>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <mat-icon>attach_money</mat-icon>
+            <div>
+              <div class="label">Precio</div>
+              <div class="value">${{ selectedMembership?.priceBase | number:'1.2-2' }}</div>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <mat-icon>badge</mat-icon>
+            <div>
+              <div class="label">Estado</div>
+              <div class="value">
+                {{ selectedMembership?.isDeleted ? 'Eliminado' : (selectedMembership?.asset ? 'Activo' : 'Inactivo') }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <button mat-raised-button color="primary" (click)="goToEdit(selectedMembership)">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+
+          <button mat-raised-button color="warn" *ngIf="!selectedMembership?.isDeleted"
+                  (click)="deleteMembershipType(selectedMembership.id)">
+            <mat-icon>delete_outline</mat-icon>
+            Eliminar
+          </button>
+
+          <button mat-raised-button color="accent" *ngIf="selectedMembership?.isDeleted"
+                  (click)="deletePermanentMembershipType(selectedMembership.id)">
+            <mat-icon>delete_forever</mat-icon>
+            Eliminar Permanente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

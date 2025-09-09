@@ -1,592 +1,332 @@
-/* =========================== */
-/* CONTENEDOR PRINCIPAL        */
-/* =========================== */
-.table-container {
-  background-color: transparent;
-  // background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border-radius: 16px;
-  padding: 24px;
-  // box-shadow:
-  //   0 10px 40px rgba(0, 0, 0, 0.4),
-  //   0 2px 8px rgba(0, 0, 0, 0.3),
-  //   inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin: 16px 0;
-  position: relative;
-  overflow: hidden;
+/* ======================================================
+   NOVA GRID X — THEME OSCURO NEÓN (solo ESTILOS)
+   - 100% compatible con tu HTML actual (mismas clases)
+   - Animaciones suaves, brillos, glass y micro-interacciones
+   ====================================================== */
+
+/* -------- Tokens -------- */
+$bg-0: #0b0f1a;
+$bg-1: #0f1526;
+$panel: rgba(255,255,255,.06);
+
+$ink-1: #f2f6ff;
+$ink-2: #c8d2ff;
+$muted: #97a6c6;
+
+$violet: #8c5bff;
+$cyan:   #35d0ff;
+$mint:   #22ffbb;
+$ok:     #22c55e;
+$warn:   #ff5a76;
+
+$r-lg: 20px;
+$r:    14px;
+$r-sm: 10px;
+
+$tr: .28s cubic-bezier(.22,.7,.25,1);
+$sh-1: 0 22px 60px rgba(0,0,0,.45);
+$sh-2: 0 12px 30px rgba(0,0,0,.32);
+
+/* -------- Animaciones -------- */
+@keyframes fadeUp   { from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none} }
+@keyframes slideIn  { from{opacity:0; transform:translateX(-18px)} to{opacity:1; transform:none} }
+@keyframes waveLine { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes shimmer  { 0%{background-position:-180% 0} 100%{background-position:180% 0} }
+@keyframes pulseSoft{ 0%,100%{box-shadow:0 0 0 0 rgba($cyan,.0)} 50%{box-shadow:0 0 0 10px rgba($cyan,.12)} }
+@keyframes glow     { 0%,100%{filter:drop-shadow(0 0 0 rgba($cyan,.0))} 50%{filter:drop-shadow(0 0 8px rgba($cyan,.35))} }
+
+/* ======================================================
+   CONTENEDOR
+   ====================================================== */
+.table-container{
+  background:
+    radial-gradient(900px 380px at 110% -10%, rgba($cyan,.12), transparent 60%),
+    radial-gradient(720px 380px at -10% 120%, rgba($violet,.18), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:$r-lg;
+  padding:22px;
+  margin:16px 0;
+  position:relative; overflow:hidden;
+  box-shadow:$sh-1; animation:fadeUp .45s ease both;
+
+  &::before{
+    content:''; position:absolute; inset:0 0 auto 0; height:3px;
+    background: linear-gradient(90deg, $violet, $cyan, $mint, $cyan, $violet);
+    background-size:220% 100%; animation:waveLine 8s ease infinite;
+    opacity:.95;
+  }
+  &::after{
+    content:''; position:absolute; inset:-40% -12% auto -12%; height:58%;
+    background:
+      radial-gradient(700px 300px at 12% 0%, rgba($violet,.22), transparent 60%),
+      radial-gradient(800px 320px at 120% 20%, rgba($mint,.12), transparent 60%);
+    filter: blur(54px); pointer-events:none;
+  }
 }
 
-/* Cambiar color del valor seleccionado en el selector de "Items per page" */
-.styled-paginator .mat-mdc-select-value {
-  color: #ffffff !important; /* Blanco para contraste */
+/* ======================================================
+   HEADER (botón Nuevo)
+   ====================================================== */
+.table-header{
+  display:flex; justify-content:flex-end; align-items:center; gap:10px;
+  margin:0 0 16px;
 }
 
-/* Cambiar el color del icono (flecha) del select */
-.styled-paginator .mat-mdc-select-arrow {
-  color: #ffffff !important;
+/* --- Botón avanzado: halo + sheen + micro-elevación --- */
+@keyframes btnSheen {
+  0%   { transform: translateX(-140%) skewX(-20deg); opacity: 0; }
+  35%  { opacity: .85; }
+  60%  { opacity: .6; }
+  100% { transform: translateX(160%)  skewX(-20deg); opacity: 0; }
+}
+@keyframes btnGlow {
+  0%,100% { filter: drop-shadow(0 0 0 rgba($cyan,.0)); }
+  50%     { filter: drop-shadow(0 0 10px rgba($cyan,.38)); }
+}
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba($cyan,.0) }
+  50%      { box-shadow: 0 0 0 10px rgba($cyan,.12) }
 }
 
-/* Opcional: cambiar color de las opciones en el desplegable */
-.mat-mdc-select-panel .mat-mdc-option {
-  color: #ffffff !important;
-  background-color: #1e1e1e; /* Fondo oscuro para opciones */
+.new-user-btn{
+  --x:50%; --y:50%;
+  position:relative; overflow:hidden; isolation:isolate;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 18px; border:none; border-radius:14px; cursor:pointer;
+
+  font-weight:1000; letter-spacing:.02em; font-size:14px; color:#0a0d16;
+
+  background:
+    linear-gradient(140deg, $violet, $cyan) padding-box,
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08)) border-box;
+  border:1px solid transparent;
+
+  /* halo exterior suave */
+  &::before{
+    content:''; position:absolute; inset:-24px;
+    background:
+      radial-gradient(220px 120px at 20% 0%, rgba($violet,.30), transparent 60%),
+      radial-gradient(260px 140px at 120% 40%, rgba($cyan,.22), transparent 65%);
+    filter: blur(24px); opacity:.5; z-index:-1; pointer-events:none;
+    border-radius:24px;
+  }
+
+  /* destello sheen sin tocar HTML */
+  &::after{
+    content:''; position:absolute; top:0; bottom:0; left:0; width:70%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,.65) 45%,
+      rgba(255,255,255,.25) 55%,
+      transparent 100%);
+    filter: blur(1px); border-radius:inherit; opacity:0; pointer-events:none;
+  }
+
+  /* sombra / contorno */
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.35),
+    0 8px 20px rgba(53,208,255,.25),
+    inset 0 0 0 1px rgba(255,255,255,.06);
+
+  transition: transform $tr, box-shadow $tr, filter $tr;
+
+  &:hover{
+    transform: translateY(-2px) scale(1.015);
+    box-shadow:
+      0 20px 42px rgba(0,0,0,.45),
+      0 10px 28px rgba(53,208,255,.35),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+    &::after{ animation: btnSheen .9s ease forwards; }
+  }
+  &:active{
+    transform: translateY(0) scale(.99);
+    filter: saturate(1.05);
+  }
+  &:focus-visible{
+    outline: 2px solid rgba($cyan,.66);
+    outline-offset: 2px;
+  }
+
+  /* pulso sutil periódico */
+  animation: btnPulse 6s ease-in-out infinite;
+
+  i{
+    font-size: 16px; line-height:1; color:#06111a;
+    text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    animation: btnGlow 2.6s ease-in-out infinite;
+  }
+  span{
+    color:#06111a; text-shadow: 0 1px 0 rgba(255,255,255,.25);
+  }
 }
 
-.mat-mdc-select-panel .mat-mdc-option:hover {
-  background-color: #333333 !important;
+/* ======================================================
+   TABLA
+   ====================================================== */
+.styled-table{
+  width:100%; border-collapse:separate; border-spacing:0;
+  background: rgba(14,18,40,.96);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:$r; overflow:hidden; box-shadow:$sh-2;
 }
 
-
-.table-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(74, 158, 255, 0.5), transparent);
+/* Header sticky con brillo */
+tr[mat-header-row]{ position:sticky; top:0; z-index:2; box-shadow:0 1px 0 rgba(255,255,255,.08) }
+.mat-mdc-header-cell, .mat-header-cell{
+  background: linear-gradient(135deg, #1a2040, #222a55) !important;
+  color:#fff !important; font-weight:900 !important; font-size:12.5px !important;
+  letter-spacing:.1em; text-transform:uppercase; padding:16px 14px !important;
+  border-bottom:1px solid rgba(255,255,255,.08); position:relative;
+  &::after{
+    content:''; position:absolute; left:14px; right:14px; bottom:8px; height:2px;
+    background: linear-gradient(90deg, transparent, $mint, transparent);
+    opacity:0; transform:translateY(2px); transition:opacity $tr, transform $tr;
+  }
+  &:hover::after{ opacity:1; transform:none }
 }
 
-/* =========================== */
-/* HEADER DE LA TABLA          */
-/* =========================== */
-.table-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
+/* Filas + hover lineal con “rail” cian */
+.mat-mdc-row, .mat-row{
+  background: rgba(16,20,44,.86);
+  border-bottom:1px solid rgba(255,255,255,.06) !important;
+  transition: background $tr, transform $tr, box-shadow $tr;
+  animation:slideIn .36s ease both;
 
-.new-user-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.new-user-btn:hover {
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-.new-user-btn i {
-  font-size: 16px;
-}
-
-/* =========================== */
-/* TABLA PRINCIPAL             */
-/* =========================== */
-.styled-table {
-  width: 100%;
-  background: #1e1e1e;
-  border-radius: 12px;
-  overflow: hidden;
-  border-collapse: separate;
-  border-spacing: 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  border: 1px solid #3a3a3a;
-}
-
-/* Headers de la tabla */
-.mat-mdc-header-cell,
-.mat-header-cell {
-  background: linear-gradient(135deg, #2a2a2a 0%, #353535 100%) !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  font-size: 13px !important;
-  padding: 20px 16px !important;
-  border-bottom: 2px solid #4a9eff;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.mat-mdc-header-cell::before,
-.mat-header-cell::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #4a9eff, transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.mat-mdc-header-cell:hover::before,
-.mat-header-cell:hover::before {
-  opacity: 1;
-}
-
-.mat-mdc-header-cell:first-child,
-.mat-header-cell:first-child {
-  border-top-left-radius: 12px;
-}
-
-.mat-mdc-header-cell:last-child,
-.mat-header-cell:last-child {
-  border-top-right-radius: 12px;
-}
-
-/* Filas de la tabla */
-.mat-mdc-row,
-.mat-row {
-  background: #2a2a2a;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.mat-mdc-row:hover,
-.mat-row:hover {
-  background: #333333;
-  transform: translateX(4px);
-  // box-shadow:
-  //   4px 0 0 #4a9eff,
-  //   0 4px 20px rgba(74, 158, 255, 0.2);
-  z-index: 10;
-}
-
-.mat-mdc-row:nth-child(even),
-.mat-row:nth-child(even) {
-  background: #272727;
-}
-
-.mat-mdc-row:nth-child(even):hover,
-.mat-row:nth-child(even):hover {
-  background: #333333;
+  &:nth-child(even){ background: rgba(18,22,48,.86) }
+  &:hover{
+    background: rgba(28,34,72,.94);
+    transform: translateX(4px);
+    box-shadow: inset 4px 0 0 rgba($cyan,.7);
+  }
 }
 
 /* Celdas */
-.mat-mdc-cell,
-.mat-cell {
-  color: #f5f5f5 !important;
-  padding: 18px 16px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  border-bottom: none !important;
-  transition: all 0.3s ease;
+.mat-mdc-cell, .mat-cell{
+  color:$ink-1 !important; font-weight:700 !important; font-size:14px !important;
+  padding:16px 14px !important; border:none !important;
 }
 
-/* Efecto de shimmer para carga */
-.mat-mdc-row.loading,
-.mat-row.loading {
-  background: linear-gradient(
-    90deg,
-    #2a2a2a 25%,
-    #353535 50%,
-    #2a2a2a 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+/* Fila en carga (skeleton) */
+.mat-mdc-row.loading, .mat-row.loading{
+  background: linear-gradient(90deg, #18204a 25%, #263369 50%, #18204a 75%);
+  background-size:200% 100%; animation:shimmer 1.6s infinite linear;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
+/* Fila seleccionada (añade .selected en tu TS si lo usas) */
+.mat-row.selected{
+  background: rgba($violet,.16) !important;
+  border-left:4px solid $violet !important;
+}
+
+/* ======================================================
+   ICONOS DE ESTADO
+   ====================================================== */
+.status-icon{ display:flex; align-items:center; justify-content:center }
+.status-active  { color:$ok   !important; animation:glow 2.2s ease-in-out infinite }
+.status-inactive{ color:$warn !important; animation:glow 2.2s ease-in-out infinite }
+.mat-icon{ font-size:20px !important; width:20px !important; height:20px !important }
+
+/* ======================================================
+   ACCIONES
+   ====================================================== */
+.action-buttons{ display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+
+.edit-btn, .delete-btn{
+  --x:50%; --y:50%;
+  border:none; border-radius:10px; padding:8px 12px;
+  font-size:12px; font-weight:900; letter-spacing:.02em;
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+  transition:transform $tr, box-shadow $tr, filter $tr; position:relative; overflow:hidden;
+
+  &::after{
+    content:''; position:absolute; width:160px; height:160px; border-radius:50%;
+    left:calc(var(--x) - 80px); top:calc(var(--y) - 80px);
+    background: radial-gradient(circle, rgba(255,255,255,.30), transparent 60%);
+    opacity:0; transform:scale(.6); transition:opacity .35s, transform .35s;
   }
-  100% {
-    background-position: 200% 0;
+  &:active{ transform:translateY(0) scale(.985); &::after{opacity:1; transform:scale(1)} }
+}
+
+.edit-btn{
+  background: linear-gradient(135deg, #ffe082, #ffb300);
+  color:#201700; box-shadow:0 8px 18px rgba(255,176,0,.32);
+  &:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(255,176,0,.42) }
+}
+.delete-btn{
+  background: linear-gradient(135deg, #ff6b8a, #e11d48);
+  color:#fff; box-shadow:0 8px 18px rgba(225,29,72,.34);
+  &:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(225,29,72,.46) }
+}
+
+/* ======================================================
+   PAGINADOR (legible y con contraste)
+   ====================================================== */
+.styled-paginator{
+  margin-top:14px; border-radius:$r; overflow:hidden;
+  background: rgba(20, 28, 64, 0.95);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:$sh-2; color:white !important;
+
+  .mat-mdc-paginator-range-label,
+  .mat-paginator-range-label,
+  .mat-mdc-paginator-page-size-label,
+  .mat-paginator-page-size-label{
+    color:$ink-1 !important; font-weight:900 !important; letter-spacing:.02em;
   }
-}
-
-/* =========================== */
-/* ICONOS DE ESTADO            */
-/* =========================== */
-.status-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status-active {
-  color: #4caf50 !important;
-  filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.5));
-}
-
-.status-inactive {
-  color: #f44336 !important;
-  filter: drop-shadow(0 0 4px rgba(244, 67, 54, 0.5));
-}
-
-.mat-icon {
-  font-size: 20px !important;
-  width: 20px !important;
-  height: 20px !important;
-}
-
-/* =========================== */
-/* BOTONES DE ACCIÓN           */
-/* =========================== */
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.edit-btn {
-  background: linear-gradient(135deg, #ffd54f 0%, #ffb300 100%);
-  color: #1a1a1a;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 213, 79, 0.3);
-}
-
-.edit-btn:hover {
-  background: linear-gradient(135deg, #ffcc02 0%, #ff8f00 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 213, 79, 0.4);
-}
-
-.delete-btn {
-  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
-  margin-left: 4px;
-}
-
-.delete-btn:hover {
-  background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
-}
-
-.edit-btn i {
-  font-size: 12px;
-}
-
-/* =========================== */
-/* PAGINADOR CON ANIMACIONES   */
-/* =========================== */
-.styled-paginator {
-
-  background-color: rgba(255, 255, 255, 0.808);
-  // background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%) !important;
-  color: #000000 !important;
-  border-radius: 12px;
-  margin-top: 0;
-  // padding: 16px 20px !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  margin-top: 15px;
-}
-
-.mat-mdc-paginator-page-size-label,
-.mat-paginator-page-size-label,
-.mat-mdc-paginator-range-label,
-.mat-paginator-range-label {
-  color: #ffffff !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-}
-
-.mat-mdc-select-value,
-.mat-select-value {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-.mat-mdc-select-arrow,
-.mat-select-arrow {
-  color: #4a9eff !important;
-}
-
-.mat-mdc-icon-button,
-.mat-icon-button {
-  color: #ffffff !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 8px !important;
-  margin: 0 2px;
-  position: relative;
-  overflow: hidden;
-}
-
-.mat-mdc-icon-button::before,
-.mat-icon-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: radial-gradient(circle, rgba(74, 158, 255, 0.3) 0%, transparent 70%);
-  transition: all 0.4s ease;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.mat-mdc-icon-button:hover,
-.mat-icon-button:hover {
-  background: rgba(74, 158, 255, 0.1) !important;
-  color: #4a9eff !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
-}
-
-.mat-mdc-icon-button:hover::before,
-.mat-icon-button:hover::before {
-  width: 40px;
-  height: 40px;
-}
-
-
-
-.mat-mdc-icon-button:active,
-.mat-icon-button:active {
-  transform: translateY(0);
-  transition: transform 0.1s ease;
-}
-
-.mat-mdc-icon-button[disabled],
-.mat-icon-button[disabled] {
-  color: #666666 !important;
-  opacity: 0.5;
-}
-
-.mat-mdc-icon-button[disabled]:hover,
-.mat-icon-button[disabled]:hover {
-  background: transparent !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* Animación de cambio de página */
-.mat-mdc-paginator,
-.mat-paginator {
-  transition: all 0.3s ease;
-}
-
-.mat-mdc-paginator.page-changing,
-.mat-paginator.page-changing {
-  opacity: 0.7;
-  transform: scale(0.98);
-}
-
-/* Dropdown del select */
-.mat-mdc-select-panel,
-.mat-select-panel {
-  background: #2a2a2a !important;
-  border: 1px solid #4a4a4a !important;
-  border-radius: 8px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-}
-
-.mat-mdc-option,
-.mat-option {
-  color: #ffffff !important;
-  background: transparent !important;
-  transition: background-color 0.3s ease !important;
-}
-
-.mat-mdc-option:hover,
-.mat-option:hover {
-  background: rgba(74, 158, 255, 0.1) !important;
-}
-
-.mat-mdc-option.mat-selected,
-.mat-option.mat-selected {
-  background: rgba(74, 158, 255, 0.2) !important;
-  color: #4a9eff !important;
-}
-
-/* =========================== */
-/* ANIMACIONES Y EFECTOS       */
-/* =========================== */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  .mat-mdc-select-value, .mat-mdc-select-value-text{
+    color:#fff !important; font-weight:900 !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .mat-mdc-select-arrow{ color:$cyan !important }
 }
 
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* Botones del paginador */
+.styled-paginator .mat-mdc-icon-button{
+  color:#fff !important; border-radius:10px !important; margin:0 2px;
+  transition:transform $tr, background $tr, box-shadow $tr;
+  background: rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  &:hover{ transform:translateY(-1px); background: rgba($cyan,.15); box-shadow:0 8px 20px rgba($cyan,.32) }
+  &:active{ transform:translateY(0) scale(.98) }
+  &[disabled]{ opacity:.5; background:transparent; box-shadow:none }
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(74, 158, 255, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(74, 158, 255, 0.6);
-  }
+/* Select panel del paginador */
+::ng-deep .mat-mdc-select-panel{
+  background:#141c36 !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  border-radius:12px !important; box-shadow:0 18px 36px rgba(0,0,0,.5) !important;
+}
+::ng-deep .mat-mdc-option{
+  color:#fff !important; padding:10px 12px !important; font-weight:800 !important;
+  &:hover{ background:rgba($cyan,.10) !important }
+  &.mat-selected{ background:rgba($cyan,.18) !important; color:$cyan !important }
 }
 
-.mat-mdc-row,
-.mat-row {
-  animation: slideInFromLeft 0.4s ease-out;
-  animation-fill-mode: both;
-}
-
-.mat-mdc-row:nth-child(1),
-.mat-row:nth-child(1) { animation-delay: 0.1s; }
-.mat-mdc-row:nth-child(2),
-.mat-row:nth-child(2) { animation-delay: 0.15s; }
-.mat-mdc-row:nth-child(3),
-.mat-row:nth-child(3) { animation-delay: 0.2s; }
-.mat-mdc-row:nth-child(4),
-.mat-row:nth-child(4) { animation-delay: 0.25s; }
-.mat-mdc-row:nth-child(5),
-.mat-row:nth-child(5) { animation-delay: 0.3s; }
-
-/* Animación para cambio de página */
+/* ======================================================
+   TRANSICIÓN DE PÁGINA
+   ====================================================== */
 .table-container.page-transition .mat-mdc-row,
-.table-container.page-transition .mat-row {
-  animation: fadeInUp 0.5s ease-out;
-  animation-fill-mode: both;
-}
-
+.table-container.page-transition .mat-row{ animation:fadeUp .45s ease both }
 .table-container.page-transition .mat-mdc-row:nth-child(1),
-.table-container.page-transition .mat-row:nth-child(1) { animation-delay: 0.1s; }
+.table-container.page-transition .mat-row:nth-child(1){ animation-delay:.06s }
 .table-container.page-transition .mat-mdc-row:nth-child(2),
-.table-container.page-transition .mat-row:nth-child(2) { animation-delay: 0.15s; }
+.table-container.page-transition .mat-row:nth-child(2){ animation-delay:.1s }
 .table-container.page-transition .mat-mdc-row:nth-child(3),
-.table-container.page-transition .mat-row:nth-child(3) { animation-delay: 0.2s; }
+.table-container.page-transition .mat-row:nth-child(3){ animation-delay:.14s }
 .table-container.page-transition .mat-mdc-row:nth-child(4),
-.table-container.page-transition .mat-row:nth-child(4) { animation-delay: 0.25s; }
-.table-container.page-transition .mat-mdc-row:nth-child(5),
-.table-container.page-transition .mat-row:nth-child(5) { animation-delay: 0.3s; }
+.table-container.page-transition .mat-row:nth-child(4){ animation-delay:.18s }
 
-/* Animación del paginador */
-.styled-paginator .mat-mdc-icon-button.mat-mdc-button-base,
-.styled-paginator .mat-icon-button {
-  animation: pulseGlow 2s infinite;
-  animation-play-state: paused;
-   background: rgba(74, 158, 255, 0.15); /* Fondo sutil */
-  color: #ffffff !important; /* Azul vibrante */
-  border: 1px solid rgba(74, 158, 255, 0.4);
-  border-radius: 50% !important;
-  box-shadow: 0 0 6px rgba(74, 158, 255, 0.4);
-  transition: all 0.3s ease;
+/* ======================================================
+   RESPONSIVE / ACCESIBILIDAD
+   ====================================================== */
+@media (max-width: 860px){
+  .table-container{ padding:16px }
+  .mat-mdc-header-cell, .mat-header-cell{ padding:14px 10px !important; font-size:12px !important }
+  .mat-mdc-cell, .mat-cell{ padding:14px 10px !important; font-size:13px !important }
+  .action-buttons{ flex-direction:column; align-items:flex-start }
+  .edit-btn, .delete-btn{ width:100% }
 }
-
-.styled-paginator .mat-mdc-icon-button.mat-mdc-button-base:hover,
-.styled-paginator .mat-icon-button:hover {
-  animation-play-state: running;
-    background: rgba(74, 158, 255, 0.3);
-  color: #ffffff !important;
-  box-shadow: 0 0 10px rgba(74, 158, 255, 0.8);
-  transform: scale(1.1);
-}
-
-
-
-/* =========================== */
-/* RESPONSIVE                  */
-/* =========================== */
-@media (max-width: 768px) {
-  .table-container {
-    padding: 16px;
-    margin: 8px 0;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .edit-btn,
-  .delete-btn {
-    font-size: 11px;
-    padding: 6px 10px;
-  }
-
-  .mat-header-cell,
-  .mat-cell {
-    padding: 12px 8px !important;
-    font-size: 12px;
-  }
-
-  .new-user-btn {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-}
-
-/* =========================== */
-/* SCROLL PERSONALIZADO        */
-/* =========================== */
-.table-container::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.table-container::-webkit-scrollbar-track {
-  background: #1a1a1a;
-  border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-}
-
-/* =========================== */
-/* ESTADOS ADICIONALES         */
-/* =========================== */
-.mat-row.selected {
-  background: rgba(102, 126, 234, 0.1) !important;
-  border-left: 4px solid #667eea;
-}
-
-/* Efecto de loading */
-.table-loading {
-  position: relative;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.table-loading::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(26, 26, 26, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important }
 }

@@ -9,7 +9,6 @@
     <mat-form-field
       *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"
       appearance="outline"
-      style="width: 100%;"
     >
       <mat-label>{{ field.label }}</mat-label>
       <input
@@ -47,7 +46,6 @@
     <mat-form-field
       *ngIf="field.type === 'textarea'"
       appearance="outline"
-      style="width: 100%;"
     >
       <mat-label>{{ field.label }}</mat-label>
       <textarea
@@ -85,7 +83,6 @@
     <mat-form-field
       *ngIf="field.type === 'select'"
       appearance="outline"
-      style="width: 100%;"
     >
       <mat-label>{{ field.label }}</mat-label>
       <mat-select
@@ -127,7 +124,7 @@
     <mat-slide-toggle
       *ngIf="field.type === 'toggle' && !field.hidden"
       [formControlName]="field.name"
-      color="primary"
+      appearance="outline"
     >
       {{ field.label }}
     </mat-slide-toggle>
@@ -135,10 +132,15 @@
   </ng-container>
 
   <div style="margin-top: 1rem;">
-    <!-- Puedes dejarlo así, el submit esperará PENDING -->
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || form.pending">
+    <!-- El submit esperará si hay validadores async PENDING -->
+    <button
+      mat-raised-button
+      (mousemove)="onRipple($event)"
+      type="submit"
+      [disabled]="form.invalid || form.pending">
       {{ isEdit ? 'Actualizar' : 'Crear' }}
     </button>
-    <button mat-button type="button" (click)="cancelForm.emit()">Cancelar</button>
+
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
   </div>
 </form>

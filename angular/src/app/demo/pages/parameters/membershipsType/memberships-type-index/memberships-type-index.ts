@@ -156,6 +156,17 @@ deletePermanentMembershipType(id: number): void {
     this.dataSource.data = filteredData;
   }
 
+  selectedMembership: any | null = null;
+
+  openDetails(membership: any) {
+    this.selectedMembership = membership;
+    try { document.body.style.overflow = 'hidden'; } catch {}
+  }
+
+  closeDetails() {
+    this.selectedMembership = null;
+    try { document.body.style.overflow = ''; } catch {}
+  }
   // Función auxiliar para aplicar filtro de estado
   private applyStatusFilter(data: MembershipsType[]): MembershipsType[] {
     switch (this.selectedFilter) {
