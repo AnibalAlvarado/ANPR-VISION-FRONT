@@ -32,24 +32,21 @@ export class FaqComponent {
     { question: '¿Puedo cambiar mi correo asociado?', answer: 'Sí, en la sección de "Perfil" puedes actualizarlo fácilmente.', icon: 'alternate_email', expanded: false },
 
     // 🔹 Reportes
-    { question: '¿Dónde encuentro los reportes?', answer: 'En el menú lateral, selecciona "Reportes".', icon: 'analytics', expanded: false },
-    { question: '¿Puedo exportar reportes a Excel?', answer: 'Sí, en la parte superior derecha de cada reporte encontrarás la opción "Exportar".', icon: 'file_download', expanded: false },
-    { question: '¿Cómo filtro los reportes?', answer: 'Utiliza los filtros avanzados que encontrarás sobre la tabla de datos.', icon: 'filter_list', expanded: false },
+  
+ 
 
     // 🔹 Soporte y configuración
     { question: '¿Cómo contacto con soporte?', answer: 'Puedes ir a la sección de "Contactar Soporte" dentro de este módulo.', icon: 'support_agent', expanded: false },
     { question: '¿Dónde puedo ver la documentación?', answer: 'Ve a la sección "Documentación" en el menú principal.', icon: 'library_books', expanded: false },
-    { question: '¿Puedo personalizar la apariencia del dashboard?', answer: 'Sí, en la sección de configuración puedes ajustar los colores y el layout.', icon: 'palette', expanded: false },
+
 
     // 🔹 Instalación y actualizaciones
-    { question: '¿Cómo instalo ANPR Vision?', answer: 'Descarga el instalador desde nuestra sección de Documentación y sigue los pasos.', icon: 'cloud_download', expanded: false },
-    { question: '¿Cómo actualizo el sistema?', answer: 'En Configuración → Actualizaciones, haz clic en "Buscar actualizaciones".', icon: 'update', expanded: false },
-    { question: '¿Qué hago si la instalación falla?', answer: 'Verifica los requisitos mínimos y asegúrate de que no haya conflictos con otros programas.', icon: 'error', expanded: false },
+   
 
+    
     // 🔹 Seguridad
     { question: '¿Mi información está segura?', answer: 'Sí, utilizamos cifrado AES de 256 bits para proteger tus datos.', icon: 'security', expanded: false },
-    { question: '¿Puedo restringir el acceso a ciertos usuarios?', answer: 'Sí, en la sección de Roles y Permisos puedes configurar esto.', icon: 'admin_panel_settings', expanded: false },
-    { question: '¿Cómo habilito la verificación en dos pasos?', answer: 'Entra en Configuración → Seguridad y activa la verificación en dos pasos.', icon: 'verified_user', expanded: false }
+    { question: '¿Puedo restringir el acceso a ciertos usuarios?', answer: 'Sí, en la sección de Roles y Permisos puedes configurar esto.', icon: 'admin_panel_settings', expanded: false }
   ];
 
   /** Filtra FAQs según la búsqueda */

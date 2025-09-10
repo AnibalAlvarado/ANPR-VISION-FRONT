@@ -17,7 +17,6 @@ interface LoginResponse {
 
 type ErrorLike = { error?: { message?: string }; message?: string };
 
-
 function usernameExistsValidator(service: General, getCurrentId: () => number | null): AsyncValidatorFn {
   return (control: AbstractControl) => {
     const value = (control.value ?? '').trim();
@@ -130,40 +129,75 @@ export class SignInComponent {
   get fPass() { return this.form.get('password'); }
   get fPerson() { return this.form.get('personId'); }
 
-  login() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      const msgUser = this.controlMsg(this.fUser, 'Usuario');
-      const msgEmail = this.controlMsg(this.fEmail, 'Email');
-      const msgPass = this.controlMsg(this.fPass, 'Contraseña');
+  /** Lee usuario/contraseña del Form, de LoginDto, o como último recurso del DOM (inputs sin binding) */
+  private getUserPass(): { userName: string; password: string } {
+    const fv = this.form.getRawValue();
+    let userName = (fv.userName ?? this.LoginDto.username ?? '').toString().trim();
+    let password = (fv.password ?? this.LoginDto.password ?? '').toString();
 
-      const errores = [msgUser, msgEmail, msgPass].filter(Boolean).join('. ');
-      Swal.fire({ icon: 'warning', title: 'Campos inválidos', text: errores || 'Revisa el formulario.' });
+    if ((!userName || !password) && typeof document !== 'undefined') {
+      try {
+        const domU =
+          (document.querySelector('input[formcontrolname="userName"]') as HTMLInputElement)?.value ||
+          (document.querySelector('input[name="userName"]') as HTMLInputElement)?.value ||
+          (document.getElementById('userName') as HTMLInputElement)?.value || '';
+        const domP =
+          (document.querySelector('input[formcontrolname="password"]') as HTMLInputElement)?.value ||
+          (document.querySelector('input[name="password"]') as HTMLInputElement)?.value ||
+          (document.getElementById('password') as HTMLInputElement)?.value || '';
+        userName = userName || (domU ?? '').trim();
+        password = password || (domP ?? '');
+      } catch {}
+    }
+    return { userName, password };
+  }
+
+  login() {
+    // NO bloqueamos por form.invalid: sólo exigimos que haya usuario y contraseña
+    const { userName, password } = this.getUserPass();
+
+    if (!userName || !password) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos inválidos',
+        text: `${!userName ? 'Usuario es obligatorio' : ''}${!userName && !password ? '. ' : ''}${!password ? 'Contraseña es obligatoria' : ''}`
+      });
       return;
     }
 
-    const { userName, password } = this.form.getRawValue();
+    // Sincroniza controles por si el template no estaba enlazado
+    this.fUser?.setValue(userName);
+    this.fPass?.setValue(password);
 
-    this.service.post<LoginResponse>('User/login', { username: userName, password }).subscribe({
+    // Enviar exactamente lo que espera el backend
+    this.service.post<LoginResponse>('User/login', { userName, password }).subscribe({
       next: (response) => {
-        if (response.success && response.data?.token) {
-          localStorage.setItem('authToken', response.data.token);
-          localStorage.setItem('userRoles', JSON.stringify(response.data.roles));
-          localStorage.setItem('username', userName || '');
-          localStorage.setItem('userId', JSON.stringify(response.data.userId));
+        // Tolerar distintos shapes
+        const token = response?.data?.token ?? (response as any)?.token ?? (response as any)?.accessToken ?? null;
+        const roles = response?.data?.roles ?? (response as any)?.roles ?? [];
+        const userId = response?.data?.userId ?? (response as any)?.userId ?? null;
+        const success = (response?.success ?? (response as any)?.isSuccess ?? true) as boolean; // 200 por defecto
 
+        if (token) localStorage.setItem('authToken', token);
+        if (roles) localStorage.setItem('userRoles', JSON.stringify(roles));
+        localStorage.setItem('username', userName || '');
+        if (userId != null) localStorage.setItem('userId', JSON.stringify(userId));
+
+        if (success) {
           Swal.fire({
             icon: 'success',
             title: 'Bienvenido',
-            text: response.message || 'Has iniciado sesión correctamente',
-            timer: 2000,
+            text: response?.message || 'Has iniciado sesión correctamente',
+            timer: 1200,
             showConfirmButton: false
-          }).then(() => this.router.navigate(['/analytics']));
+          });
+          // navegamos fuera del then para no depender del modal
+          setTimeout(() => this.router.navigateByUrl('/analytics'), 0);
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Error de autenticación',
-            text: response.message || 'Credenciales incorrectas.'
+            text: response?.message || 'Credenciales incorrectas.'
           });
         }
       },
