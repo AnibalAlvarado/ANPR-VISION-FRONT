@@ -144,18 +144,18 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/RatesType-index'
           },
-          {
-            id: 'CategoryParking',
-            title: 'Categorías del Parqueadero',
-            type: 'item',
-            url: '/ParkingCategory-index'
-          },
-          {
-            id: 'parking',
-            title: 'Parqueaderos',
-            type: 'item',
-            url: '/parking-index'
-          },
+          // {
+          //   id: 'CategoryParking',
+          //   title: 'Categorías del Parqueadero',
+          //   type: 'item',
+          //   url: '/ParkingCategory-index'
+          // },
+          // {
+          //   id: 'parking',
+          //   title: 'Parqueaderos',
+          //   type: 'item',
+          //   url: '/parking-index'
+          // },
             {
             id: 'Zones',
             title: 'Zonas',

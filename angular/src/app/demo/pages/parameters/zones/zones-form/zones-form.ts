@@ -6,6 +6,8 @@ import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
 import { Parking } from '../../parking/parking';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-zones-form',
@@ -38,11 +40,11 @@ export class ZonesForm implements OnInit {
       ]
     },
     {
-     name: 'asset',
-    label: 'Activo',
-    type: 'toggle',
-    value: true,
-    hidden: true   // <-- Esto lo mantiene oculto
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
     }
   ];
 
@@ -50,72 +52,93 @@ export class ZonesForm implements OnInit {
   initialData: any = {};
 
   private service = inject(General);
-  private route = inject(Router);
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-
-  constructor() {}
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.isEdit = !!id;
 
-    // Cargar parqueaderos
-    this.service.get<{ data: Parking[] }>('Parking/select')
-      .subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'parkingId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              };
-            }
-            return field;
-          });
+    // Cargar parqueaderos (select)
+    this.service.get<Parking[]>('Parking/select').pipe(
+      catchError((err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los parqueaderos.', 'error');
+        return of<Parking[]>([]);
+      })
+    ).subscribe((parkings) => {
+      this.formConfig = this.formConfig.map(f => {
+        if (f.name === 'parkingId') {
+          return {
+            ...f,
+            options: parkings.map(p => ({ value: p.id, label: p.name }))
+          };
+        }
+        return f;
+      });
+    });
+
+    // Si es edición, cargar datos de la zona
+    if (this.isEdit && id) {
+      this.service.getById<any>('Zones', id).subscribe({
+        next: (zone) => {
+          this.initialData = this.normalizeZone(zone);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar la zona.', 'error');
         }
       });
-
-    if (id) {
-      this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('Zones', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
     }
+  }
+
+  private normalizeZone(zone: any) {
+    return {
+      id: zone.id,
+      name: zone.name,
+      parkingId: zone.parkingId ?? zone.parking?.id ?? null,
+      asset: zone.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Zones', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/Zones-index']);
+      this.service.put('Zones', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/Zones-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Zones', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/Zones-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Zones', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/Zones-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/Zones-index']);
+    this.router.navigate(['/Zones-index']);
   }
 }

@@ -41,11 +41,22 @@ columns = [
     this.getAllSlots();
   }
 
- getAllSlots(): void {
-  this._generalService.get<{ data: Slots[] }>('Slots/join').subscribe(response => {
-    this.dataSource.data = response.data;
-     this.originalData = response.data;
-    this.dataSource.paginator = this.paginator;
+getAllSlots(): void {
+  this._generalService.get<Slots[]>('Slots/join').subscribe({
+    next: (data) => {
+      this.dataSource.data = data ?? [];
+      this.originalData = data ?? [];
+      this.dataSource.paginator = this.paginator;
+    },
+    error: (err: Error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al cargar Slots',
+        text: err.message ?? 'No fue posible obtener la lista de slots.'
+      });
+      this.dataSource.data = [];
+      this.originalData = [];
+    }
   });
 }
 
@@ -70,9 +81,14 @@ deleteSlot(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('Slots', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
-        this.getAllSlots();
+      this._generalService.delete('Slots', id).subscribe({
+        next: () => {
+          Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
+          this.getAllSlots();
+        },
+        error: (err: Error) => {
+          Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+        }
       });
     }
   });
@@ -90,13 +106,19 @@ deletePermanentSlot(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('Slots/permanent', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
-        this.getAllSlots();
+      this._generalService.delete('Slots/permanent', id).subscribe({
+        next: () => {
+          Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
+          this.getAllSlots();
+        },
+        error: (err: Error) => {
+          Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+        }
       });
     }
   });
 }
+
 // Funciones para las estadísticas del header
   getTotalSlots(): number {
     return this.originalData.length;

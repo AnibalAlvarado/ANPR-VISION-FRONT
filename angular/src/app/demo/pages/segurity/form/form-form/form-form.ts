@@ -36,15 +36,15 @@ export class FormForm implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
     {
-       name: 'asset',
-        label: 'Activo',
-        type: 'toggle',
-        value: true,
-        hidden: true   // <-- Esto lo mantiene oculto
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
     }
   ];
 
@@ -55,44 +55,65 @@ export class FormForm implements OnInit {
   private route = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  constructor() {}
-
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit = true;
-      this.service.getById<{ success: boolean; data: Form }>('Form', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+      this.service.getById<Form>('Form', id).subscribe({
+        next: (form) => {
+          this.initialData = this.normalize(form);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el formulario.', 'error');
+          this.route.navigate(['/form-index']);
+        }
+      });
     }
+  }
+
+  private normalize(f: any) {
+    return {
+      id: f.id,
+      name: f.name,
+      description: f.description,
+      asset: f.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Form', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/form-index']);
+      this.service.put('Form', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/form-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Form', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/form-index']);
+      const payload = { ...data };
+      delete payload.id;
+      this.service.post('Form', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/form-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }

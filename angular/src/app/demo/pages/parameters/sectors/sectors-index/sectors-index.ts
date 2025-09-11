@@ -42,13 +42,19 @@ columns = [
     this.getAllParkings();
   }
 
- getAllParkings(): void {
-  this._generalService.get<{ data: Sectors[] }>('Sectors/join').subscribe(response => {
-    this.dataSource.data = response.data;
-     this.originalData = response.data;
-    this.dataSource.paginator = this.paginator;
+getAllParkings(): void {
+  this._generalService.get<Sectors[]>('Sectors/join').subscribe({
+    next: (sectors) => {
+      this.dataSource.data = sectors;       // <<— ya viene T directo
+      this.originalData = sectors;
+      this.dataSource.paginator = this.paginator;
+    },
+    error: (e) => {
+      Swal.fire('Error', e.message || 'No se pudo cargar sectores', 'error');
+    }
   });
 }
+
 
 goToCreate(): void {
   this.router.navigate(['/sectors-form']);
@@ -71,9 +77,18 @@ deleteSector(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('Sectors', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
-        this.getAllParkings();
+      this._generalService.delete('Sectors', id).subscribe({
+        next: () => {
+          Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
+          this.getAllParkings();
+        },
+        error: (err: Error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo eliminar',
+            text: err.message
+          });
+        }
       });
     }
   });
@@ -91,13 +106,23 @@ deletePermanentSector(id: number): void {
     cancelButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      this._generalService.delete('Sectors/permanent', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
-        this.getAllParkings();
+      this._generalService.delete('Sectors/permanent', id).subscribe({
+        next: () => {
+          Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
+          this.getAllParkings();
+        },
+        error: (err: Error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo eliminar permanentemente',
+            text: err.message
+          });
+        }
       });
     }
   });
 }
+
 // Funciones para las estadísticas del header
   getTotalSectors(): number {
     return this.originalData.length;

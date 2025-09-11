@@ -7,6 +7,8 @@ import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
 import { Zones } from '../../zones/zones';
 import { VehicleType } from '../../vehicleType/vehicle-type';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sectors-form',
@@ -35,9 +37,9 @@ export class SectorsForm implements OnInit {
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La capacidad es obligatoria.' },
-        { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'La capacidad debe ser al menos 1.' }, 
+        { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'La capacidad debe ser al menos 1.' },
         { name: ValidatorNames.Max, validator: ValidatorNames.Max, value: 10000, message: 'La capacidad no puede ser mayor a 10,000.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]+$', message: 'La capacidad solo puede contener números enteros.' },  
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]+$', message: 'La capacidad solo puede contener números enteros.' },
         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[1-9][0-9]{0,3}$', message: 'La capacidad debe ser un número válido entre 1 y 9999.' },
       ]
     },
@@ -62,11 +64,11 @@ export class SectorsForm implements OnInit {
       ]
     },
     {
-    name: 'asset',
-    label: 'Activo',
-    type: 'toggle',
-    value: true,
-    hidden: true   // <-- Esto lo mantiene oculto
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
     }
   ];
 
@@ -74,92 +76,122 @@ export class SectorsForm implements OnInit {
   initialData: any = {};
 
   private service = inject(General);
-  private route = inject(Router);
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-
-  constructor() {}
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.isEdit = !!id;
 
-    // Cargar zonas
-    this.service.get<{ data: Zones[] }>('Zones/select')
-      .subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'zonesId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              };
-            }
-            return field;
-          });
-        }
-      });
-
-    // Cargar tipos de vehículos
-    this.service.get<{ data: VehicleType[] }>('TypeVehicle/select')
-      .subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'typeVehicleId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              };
-            }
-            return field;
-          });
-        }
-      });
-
-    // Si es edición, cargar los datos iniciales
-    if (id) {
-      this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('Sectors', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
+    // Cargar selects en paralelo y, si es edición, el sector
+    const selects$ = forkJoin({
+      zones: this.service.get<Zones[]>('Zones/select').pipe(
+        catchError((err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudieron cargar las zonas.', 'error');
+          return of<Zones[]>([]);
+        })
+      ),
+      types: this.service.get<VehicleType[]>('TypeVehicle/select').pipe(
+        catchError((err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudieron cargar los tipos de vehículo.', 'error');
+          return of<VehicleType[]>([]);
+        })
+      )
+    }).pipe(
+      map(({ zones, types }) => {
+        // Inyectar opciones en formConfig
+        this.formConfig = this.formConfig.map(field => {
+          if (field.name === 'zonesId') {
+            return {
+              ...field,
+              options: zones.map(z => ({ value: z.id, label: z.name }))
+            };
           }
+          if (field.name === 'typeVehicleId') {
+            return {
+              ...field,
+              options: types.map(t => ({ value: t.id, label: t.name }))
+            };
+          }
+          return field;
         });
+        return true;
+      })
+    );
+
+    if (this.isEdit && id) {
+      selects$.pipe(
+        switchMap(() =>
+          this.service.getById<any>('Sectors', id).pipe(
+            catchError((err: Error) => {
+              Swal.fire('Error', err.message || 'No se pudo cargar el sector.', 'error');
+              return of(null);
+            })
+          )
+        )
+      ).subscribe((sector) => {
+        if (sector) {
+          this.initialData = this.normalizeSector(sector);
+        }
+      });
+    } else {
+      // Solo selects (crear)
+      selects$.subscribe();
     }
+  }
+
+  private normalizeSector(sector: any) {
+    // Normaliza posibles formas del DTO para que encaje con el form
+    return {
+      id: sector.id,
+      name: sector.name,
+      capacity: sector.capacity,
+      zonesId: sector.zonesId ?? sector.zones?.id ?? sector.zoneId ?? null,
+      typeVehicleId: sector.typeVehicleId ?? sector.typeVehicle?.id ?? sector.vehicleTypeId ?? null,
+      asset: sector.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Sectors', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/sectors-index']);
+      this.service.put('Sectors', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/sectors-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Sectors', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/sectors-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Sectors', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/sectors-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/sectors-index']);
+    this.router.navigate(['/sectors-index']);
   }
 }

@@ -36,15 +36,15 @@ export class RoleForm implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
-    { 
+    {
       name: 'asset',
       label: 'Activo',
       type: 'toggle',
       value: true,
-      hidden: true   // <-- Esto lo mantiene oculto
+      hidden: true
     }
   ];
 
@@ -55,44 +55,66 @@ export class RoleForm implements OnInit {
   private route = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  constructor() {}
-
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit = true;
-      this.service.getById<{ success: boolean; data: Role }>('Rol', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+      this.service.getById<Role>('Rol', id).subscribe({
+        next: (role) => {
+          this.initialData = this.normalize(role);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el rol.', 'error');
+          this.route.navigate(['/role-index']);
+        }
+      });
     }
+  }
+
+  private normalize(r: any) {
+    return {
+      id: r.id,
+      name: r.name,
+      description: r.description,
+      asset: r.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Rol', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/role-index']);
+      this.service.put('Rol', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/role-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Rol', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/role-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Rol', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/role-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }

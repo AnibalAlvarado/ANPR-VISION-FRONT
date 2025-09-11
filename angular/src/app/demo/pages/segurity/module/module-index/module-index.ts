@@ -14,79 +14,91 @@ import { Module } from 'src/app/generic/Models/Entitys';
   styleUrl: './module-index.scss'
 })
 export class ModuleIndex implements OnInit {
-dataSource = new MatTableDataSource<Module>();
-columns = [
-  { key: 'name', label: 'Nombre' },
-  { key: 'description', label: 'Descripción' },
-  { key: 'asset', label: 'Estado' },
-  { key: 'isDeleted', label: 'Eliminado Lógicamente' }
-];
-
+  dataSource = new MatTableDataSource<Module>();
+  columns = [
+    { key: 'name', label: 'Nombre' },
+    { key: 'description', label: 'Descripción' },
+    { key: 'asset', label: 'Estado' },
+    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+  ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
- ngOnInit(): void {
+  ngOnInit(): void {
     this.getAllModules();
   }
 
- getAllModules(): void {
-  this._generalService.get<{ data: Module[] }>('Module/select').subscribe(response => {
-    this.dataSource.data = response.data;
-    this.dataSource.paginator = this.paginator;
-  });
-}
+  getAllModules(): void {
+    this._generalService.get<Module[]>('Module/select').subscribe({
+      next: (items) => {
+        this.dataSource.data = items || [];
+        if (this.paginator) this.dataSource.paginator = this.paginator;
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los módulos.', 'error');
+        this.dataSource.data = [];
+      }
+    });
+  }
 
-goToCreate(): void {
-  this.router.navigate(['/module-form']);
-}
+  goToCreate(): void {
+    this.router.navigate(['/module-form']);
+  }
 
-goToEdit(module: Module): void {
-  this.router.navigate(['/module-form', module.id]);
-}
+  goToEdit(module: Module): void {
+    this.router.navigate(['/module-form', module.id]);
+  }
 
+  deleteModule(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el módulo.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._generalService.delete('Module', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El módulo ha sido eliminado.', 'success');
+            this.getAllModules();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+          }
+        });
+      }
+    });
+  }
 
-deleteModule(id: number): void {
-  Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el módulo.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this._generalService.delete('Module', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El módulo ha sido eliminado.', 'success');
-        this.getAllModules();
-      });
-    }
-  });
-}
-
-deletePermanentModule(id: number): void {
-  Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el módulo permanentemente.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this._generalService.delete('Module/permanent', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El módulo ha sido eliminado permanentemente.', 'success');
-        this.getAllModules();
-      });
-    }
-  });
-}
-
+  deletePermanentModule(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el módulo permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._generalService.delete('Module/permanent', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El módulo ha sido eliminado permanentemente.', 'success');
+            this.getAllModules();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+          }
+        });
+      }
+    });
+  }
 }

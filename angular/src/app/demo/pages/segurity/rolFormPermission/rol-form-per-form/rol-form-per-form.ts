@@ -5,7 +5,7 @@ import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-for
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
-import { Form, Permission, Role } from 'src/app/generic/Models/Entitys';
+import { Form as AppForm, Permission, Role } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-rol-form-per-form',
@@ -46,11 +46,11 @@ export class RolFormPerForm implements OnInit {
       ]
     },
     {
-     name: 'asset',
+      name: 'asset',
       label: 'Activo',
       type: 'toggle',
       value: true,
-      hidden: true   // <-- Esto lo mantiene oculto
+      hidden: true
     }
   ];
 
@@ -61,75 +61,92 @@ export class RolFormPerForm implements OnInit {
   private route = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  constructor() {}
-
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    // Cargar opciones dinámicas
+    // Cargar opciones
     this.loadSelectOptions<Role>('Rol/select', 'rolId');
     this.loadSelectOptions<Permission>('Permission/select', 'permissionId');
-    this.loadSelectOptions<Form>('Form/select', 'formId');
+    this.loadSelectOptions<AppForm>('Form/select', 'formId');
 
+    // Modo edición
     if (id) {
       this.isEdit = true;
-      this.service
-        .getById<{ success: boolean; data: any }>('RolFormPermission', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+      this.service.getById<any>('RolFormPermission', id).subscribe({
+        next: (data) => {
+          this.initialData = this.normalize(data);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el registro.', 'error');
+          this.route.navigate(['/rolFormPermission-index']);
+        }
+      });
     }
   }
 
-  /**
-   * Método genérico para cargar las opciones de los selects dinámicos.
-   */
+  /** Carga genérica de opciones para selects */
   private loadSelectOptions<T extends { id: number; name: string }>(
     endpoint: string,
-    fieldName: string
+    fieldName: 'rolId' | 'permissionId' | 'formId'
   ) {
-    this.service.get<{ data: T[] }>(endpoint).subscribe(response => {
-      if (response.data) {
+    this.service.get<T[]>(endpoint).subscribe({
+      next: (items) => {
+        const options = (items || []).map(item => ({ value: item.id, label: item.name }));
         this.formConfig = this.formConfig.map(field =>
-          field.name === fieldName
-            ? {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))
-              }
-            : field
+          field.name === fieldName ? { ...field, options } : field
         );
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || `No se pudieron cargar las opciones de ${fieldName}.`, 'error');
       }
     });
   }
 
+  private normalize(d: any) {
+    return {
+      id: d.id,
+      rolId: d.rolId ?? d.rol?.id ?? null,
+      permissionId: d.permissionId ?? d.permission?.id ?? null,
+      formId: d.formId ?? d.form?.id ?? null,
+      asset: d.asset ?? true
+    };
+  }
+
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('RolFormPermission', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/rolFormPermission-index']);
+      this.service.put('RolFormPermission', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/rolFormPermission-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('RolFormPermission', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/rolFormPermission-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('RolFormPermission', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/rolFormPermission-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }

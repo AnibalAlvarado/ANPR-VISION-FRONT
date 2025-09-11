@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
   styleUrl: './black-list-form.scss'
 })
 export class BlackListForm implements OnInit {
- formConfig: FieldConfig[] = [
+  formConfig: FieldConfig[] = [
     {
       name: 'vehicleId',
       label: 'Vehículo',
@@ -22,14 +22,10 @@ export class BlackListForm implements OnInit {
       required: true,
       options: [],
       validations: [
-        {
-          name: ValidatorNames.Required,
-          validator: ValidatorNames.Required,
-          message: 'Debe seleccionar un vehículo.'
-        }
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un vehículo.' }
       ]
     },
-     {
+    {
       name: 'reason',
       label: 'Razón',
       type: 'text',
@@ -41,14 +37,12 @@ export class BlackListForm implements OnInit {
         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La razón solo puede contener letras y espacios.' }
       ]
     },
-
-
     {
-        name: 'asset',
-        label: 'Activo',
-        type: 'toggle',
-        value: true,
-        hidden: true   // <-- Esto lo mantiene oculto
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
     }
   ];
 
@@ -56,76 +50,94 @@ export class BlackListForm implements OnInit {
   initialData: any = {};
 
   private service = inject(General);
-  private route = inject(Router);
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-
-  constructor() {}
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.isEdit = !!id;
 
-    // Cargar formularios
-    this.service.get<{ data: Vehicle[] }>('Vehicle/select')
-      .subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'vehicleId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.plate
-                }))
-              };
-            }
-            return field;
-          });
+    // Cargar vehículos para el select
+    this.service.get<Vehicle[]>('Vehicle/select').subscribe({
+      next: (vehicles) => {
+        const options = (vehicles || []).map(v => ({
+          value: v.id,
+          label: v.plate
+        }));
+        this.formConfig = this.formConfig.map(f =>
+          f.name === 'vehicleId' ? { ...f, options } : f
+        );
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los vehículos.', 'error');
+      }
+    });
+
+    // Modo edición: cargar registro
+    if (this.isEdit && id) {
+      this.service.getById<any>('BlackList', id).subscribe({
+        next: (bl) => {
+          this.initialData = this.normalizeBlackList(bl);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el registro.', 'error');
+          this.router.navigate(['/blackList-index']);
         }
       });
-
-
-
-    // Modo edición
-    if (id) {
-      this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('BlackList', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
     }
+  }
+
+  private normalizeBlackList(bl: any) {
+    return {
+      id: bl.id,
+      vehicleId: bl.vehicleId ?? bl.vehicle?.id ?? null,
+      reason: bl.reason,
+      restrictionDate: bl.restrictionDate, // solo lectura; no está en el form
+      asset: bl.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('BlackList', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/blackList-index']);
+      this.service.put('BlackList', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/blackList-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      delete data.restrictionDate;
-      this.service.post('BlackList', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/blackList-index']);
+      const payload = { ...data };
+      delete payload.id;
+      delete payload.restrictionDate; // el back la setea
+
+      this.service.post('BlackList', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/blackList-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/blackList-index']);
+    this.router.navigate(['/blackList-index']);
   }
 }

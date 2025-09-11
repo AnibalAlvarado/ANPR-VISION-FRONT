@@ -83,10 +83,10 @@
   </div>
 
   <!-- Rate Types List -->
-  <div class="parking-list" *ngIf="dataSource.data.length > 0">
+  <div class="parking-list" *ngIf="(dataSource?.data?.length || 0) > 0">
     <div
       class="parking-item"
-      *ngFor="let rateType of dataSource.data"
+      *ngFor="let rateType of (dataSource?.data || [])"
       [class.deleted-item]="rateType.isDeleted">
 
       <!-- Rate Type Card -->
@@ -95,7 +95,6 @@
           <div class="parking-info">
             <h2 class="parking-name">{{ rateType.name }}</h2>
             <div class="parking-details">
-             
               <div class="detail-row" *ngIf="rateType.description">
                 <mat-icon class="detail-icon">description</mat-icon>
                 <span class="detail-text">{{ rateType.description }}</span>
@@ -104,7 +103,6 @@
           </div>
 
           <div class="parking-status-section">
-            <!-- Status Badge -->
             <div class="status-wrapper">
               <div
                 class="status-badge"
@@ -191,7 +189,7 @@
   </div>
 
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="dataSource.data.length === 0">
+  <div class="empty-state" *ngIf="(dataSource?.data?.length || 0) === 0">
     <div class="empty-content">
       <div class="empty-illustration">
         <mat-icon class="empty-icon">receipt</mat-icon>
@@ -212,5 +210,4 @@
       </button>
     </div>
   </div>
-
 </div>

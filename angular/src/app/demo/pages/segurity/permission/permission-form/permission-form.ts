@@ -5,7 +5,7 @@ import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-for
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
-import { Permission } from 'src/app/generic/Models/Entitys'; // ← Ajusta esta importación si tienes la entidad definida
+import { Permission } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-permission-form',
@@ -36,15 +36,15 @@ export class PermissionForm implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
     {
-     name: 'asset',
+      name: 'asset',
       label: 'Activo',
       type: 'toggle',
       value: true,
-      hidden: true   // <-- Esto lo mantiene oculto
+      hidden: true
     }
   ];
 
@@ -55,44 +55,67 @@ export class PermissionForm implements OnInit {
   private route = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  constructor() {}
-
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+
     if (id) {
       this.isEdit = true;
-      this.service.getById<{ success: boolean; data: Permission }>('Permission', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+      this.service.getById<Permission>('Permission', id).subscribe({
+        next: (perm) => {
+          this.initialData = this.normalize(perm);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el permiso.', 'error');
+          this.route.navigate(['/permission-index']);
+        }
+      });
     }
+  }
+
+  private normalize(p: any) {
+    return {
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      asset: p.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Permission', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/permission-index']);
+      this.service.put('Permission', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/permission-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Permission', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/permission-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Permission', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/permission-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }

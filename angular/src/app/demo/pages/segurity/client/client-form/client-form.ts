@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
-import {  Person } from 'src/app/generic/Models/Entitys';
+import { Person } from 'src/app/generic/Models/Entitys';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class ClientForm implements OnInit {
   formConfig: FieldConfig[] = [
-     {
+    {
       name: 'name',
       label: 'Nombre del cliente',
       type: 'text',
@@ -24,7 +24,7 @@ export class ClientForm implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre del cliente es obligatorio.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El nombre debe tener al menos 2 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -34,19 +34,15 @@ export class ClientForm implements OnInit {
       required: true,
       options: [],
       validations: [
-        {
-          name: ValidatorNames.Required,
-          validator: ValidatorNames.Required,
-          message: 'Debe seleccionar una persona.'
-        }
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar una persona.' }
       ]
     },
     {
-        name: 'asset',
-        label: 'Activo',
-        type: 'toggle',
-        value: true,
-        hidden: true   // <-- Esto lo mantiene oculto
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
     }
   ];
 
@@ -54,74 +50,80 @@ export class ClientForm implements OnInit {
   initialData: any = {};
 
   private service = inject(General);
-  private route = inject(Router);
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-
-  constructor() {}
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.isEdit = !!id;
 
-    // Cargar formularios
-    this.service.get<{ data: Person[] }>('Person/select')
-      .subscribe(response => {
-        if (response.data) {
-          this.formConfig = this.formConfig.map(field => {
-            if (field.name === 'personId') {
-              return {
-                ...field,
-                options: response.data.map(item => ({
-                  value: item.id,
-                  label: item.firstName + ' ' + item.lastName
-                }))
-              };
-            }
-            return field;
-          });
+    // Cargar personas para el select
+    this.service.get<Person[]>('Person/select').subscribe({
+      next: (people) => {
+        const opts = (people || []).map(p => ({
+          value: p.id,
+          label: `${p.firstName ?? ''} ${p.lastName ?? ''}`.trim()
+        }));
+        this.formConfig = this.formConfig.map(f =>
+          f.name === 'personId' ? { ...f, options: opts } : f
+        );
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar las personas.', 'error');
+      }
+    });
+
+    // Si es edición, cargar cliente
+    if (this.isEdit && id) {
+      this.service.getById<any>('Client', id).subscribe({
+        next: (client) => {
+          this.initialData = this.normalizeClient(client);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el cliente.', 'error');
+          this.router.navigate(['/client-index']);
         }
       });
-
-
-    // Modo edición
-    if (id) {
-      this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('Client', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
     }
+  }
+
+  private normalizeClient(c: any) {
+    return {
+      id: c.id,
+      name: c.name,
+      personId: c.personId ?? c.person?.id ?? null,
+      asset: c.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Client', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/client-index']);
+      this.service.put('Client', data).subscribe({
+        next: () => {
+          Swal.fire({ icon: 'success', title: 'Registro actualizado exitosamente', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+          this.router.navigate(['/client-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Client', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/client-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Client', payload).subscribe({
+        next: () => {
+          Swal.fire({ icon: 'success', title: 'Registro creado exitosamente', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+          this.router.navigate(['/client-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/client-index']);
+    this.router.navigate(['/client-index']);
   }
 }

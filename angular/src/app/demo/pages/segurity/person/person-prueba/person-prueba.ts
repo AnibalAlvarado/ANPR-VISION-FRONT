@@ -24,7 +24,7 @@ export class PersonPrueba implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El nombre debe tener al menos 2 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -36,7 +36,7 @@ export class PersonPrueba implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El apellido es obligatorio.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El apellido debe tener al menos 2 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El apellido no puede exceder los 50 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El apellido solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -44,21 +44,15 @@ export class PersonPrueba implements OnInit {
       label: 'Teléfono',
       type: 'tel',
       validations: [
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]{7,15}$', message: 'El teléfono debe tener entre 7 y 15 dígitos.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]+$', message: 'El teléfono solo debe contener números.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^\\+?[0-9]+$', message: 'El teléfono solo debe contener números y puede iniciar con +.' }
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[0-9]{7,15}$', message: 'El teléfono debe tener entre 7 y 15 dígitos.' }
       ]
     },
-    { 
-      // name: 'asset', 
-      // label: 'Activo', 
-      // type: 'toggle' 
-
-       name: 'asset',
+    {
+      name: 'asset',
       label: 'Activo',
       type: 'toggle',
       value: true,
-      hidden: true   // <-- Esto lo mantiene oculto
+      hidden: true
     }
   ];
 
@@ -66,49 +60,76 @@ export class PersonPrueba implements OnInit {
   initialData: any = {};
 
   private service = inject(General);
-  private route = inject(Router);
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEdit = true;
-      this.service.getById<{ success: boolean; data: Person }>('Person', id).subscribe(response => {
-        if (response.success) {
-          this.initialData = response.data;
+    this.isEdit = !!id;
+
+    if (this.isEdit && id) {
+      this.service.getById<Person>('Person', id).subscribe({
+        next: (person) => {
+          this.initialData = this.normalizePerson(person);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar la persona.', 'error');
+          this.router.navigate(['/persons-index']);
         }
       });
     }
   }
 
+  private normalizePerson(p: any) {
+    return {
+      id: p.id,
+      firstName: p.firstName,
+      lastName: p.lastName,
+      phoneNumber: p.phoneNumber ?? '',
+      asset: p.asset ?? true
+    };
+  }
+
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Person', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/persons-index']);
+      this.service.put('Person', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/persons-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Person', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/persons-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Person', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/persons-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/persons-index']);
+    this.router.navigate(['/persons-index']);
   }
 }

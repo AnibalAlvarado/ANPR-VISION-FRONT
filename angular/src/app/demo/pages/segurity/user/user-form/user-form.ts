@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpParams } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,AbstractControl, AsyncValidatorFn  } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -17,8 +17,8 @@ import { User } from 'src/app/generic/Models/Entitys';
 import { of } from 'rxjs';
 import { debounceTime, map, switchMap, catchError } from 'rxjs/operators';
 
-/* --- VALIDADOR ASÍNCRONO --- */
-export function usernameExistsValidator(service: General, currentUserId?: string): AsyncValidatorFn {
+/* --- VALIDADORES ASÍNCRONOS (compatibles con General que retorna T directo) --- */
+export function usernameExistsValidator(service: General, getUserId: () => string | null): AsyncValidatorFn {
   return (control: AbstractControl) => {
     if (!control.value?.trim()) return of(null);
 
@@ -26,18 +26,15 @@ export function usernameExistsValidator(service: General, currentUserId?: string
       debounceTime(300),
       switchMap(username => {
         const params = new HttpParams().set('username', username);
-        return service.get<{ success: boolean; exists: boolean }>('User/check-username', params)
-          .pipe(
-            map(res => {
-              // Si el backend devuelve que existe Y no es el mismo usuario en edición → ERROR
-              if (res.success && res.exists && control.parent?.get('id')?.value !== currentUserId) {
-                return { usernameExists: true };
-              }
-              // Si no existe → Válido
-              return null;
-            }),
-            catchError(() => of(null)) // Si hay error en la API, no bloqueamos el formulario
-          );
+        return service.get<any>('User/check-username', params).pipe(
+          map(res => {
+            // Soporta boolean directo o { exists: boolean }
+            const exists = typeof res === 'boolean' ? res : !!res?.exists;
+            const currentId = getUserId() ?? control.parent?.get('id')?.value ?? null;
+            return exists && control.parent?.get('id')?.value !== currentId ? { usernameExists: true } : null;
+          }),
+          catchError(() => of(null)) // si falla la API, no bloquea
+        );
       })
     );
   };
@@ -51,21 +48,12 @@ export function emailExistsValidator(service: General, getUserId: () => string |
       debounceTime(400),
       switchMap(email => {
         const currentUserId = getUserId() ?? '';
-
-        const params = new HttpParams()
-          .set('email', email)
-          // 👇 Usa el nombre que espera el backend o elimínalo
-          .set('currentUserId', currentUserId);
-
-        return service.get<{ success: boolean; exists: boolean; message?: string }>(
-          'User/check-email', params
-        ).pipe(
+        const params = new HttpParams().set('email', email).set('currentUserId', currentUserId);
+        return service.get<any>('User/check-email', params).pipe(
           map(res => {
-            // Si el correo existe y no es el usuario en edición → error
-            if (res.success && res.exists && control.parent?.get('id')?.value !== currentUserId) {
-              return { emailExists: true };
-            }
-            return null;
+            const exists = typeof res === 'boolean' ? res : !!res?.exists;
+            const currentId = getUserId() ?? control.parent?.get('id')?.value ?? null;
+            return exists && control.parent?.get('id')?.value !== currentId ? { emailExists: true } : null;
           }),
           catchError(() => of(null))
         );
@@ -73,11 +61,6 @@ export function emailExistsValidator(service: General, getUserId: () => string |
     );
   };
 }
-
-
-
-
-
 
 @Component({
   selector: 'app-user-form',
@@ -97,18 +80,15 @@ export function emailExistsValidator(service: General, getUserId: () => string |
   templateUrl: './user-form.html',
   styleUrl: './user-form.scss'
 })
-
-
 export class UserForm implements OnInit {
-[x: string]: any;
+  [x: string]: any;
   form: FormGroup;
   isEdit = false;
-  persons: { id: number; firstName: string }[] = [];
+  persons: { id: number; firstName: string; lastName?: string }[] = [];
   originalPassword: string = '';
   roles: { id: number; name: string }[] = [];
   selectedRoleId: number | null = null;
   rolUserAsset: boolean = true;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userRoles: any[] = [];
   editIndex: number | null = null;
 
@@ -118,29 +98,18 @@ export class UserForm implements OnInit {
   private service = inject(General);
   userId: string = '';
 
-      onCancelar(): void {
-    this.route.navigate(['/user-index']);
-  }
   constructor() {
     this.form = this.FormBuilder.group({
       id: [null],
       userName: [
         '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(30)
-          // Validators.pattern(/^[a-zA-ZÀ-ÿ\\s]+$/)
-        ],
-         [usernameExistsValidator(this.service, this.userId)]
+        [Validators.required, Validators.minLength(3), Validators.maxLength(30)],
+        [usernameExistsValidator(this.service, () => this.userId)]
       ],
       email: [
         '',
-        [
-          Validators.required,
-          Validators.email
-        ],
-         [emailExistsValidator(this.service, () => this.userId)]
+        [Validators.required, Validators.email],
+        [emailExistsValidator(this.service, () => this.userId)]
       ],
       password: [
         '',
@@ -148,77 +117,82 @@ export class UserForm implements OnInit {
           Validators.required,
           Validators.minLength(8),
           Validators.maxLength(20),
-          Validators.pattern(
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
-          ) // Al menos una mayúscula, un número y un carácter especial
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
         ]
       ],
       personId: ['', Validators.required],
-      asset: [true]
+      asset: [true],
+      // el template usa hidePassword → lo agregamos
+      hidePassword: [true]
     });
-
   }
 
+  onCancelar(): void {
+    this.route.navigate(['/user-index']);
+  }
 
   ngOnInit(): void {
     this.getAllPersons();
-    this.form.get('userName')?.updateValueAndValidity();
-    const id = this.ActivatedRoute.snapshot.paramMap.get('id');
 
-    if (id) {
-      this.isEdit = true;
+    const id = this.ActivatedRoute.snapshot.paramMap.get('id');
+    this.isEdit = !!id;
+
+    if (this.isEdit && id) {
       this.userId = id;
       this.getAllRoles();
       this.loadUserRoles(id);
 
+      // En edición la contraseña no es obligatoria
       this.form.get('password')?.clearValidators();
       this.form.get('password')?.updateValueAndValidity();
 
-      this.service.getById<{ success: boolean; data: User }>('User', id).subscribe(response => {
-        if (response.success) {
-          const userData = { ...response.data, password: '' };
-          this.originalPassword = response.data.password;
+      this.service.getById<User>('User', id).subscribe({
+        next: (user) => {
+          const userData = { ...user, password: '' };
+          this.originalPassword = user.password ?? '';
           this.form.patchValue(userData);
 
-           this.form.get('email')?.updateValueAndValidity({ onlySelf: true, emitEvent: true });
+          // Revalidar asincrónicos con el userId cargado
+          this.form.get('userName')?.updateValueAndValidity();
+          this.form.get('email')?.updateValueAndValidity();
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el usuario.', 'error');
+          this.route.navigate(['/user-index']);
         }
       });
-    } else {
-      this.form.get('password')?.setValidators([
-        Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(20),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
-      ]);
-      this.form.get('password')?.updateValueAndValidity();
     }
   }
 
   getAllPersons(): void {
-    this.service.get<{ success: boolean; data: { id: number; firstName: string }[] }>('Person/select')
-      .subscribe(response => {
-        if (response.success) {
-          this.persons = response.data;
-        }
-      });
+    this.service.get<Array<{ id: number; firstName: string; lastName?: string }>>('Person/select').subscribe({
+      next: (people) => {
+        this.persons = people || [];
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar las personas.', 'error');
+      }
+    });
   }
 
   getAllRoles(): void {
-    this.service.get<{ success: boolean; data: { id: number; name: string }[] }>('Rol/select')
-      .subscribe(response => {
-        if (response.success) {
-          this.roles = response.data;
-        }
-      });
+    this.service.get<Array<{ id: number; name: string }>>('Rol/select').subscribe({
+      next: (roles) => (this.roles = roles || []),
+      error: (err: Error) => Swal.fire('Error', err.message || 'No se pudieron cargar los roles.', 'error')
+    });
   }
 
   loadUserRoles(userId: string) {
-    this.service.get(`User/roles/${userId}`).subscribe((res: any) => {
-      if (res.success) {
-        this.userRoles = res.data.map((role: any) => ({
+    this.service.get<any[]>(`User/roles/${userId}`).subscribe({
+      next: (items) => {
+        const list = items || [];
+        this.userRoles = list.map((role: any) => ({
           ...role,
           asset: Boolean(role.asset)
         }));
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los roles del usuario.', 'error');
       }
     });
   }
@@ -235,73 +209,69 @@ export class UserForm implements OnInit {
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.service.delete('RolUser/permanent', id).subscribe(() => {
-          Swal.fire('¡Eliminado!', 'El rol ha sido eliminado.', 'success');
-          this.loadUserRoles(this.userId);
+        this.service.delete('RolUser/permanent', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El rol ha sido eliminado.', 'success');
+            this.loadUserRoles(this.userId);
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar el rol', text: err.message });
+          }
         });
       }
     });
   }
 
-save(): void {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
-  }
+  save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-  const data = { ...this.form.value };
+    const data = { ...this.form.value };
 
-  if (this.isEdit && !data.password) {
-    data.password = this.originalPassword;
-  } else {
-    delete data.id;
-  }
+    if (this.isEdit) {
+      if (!data.password) data.password = this.originalPassword;
+    } else {
+      delete data.id;
+    }
 
-  const request = this.isEdit
-    ? this.service.put('User', data)
-    : this.service.post('User', data);
+    const request$ = this.isEdit ? this.service.put('User', data) : this.service.post('User', data);
 
-  request.subscribe({
-    next: (res: any) => {
-      if (!res.success) {
-        // Si el backend responde success=false, marcamos el error en el input
-       if (res.message?.includes('correo') || res.message?.includes('email')) {
-  this.form.get('email')?.setErrors({ emailExists: true });
-} else if (res.message?.includes('usuario') || res.message?.includes('username')) {
-          this.form.get('userName')?.setErrors({ usernameExists: true });
+    request$.subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: this.isEdit ? 'Registro actualizado exitosamente' : 'Registro creado exitosamente',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+        this.route.navigate(['/user-index']);
+      },
+      error: (err: Error) => {
+        const msg = (err?.message || '').toLowerCase();
+
+        // Mapea mensajes del back a errores de campo
+        if (msg.includes('correo') || msg.includes('email')) {
+          this.form.get('email')?.setErrors({ emailExists: true });
+          this.form.get('email')?.markAsTouched();
+          return;
         }
-        return;
-      }
+        if (msg.includes('usuario') || msg.includes('username')) {
+          this.form.get('userName')?.setErrors({ usernameExists: true });
+          this.form.get('userName')?.markAsTouched();
+          return;
+        }
 
-      Swal.fire({
-        icon: 'success',
-        title: this.isEdit
-          ? 'Registro actualizado exitosamente'
-          : 'Registro creado exitosamente',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true
-      });
-
-      this.route.navigate(['/user-index']);
-    },
-    error: (err) => {
-      // Si el backend envía mensaje específico
-       if (err.error?.message?.includes('correo') || err.error?.message?.includes('email')) {
-        this.form.get('email')?.setErrors({ emailExists: true });
-      } else if (err.error?.message?.includes('usuario') || err.error?.message?.includes('username')) {
-        this.form.get('userName')?.setErrors({ usernameExists: true });
-      }  else {
         Swal.fire({
           icon: 'error',
-          title: 'Ocurrió un error inesperado',
-          text: 'Por favor, intenta de nuevo más tarde.'
+          title: 'Ocurrió un error',
+          text: err.message || 'Por favor, intenta de nuevo más tarde.'
         });
       }
-    }
-  });
-}
-
+    });
+  }
 
   assignRole(): void {
     const userId = this.form.get('id')?.value;
@@ -310,19 +280,25 @@ save(): void {
 
     if (userId && rolId != null) {
       const payload = { userId, rolId, asset };
-
-      this.service.post('RolUser', payload).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Rol asignado correctamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.loadUserRoles(userId);
+      this.service.post('RolUser', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Rol asignado correctamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.loadUserRoles(userId);
+        },
+        error: (err: Error) => {
+          Swal.fire({ icon: 'error', title: 'No se pudo asignar el rol', text: err.message });
+        }
       });
     }
   }
 
-
+  cancel(): void {
+    this.route.navigate(['/user-index']);
+  }
 }

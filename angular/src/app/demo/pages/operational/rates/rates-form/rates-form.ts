@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { VehicleType } from '../../../parameters/vehicleType/vehicle-type';
 import { RateType } from '../../../parameters/ratesType/rate-type';
 import { Parking } from '../../../parameters/parking/parking';
+import { Rates } from 'src/app/generic/Models/Entitys';
 
 @Component({
   selector: 'app-rates-form',
@@ -16,197 +17,215 @@ import { Parking } from '../../../parameters/parking/parking';
   styleUrl: './rates-form.scss'
 })
 export class RatesForm implements OnInit {
-formConfig: FieldConfig[] = [
-  {
-    name: 'type',
-    label: 'Tipo',
-    type: 'text',
-    required: true,
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El tipo es obligatorio.' },
-      { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El tipo no puede superar los 50 caracteres.' }
-    ]
-  },
-  {
-    name: 'name',
-    label: 'Nombre',
-    type: 'text',
-    required: true,
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
-      { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 70, message: 'El nombre no puede superar los 70 caracteres.' }
-    ]
-  },
-  {
-    name: 'amount',
-    label: 'Monto',
-    type: 'number',
-    required: true,
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El monto es obligatorio.' },
-      { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'El monto debe ser mayor a 0.' }
-    ]
-  },
-  {
-    name: 'starHour',
-    label: 'Hora de Inicio',
-    type: 'date', // formato hora
-    required: true,
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La hora de inicio es obligatoria.' }
-    ]
-  },
-  {
-    name: 'endHour',
-    label: 'Hora de Fin',
-    type: 'date', // formato hora
-    required: true,
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La hora de fin es obligatoria.' }
-      // Si tu GenericForm tiene validador cruzado, agrega lógica para validar endHour > starHour
-    ]
-  },
-  {
-    name: 'year',
-    label: 'Año',
-    type: 'number',
-    required: true,
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El año es obligatorio.' },
-      { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 2000, message: 'El año no puede ser menor a 2000.' }
-    ]
-  },
-  {
-    name: 'parkingId',
-    label: 'Parqueadero',
-    type: 'select',
-    required: true,
-    options: [],
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un parqueadero.' }
-    ]
-  },
-  {
-    name: 'ratesTypeId',
-    label: 'Tipo de Tarifa',
-    type: 'select',
-    required: true,
-    options: [],
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un tipo de tarifa.' }
-    ]
-  },
-  {
-    name: 'typeVehicleId',
-    label: 'Tipo de Vehículo',
-    type: 'select',
-    required: true,
-    options: [],
-    validations: [
-      { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un tipo de vehículo.' }
-    ]
-  },
-  {
-    name: 'asset',
-    label: 'Activo',
-    type: 'toggle',
-    value: true,
-    hidden: true
-  }
-];
-isEdit = false;
+  formConfig: FieldConfig[] = [
+    {
+      name: 'type',
+      label: 'Tipo',
+      type: 'text',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El tipo es obligatorio.' },
+        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El tipo no puede superar los 50 caracteres.' }
+      ]
+    },
+    {
+      name: 'name',
+      label: 'Nombre',
+      type: 'text',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
+        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 70, message: 'El nombre no puede superar los 70 caracteres.' }
+      ]
+    },
+    {
+      name: 'amount',
+      label: 'Monto',
+      type: 'number',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El monto es obligatorio.' },
+        { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 1, message: 'El monto debe ser mayor a 0.' }
+      ]
+    },
+    {
+      name: 'starHour', // si en tu back es startHour, cámbialo en ambos lados
+      label: 'Hora de Inicio',
+      type: 'date', // si tu GenericForm soporta 'time', considera usar 'time'
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La hora de inicio es obligatoria.' }
+      ]
+    },
+    {
+      name: 'endHour',
+      label: 'Hora de Fin',
+      type: 'date',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La hora de fin es obligatoria.' }
+      ]
+    },
+    {
+      name: 'year',
+      label: 'Año',
+      type: 'number',
+      required: true,
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El año es obligatorio.' },
+        { name: ValidatorNames.Min, validator: ValidatorNames.Min, value: 2000, message: 'El año no puede ser menor a 2000.' }
+      ]
+    },
+    {
+      name: 'parkingId',
+      label: 'Parqueadero',
+      type: 'select',
+      required: true,
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un parqueadero.' }
+      ]
+    },
+    {
+      name: 'ratesTypeId',
+      label: 'Tipo de Tarifa',
+      type: 'select',
+      required: true,
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un tipo de tarifa.' }
+      ]
+    },
+    {
+      name: 'typeVehicleId',
+      label: 'Tipo de Vehículo',
+      type: 'select',
+      required: true,
+      options: [],
+      validations: [
+        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un tipo de vehículo.' }
+      ]
+    },
+    {
+      name: 'asset',
+      label: 'Activo',
+      type: 'toggle',
+      value: true,
+      hidden: true
+    }
+  ];
+
+  isEdit = false;
   initialData: any = {};
 
   private service = inject(General);
   private route = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  constructor() {}
-
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-   // Tipos de membresía
-this.service.get<{ data: VehicleType[] }>('TypeVehicle/select')
-  .subscribe(response => {
-    if (response.data) {
-      this.formConfig = this.formConfig.map(field => {
-        if (field.name === 'typeVehicleId') {
-          return {
-            ...field,
-            options: response.data.map(item => ({ value: item.id, label: item.name }))
-          };
-        }
-        return field;
-      });
-    }
-  });
+    // Vehículos
+    this.service.get<VehicleType[]>('TypeVehicle/select').subscribe({
+      next: (items) => {
+        this.formConfig = this.formConfig.map(field =>
+          field.name === 'typeVehicleId'
+            ? {
+                ...field,
+                options: (items || []).map(item => ({ value: item.id, label: item.name }))
+              }
+            : field
+        );
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los tipos de vehículo.', 'error');
+      }
+    });
 
-// Vehículos
-this.service.get<{ data: RateType[] }>('RatesType/select')
-  .subscribe(response => {
-    if (response.data) {
-      this.formConfig = this.formConfig.map(field => {
-        if (field.name === 'ratesTypeId') { // <- minúscula
-          return {
-            ...field,
-            options: response.data.map(item => ({ value: item.id, label: item.name }))
-          };
-        }
-        return field;
-      });
-    }
-  });
+    // Tipos de tarifa
+    this.service.get<RateType[]>('RatesType/select').subscribe({
+      next: (items) => {
+        this.formConfig = this.formConfig.map(field =>
+          field.name === 'ratesTypeId'
+            ? {
+                ...field,
+                options: (items || []).map(item => ({ value: item.id, label: item.name }))
+              }
+            : field
+        );
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los tipos de tarifa.', 'error');
+      }
+    });
 
-  this.service.get<{ data: Parking[] }>('Parking/select')
-  .subscribe(response => {
-    if (response.data) {
-      this.formConfig = this.formConfig.map(field => {
-        if (field.name === 'parkingId') { // <- minúscula
-          return {
-            ...field,
-            options: response.data.map(item => ({ value: item.id, label: item.name }))
-          };
-        }
-        return field;
-      });
-    }
-  });
-    // Modo edición
+    // Parqueaderos
+    this.service.get<Parking[]>('Parking/select').subscribe({
+      next: (items) => {
+        this.formConfig = this.formConfig.map(field =>
+          field.name === 'parkingId'
+            ? {
+                ...field,
+                options: (items || []).map(item => ({ value: item.id, label: item.name }))
+              }
+            : field
+        );
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los parqueaderos.', 'error');
+      }
+    });
+
+    // Edición
     if (id) {
       this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('Rates', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+      this.service.getById<Rates>('Rates', id).subscribe({
+        next: (item) => {
+          this.initialData = item;
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar la tarifa.', 'error');
+          this.route.navigate(['/rates-index']);
+        }
+      });
     }
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('Rates', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/rates-index']);
+      this.service.put('Rates', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/rates-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('Rates', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/rates-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('Rates', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.route.navigate(['/rates-index']);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }

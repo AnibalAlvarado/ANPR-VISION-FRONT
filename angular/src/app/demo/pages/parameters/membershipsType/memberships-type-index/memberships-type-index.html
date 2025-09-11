@@ -83,10 +83,10 @@
   </div>
 
   <!-- Membership Types List -->
-  <div class="parking-list" *ngIf="dataSource.data.length > 0">
+  <div class="parking-list" *ngIf="(dataSource?.data?.length || 0) > 0">
     <div
       class="parking-item"
-      *ngFor="let membershipType of dataSource.data"
+      *ngFor="let membershipType of (dataSource?.data || [])"
       [class.deleted-item]="membershipType.isDeleted">
 
       <!-- Membership Type Card -->
@@ -95,7 +95,6 @@
           <div class="parking-info">
             <h2 class="parking-name">{{ membershipType.name }}</h2>
             <div class="parking-details">
-             
               <div class="detail-row" *ngIf="membershipType.description">
                 <mat-icon class="detail-icon">description</mat-icon>
                 <span class="detail-text">{{ membershipType.description }}</span>
@@ -112,7 +111,6 @@
           </div>
 
           <div class="parking-status-section">
-            <!-- Status Badge -->
             <div class="status-wrapper">
               <div
                 class="status-badge"
@@ -199,7 +197,7 @@
   </div>
 
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="dataSource.data.length === 0">
+  <div class="empty-state" *ngIf="(dataSource?.data?.length || 0) === 0">
     <div class="empty-content">
       <div class="empty-illustration">
         <mat-icon class="empty-icon">card_membership</mat-icon>
@@ -220,5 +218,4 @@
       </button>
     </div>
   </div>
-
 </div>

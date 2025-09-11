@@ -49,9 +49,9 @@ export class ParkingCategoryForm implements OnInit {
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El código debe tener al menos 2 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 10, message: 'El código no puede exceder los 10 caracteres.' },
         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-Z0-9]+$', message: 'El código solo puede contener letras y números.' },
-        {
-          name: ValidatorNames.Pattern,validator: ValidatorNames.Pattern,value: '^(1|2|3)$',message: 'Ingrese un código válido: 1, 2 o 3.'
-        }
+        // {
+        //   name: ValidatorNames.Pattern,validator: ValidatorNames.Pattern,value: '^(1|2|3)$',message: 'Ingrese un código válido: 1, 2 o 3.'
+        // }
 
       ]
     },

@@ -1,11 +1,7 @@
-
-
-
 <!-- HTML Template para Tipos de Vehículos -->
 <div class="vehicle-type-container">
   <!-- Header Section -->
   <div class="header-section">
-
     <button mat-raised-button color="primary" (click)="goToCreate()" class="create-btn">
       <mat-icon>directions_car</mat-icon>
       Nuevo Tipo de Vehículo
@@ -23,15 +19,17 @@
         <p>Tipos de Vehículos Activos</p>
       </div>
     </div>
+
     <div class="stat-card">
       <div class="stat-icon total">
         <mat-icon>inventory</mat-icon>
       </div>
       <div class="stat-content">
-        <h3>{{ dataSource.data.length }}</h3>
+        <h3>{{ (dataSource?.data?.length || 0) }}</h3>
         <p>Total de Tipos de Vehículos</p>
       </div>
     </div>
+
     <div class="stat-card">
       <div class="stat-icon deleted">
         <mat-icon>delete_sweep</mat-icon>
@@ -44,8 +42,8 @@
   </div>
 
   <!-- Vehicle Types Grid -->
-  <div class="vehicles-grid">
-    <div *ngFor="let vehicle of dataSource.data" class="vehicle-card"
+  <div class="vehicles-grid" *ngIf="(dataSource?.data?.length || 0) > 0">
+    <div *ngFor="let vehicle of (dataSource?.data || [])" class="vehicle-card"
          [ngClass]="{'card-deleted': vehicle.isDeleted, 'card-inactive': !vehicle.asset}">
 
       <!-- Vehicle Icon Background -->
@@ -69,7 +67,6 @@
       <!-- Card Content -->
       <div class="card-content">
         <h3 class="vehicle-name">{{ vehicle.name }}</h3>
-        <!-- <p class="vehicle-type">Tipo de Vehículo</p> -->
 
         <!-- Vehicle Details -->
         <div class="vehicle-details">
@@ -127,9 +124,8 @@
     </div>
   </div>
 
-
-
-    <div class="empty-state" *ngIf="dataSource.data.length === 0">
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="(dataSource?.data?.length || 0) === 0">
     <div class="empty-animation">
       <div class="membership-animation">
         <mat-icon>directions_car</mat-icon>
@@ -140,7 +136,7 @@
         <mat-icon class="float-3">verified</mat-icon>
       </div>
     </div>
-   <h3>No hay tipos de vehículos registrados</h3>
+    <h3>No hay tipos de vehículos registrados</h3>
     <p>Comienza agregando los tipos de vehículos que manejará tu parqueadero</p>
     <div class="empty-actions">
       <button mat-raised-button color="primary" (click)="goToCreate()">

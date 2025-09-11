@@ -1,139 +1,4 @@
-<!--
 
-<div class="zones-container">
-  <div class="header-section">
-
-    <button
-      mat-raised-button
-      color="primary"
-      class="create-btn"
-      (click)="goToCreate()"
-      matTooltip="Crear nueva zona">
-      <mat-icon>add</mat-icon>
-      Nueva Zona
-    </button>
-  </div>
-
-  <div class="filters-section">
-    <mat-card class="search-card">
-      <div class="search-container">
-        <mat-icon class="search-icon">search</mat-icon>
-        <input
-          type="text"
-          placeholder="Buscar zonas..."
-          class="search-input"
-          (keyup)="applyFilter($event)">
-      </div>
-    </mat-card>
-  </div>
-
-  <div class="zones-grid" *ngIf="dataSource.data.length > 0">
-    <mat-card
-      class="zone-card"
-      *ngFor="let zone of dataSource.data"
-      [class.deleted]="zone.isDeleted">
-
-      <div class="zone-header">
-        <div class="zone-info">
-          <h3 class="zone-name">{{ zone.name }}</h3>
-          <p class="parking-name">
-            <mat-icon class="info-icon">business</mat-icon>
-            {{ zone.parking }}
-          </p>
-        </div>
-
-        <div class="status-container">
-          <span
-            class="status-badge"
-            [class.active]="zone.asset"
-            [class.inactive]="!zone.asset">
-            <mat-icon class="status-icon">
-              {{ zone.asset ? 'check_circle' : 'cancel' }}
-            </mat-icon>
-            {{ zone.asset ? 'Activo' : 'Inactivo' }}
-          </span>
-        </div>
-      </div>
-
-      <div class="deletion-status" *ngIf="zone.isDeleted">
-        <mat-icon class="warning-icon">warning</mat-icon>
-        <span>Eliminado lógicamente</span>
-      </div>
-
-      <div class="actions-section">
-        <div class="action-buttons">
-          <ng-container *ngIf="!zone.isDeleted">
-            <button
-              mat-raised-button
-              color="primary"
-              class="action-btn edit-btn"
-              (click)="goToEdit(zone)"
-              matTooltip="Editar zona">
-              <mat-icon>edit</mat-icon>
-              Editar
-            </button>
-
-            <button
-              mat-raised-button
-              color="warn"
-              class="action-btn delete-btn"
-              (click)="deleteZone(zone.id!)"
-              matTooltip="Eliminar zona">
-              <mat-icon>delete</mat-icon>
-              Eliminar
-            </button>
-          </ng-container>
-
-          <ng-container *ngIf="zone.isDeleted">
-            <button
-              mat-raised-button
-              color="primary"
-              class="action-btn edit-btn"
-              disabled
-              matTooltip="No se puede editar una zona eliminada">
-              <mat-icon>edit</mat-icon>
-              Editar
-            </button>
-
-            <button
-              mat-raised-button
-              color="warn"
-              class="action-btn delete-btn"
-              disabled
-              matTooltip="Zona ya eliminada lógicamente">
-              <mat-icon>delete</mat-icon>
-              Eliminar
-            </button>
-
-            <button
-              mat-raised-button
-              color="accent"
-              class="action-btn permanent-delete-btn"
-              (click)="deletePermanentModule(zone.id!)"
-              matTooltip="Eliminar permanentemente">
-              <mat-icon>delete_forever</mat-icon>
-              Eliminar Permanente
-            </button>
-          </ng-container>
-        </div>
-      </div>
-    </mat-card>
-  </div>
-
-  <div class="empty-state" *ngIf="dataSource.data.length === 0">
-    <mat-card class="empty-card">
-      <h2>No hay zonas registradas</h2>
-      <p>Comienza creando tu primera zona de parqueadero</p>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="goToCreate()">
-        <mat-icon>add</mat-icon>
-        Crear Primera Zona
-      </button>
-    </mat-card>
-  </div>
-</div> -->
 
 <div class="parking-container">
   <!-- Hero Section -->
@@ -220,7 +85,7 @@
   </div>
 
   <!-- Parking List -->
-  <div class="parking-list" *ngIf="dataSource.data.length > 0">
+  <div class="parking-list" *ngIf="(dataSource?.data?.length || 0) > 0">
     <div
       class="parking-item"
       *ngFor="let zone of dataSource.data"
@@ -331,7 +196,7 @@
   </div>
 
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="dataSource.data.length === 0">
+  <div class="empty-state" *ngIf="(dataSource?.data?.length || 0) === 0">
     <div class="empty-content">
       <div class="empty-illustration">
         <mat-icon class="empty-icon">location_on</mat-icon>

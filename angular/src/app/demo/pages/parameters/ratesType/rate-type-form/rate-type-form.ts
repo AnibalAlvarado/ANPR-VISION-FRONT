@@ -5,7 +5,6 @@ import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-for
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
-import { VehicleType } from '../../vehicleType/vehicle-type';
 
 @Component({
   selector: 'app-rate-type-form',
@@ -36,7 +35,8 @@ export class RateTypeForm implements OnInit {
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        // Ojo: este patrón es MUY restrictivo para descripciones (sin números ni puntuación)
+        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -44,7 +44,7 @@ export class RateTypeForm implements OnInit {
       label: 'Activo',
       type: 'toggle',
       value: true,
-      hidden: true   // <-- Esto lo mantiene oculto
+      hidden: true
     }
   ];
 
@@ -52,53 +52,75 @@ export class RateTypeForm implements OnInit {
   initialData: any = {};
 
   private service = inject(General);
-  private route = inject(Router);
+  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-
-  constructor() {}
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEdit = true;
-      this.service
-        .getById<{ success: boolean; data: VehicleType }>('RatesType', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+    this.isEdit = !!id;
+
+    if (this.isEdit && id) {
+      this.service.getById<any>('RatesType', id).subscribe({
+        next: (rateType) => {
+          this.initialData = this.normalizeRateType(rateType);
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar el tipo de tarifa.', 'error');
+          this.router.navigate(['/rates-type-index']); // ajusta a tu ruta real si difiere
+        }
+      });
     }
+  }
+
+  private normalizeRateType(rt: any) {
+    return {
+      id: rt.id,
+      name: rt.name,
+      description: rt.description,
+      asset: rt.asset ?? true
+    };
   }
 
   save(data: any) {
     if (this.isEdit) {
-      this.service.put('RatesType', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro actualizado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/RatesType-index']);
+      this.service.put('RatesType', data).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/RatesType-index']); // ajusta a tu ruta real
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+        }
       });
     } else {
-      delete data.id;
-      this.service.post('RatesType', data).subscribe(() => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro creado exitosamente',
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true
-        });
-        this.route.navigate(['/RatesType-index']);
+      const payload = { ...data };
+      delete payload.id;
+
+      this.service.post('RatesType', payload).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
+          this.router.navigate(['/RatesType-index']); // ajusta a tu ruta real
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+        }
       });
     }
   }
 
   cancel() {
-    this.route.navigate(['/RatesType-index']);
+    this.router.navigate(['/RatesType-index']); // ajusta a tu ruta real
   }
 }

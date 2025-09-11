@@ -83,7 +83,7 @@
   </div>
 
   <!-- Parking List -->
-  <div class="parking-list" *ngIf="dataSource.data.length > 0">
+  <div class="parking-list" *ngIf="(dataSource?.data?.length || 0) > 0; else emptyState">
     <div
       class="parking-item"
       *ngFor="let sector of dataSource.data"
@@ -198,6 +198,7 @@
   </div>
 
   <!-- Empty State -->
+   <ng-template #emptyState>
   <div class="empty-state" *ngIf="dataSource.data.length === 0">
     <div class="empty-content">
       <div class="empty-illustration">
@@ -219,5 +220,6 @@
       </button>
     </div>
   </div>
+  </ng-template>
 
 </div>

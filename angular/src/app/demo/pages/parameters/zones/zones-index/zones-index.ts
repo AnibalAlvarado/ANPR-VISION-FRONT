@@ -14,7 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-zones-index',
-  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, FormsModule,MatPaginator],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, FormsModule, MatPaginator],
   templateUrl: './zones-index.html',
   styleUrl: './zones-index.scss'
 })
@@ -35,40 +35,31 @@ export class ZonesIndex implements OnInit {
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
-
   ngOnInit(): void {
     this.getAllZones();
   }
 
   getAllZones(): void {
-    this._generalService.get<{ data: Zones[] }>('Zones/join').subscribe(response => {
-      this.originalData = response.data;
-      this.dataSource.data = response.data;
-      this.dataSource.paginator = this.paginator;
+    this._generalService.get<Zones[]>('Zones/join').subscribe({
+      next: (zones) => {
+        this.originalData = zones || [];
+        this.dataSource.data = zones || [];
+        this.dataSource.paginator = this.paginator;
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar las zonas.', 'error');
+        this.originalData = [];
+        this.dataSource.data = [];
+      }
     });
   }
 
-  // applyFilter(event: Event): void {
-  //   const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-
-  //   if (!filterValue) {
-  //     this.dataSource.data = this.originalData;
-  //     return;
-  //   }
-
-  //   this.dataSource.data = this.originalData.filter(zone =>
-  //     zone.name?.toLowerCase().includes(filterValue) ||
-  //     zone.parking?.toLowerCase().includes(filterValue)
-  //   );
-  // }
-
   goToCreate(): void {
-    this.router.navigate(['/Zones-form']);
+    this.router.navigate(['/zones-form']); // minúsculas
   }
 
   goToEdit(form: Zones): void {
-    this.router.navigate(['/Zones-form', form.id]);
+    this.router.navigate(['/zones-form', form.id]); // minúsculas
   }
 
   deleteZone(id: number): void {
@@ -90,19 +81,24 @@ export class ZonesIndex implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this._generalService.delete('Zones', id).subscribe(() => {
-          Swal.fire({
-            title: '¡Eliminado!',
-            text: 'El registro ha sido eliminado lógicamente.',
-            icon: 'success',
-            confirmButtonColor: '#4caf50',
-            customClass: {
-              popup: 'swal-popup',
-              title: 'swal-title',
-              confirmButton: 'swal-success-btn'
-            }
-          });
-          this.getAllZones();
+        this._generalService.delete('Zones', id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Eliminado!',
+              text: 'El registro ha sido eliminado lógicamente.',
+              icon: 'success',
+              confirmButtonColor: '#4caf50',
+              customClass: {
+                popup: 'swal-popup',
+                title: 'swal-title',
+                confirmButton: 'swal-success-btn'
+              }
+            });
+            this.getAllZones();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+          }
         });
       }
     });
@@ -127,25 +123,30 @@ export class ZonesIndex implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this._generalService.delete('Zones/permanent', id).subscribe(() => {
-          Swal.fire({
-            title: '¡Eliminado permanentemente!',
-            text: 'El registro ha sido eliminado permanentemente.',
-            icon: 'success',
-            confirmButtonColor: '#4caf50',
-            customClass: {
-              popup: 'swal-popup',
-              title: 'swal-title',
-              confirmButton: 'swal-success-btn'
-            }
-          });
-          this.getAllZones();
+        this._generalService.delete('Zones/permanent', id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Eliminado permanentemente!',
+              text: 'El registro ha sido eliminado permanentemente.',
+              icon: 'success',
+              confirmButtonColor: '#4caf50',
+              customClass: {
+                popup: 'swal-popup',
+                title: 'swal-title',
+                confirmButton: 'swal-success-btn'
+              }
+            });
+            this.getAllZones();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+          }
         });
       }
     });
   }
 
-// Funciones para las estadísticas del header
+  // Stats
   getTotalZones(): number {
     return this.originalData.length;
   }
@@ -158,13 +159,11 @@ export class ZonesIndex implements OnInit {
     return this.originalData.filter(zone => zone.isDeleted).length;
   }
 
-  // Función para aplicar filtro de búsqueda
+  // Búsqueda + estado
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-
     let filteredData = this.originalData;
 
-    // Aplicar filtro de búsqueda
     if (filterValue) {
       filteredData = filteredData.filter(zone =>
         zone.name?.toLowerCase().includes(filterValue) ||
@@ -172,23 +171,18 @@ export class ZonesIndex implements OnInit {
       );
     }
 
-    // Aplicar filtro de estado si hay uno activo
     filteredData = this.applyStatusFilter(filteredData);
-
     this.dataSource.data = filteredData;
   }
 
-  // Función para filtrar por estado
   filterByStatus(status: string): void {
     this.selectedFilter = status;
 
-    // Obtener el valor actual del input de búsqueda
     const searchInput = document.querySelector('.search-input') as HTMLInputElement;
     const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
     let filteredData = this.originalData;
 
-    // Aplicar filtro de búsqueda primero si existe
     if (searchValue) {
       filteredData = filteredData.filter(zone =>
         zone.name?.toLowerCase().includes(searchValue) ||
@@ -196,13 +190,10 @@ export class ZonesIndex implements OnInit {
       );
     }
 
-    // Aplicar filtro de estado
     filteredData = this.applyStatusFilter(filteredData);
-
     this.dataSource.data = filteredData;
   }
 
-   // Función auxiliar para aplicar filtro de estado
   private applyStatusFilter(data: Zones[]): Zones[] {
     switch (this.selectedFilter) {
       case 'active':

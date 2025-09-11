@@ -3,7 +3,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import {  MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -14,14 +14,15 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registered-vehicle-index',
-  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule,CommonModule, FormsModule],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, FormsModule],
   templateUrl: './registered-vehicle-index.html',
   styleUrl: './registered-vehicle-index.scss'
 })
 export class RegisteredVehicleIndex implements OnInit {
-dataSource = new MatTableDataSource<RegisteredVehicle>();
+  dataSource = new MatTableDataSource<RegisteredVehicle>();
   originalData: RegisteredVehicle[] = [];
   selectedFilter: string = 'all';
+
   columns = [
     { key: 'entryDate', label: 'Fecha de Entrada' },
     { key: 'exitDate', label: 'Fecha de Salida' },
@@ -36,17 +37,22 @@ dataSource = new MatTableDataSource<RegisteredVehicle>();
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
-
   ngOnInit(): void {
-    this.getAllForms();
+    this.getAllRegisteredVehicles();
   }
 
-  getAllForms(): void {
-    this._generalService.get<{ data: RegisteredVehicle[] }>('RegisteredVehicles/join').subscribe(response => {
-      this.dataSource.data = response.data;
-      this.originalData = response.data;
-      this.dataSource.paginator = this.paginator;
+  getAllRegisteredVehicles(): void {
+    this._generalService.get<RegisteredVehicle[]>('RegisteredVehicles/join').subscribe({
+      next: (items) => {
+        this.originalData = items || [];
+        this.dataSource.data = this.originalData;
+        if (this.paginator) this.dataSource.paginator = this.paginator;
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los registros de vehículos.', 'error');
+        this.originalData = [];
+        this.dataSource.data = [];
+      }
     });
   }
 
@@ -70,9 +76,14 @@ dataSource = new MatTableDataSource<RegisteredVehicle>();
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        this._generalService.delete('RegisteredVehicles', id).subscribe(() => {
-          Swal.fire('¡Eliminado!', 'El registro de vehículo ha sido eliminado.', 'success');
-          this.getAllForms();
+        this._generalService.delete('RegisteredVehicles', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El registro de vehículo ha sido eliminado.', 'success');
+            this.getAllRegisteredVehicles();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+          }
         });
       }
     });
@@ -90,80 +101,76 @@ dataSource = new MatTableDataSource<RegisteredVehicle>();
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        this._generalService.delete('RegisteredVehicles/permanent', id).subscribe(() => {
-          Swal.fire('¡Eliminado!', 'El registro de vehículo ha sido eliminado permanentemente.', 'success');
-          this.getAllForms();
+        this._generalService.delete('RegisteredVehicles/permanent', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El registro de vehículo ha sido eliminado permanentemente.', 'success');
+            this.getAllRegisteredVehicles();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+          }
         });
       }
     });
   }
 
-  // Funciones para las estadísticas del header
+  // ---- Estadísticas (header)
   getTotalRegisteredVehicles(): number {
     return this.originalData.length;
   }
 
   getActiveRegisteredVehicles(): number {
-    return this.originalData.filter(registeredVehicle => registeredVehicle.asset && !registeredVehicle.isDeleted).length;
+    return this.originalData.filter(rv => rv.asset && !rv.isDeleted).length;
   }
 
   getDeletedRegisteredVehicles(): number {
-    return this.originalData.filter(registeredVehicle => registeredVehicle.isDeleted).length;
+    return this.originalData.filter(rv => rv.isDeleted).length;
   }
 
-  // Función para aplicar filtro de búsqueda
+  // ---- Filtros
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
 
     let filteredData = this.originalData;
 
-    // Aplicar filtro de búsqueda
     if (filterValue) {
-      filteredData = filteredData.filter(registeredVehicle =>
-        registeredVehicle.vehicle?.toLowerCase().includes(filterValue) ||
-        registeredVehicle.slots?.toLowerCase().includes(filterValue)
+      filteredData = filteredData.filter(rv =>
+        rv.vehicle?.toLowerCase().includes(filterValue) ||
+        rv.slots?.toLowerCase().includes(filterValue)
       );
     }
 
-    // Aplicar filtro de estado si hay uno activo
     filteredData = this.applyStatusFilter(filteredData);
-
     this.dataSource.data = filteredData;
   }
 
-  // Función para filtrar por estado
   filterByStatus(status: string): void {
     this.selectedFilter = status;
 
-    // Obtener el valor actual del input de búsqueda
     const searchInput = document.querySelector('.search-input') as HTMLInputElement;
     const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
     let filteredData = this.originalData;
 
-    // Aplicar filtro de búsqueda primero si existe
     if (searchValue) {
-      filteredData = filteredData.filter(registeredVehicle =>
-        registeredVehicle.vehicle?.toLowerCase().includes(searchValue) ||
-        registeredVehicle.slots?.toLowerCase().includes(searchValue)
+      filteredData = filteredData.filter(rv =>
+        rv.vehicle?.toLowerCase().includes(searchValue) ||
+        rv.slots?.toLowerCase().includes(searchValue)
       );
     }
 
-    // Aplicar filtro de estado
     filteredData = this.applyStatusFilter(filteredData);
-
     this.dataSource.data = filteredData;
   }
 
-  // Función auxiliar para aplicar filtro de estado
   private applyStatusFilter(data: RegisteredVehicle[]): RegisteredVehicle[] {
     switch (this.selectedFilter) {
       case 'active':
-        return data.filter(registeredVehicle => registeredVehicle.asset && !registeredVehicle.isDeleted);
+        return data.filter(rv => rv.asset && !rv.isDeleted);
       case 'inactive':
-        return data.filter(registeredVehicle => !registeredVehicle.asset && !registeredVehicle.isDeleted);
+        return data.filter(rv => !rv.asset && !rv.isDeleted);
       case 'deleted':
-        return data.filter(registeredVehicle => registeredVehicle.isDeleted);
+        return data.filter(rv => rv.isDeleted);
       case 'all':
       default:
         return data;

@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-// import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
 import { RateType } from '../rate-type';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,158 +14,157 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-rate-type-index',
-  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule,CommonModule, FormsModule, ],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, FormsModule],
   templateUrl: './rate-type-index.html',
   styleUrl: './rate-type-index.scss'
 })
 export class RateTypeIndex implements OnInit {
-dataSource = new MatTableDataSource<RateType>();
-originalData: RateType[] = [];
+  dataSource = new MatTableDataSource<RateType>();
+  originalData: RateType[] = [];
   selectedFilter: string = 'all';
-columns = [
-  { key: 'name', label: 'Nombre' },
-  { key: 'description', label: 'Descripción' },
-  { key: 'asset', label: 'Estado' },
-  { key: 'isDeleted', label: 'Eliminado Lógicamente' }
-];
 
+  columns = [
+    { key: 'name', label: 'Nombre' },
+    { key: 'description', label: 'Descripción' },
+    { key: 'asset', label: 'Estado' },
+    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+  ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
- ngOnInit(): void {
+  ngOnInit(): void {
     this.getAllTypeRates();
   }
 
- getAllTypeRates(): void {
-  this._generalService.get<{ data: RateType[] }>('RatesType/select').subscribe(response => {
-    this.dataSource.data = response.data;
-    this.originalData = response.data;
-    this.dataSource.paginator = this.paginator;
-  });
-}
+  getAllTypeRates(): void {
+    this._generalService.get<RateType[]>('RatesType/select').subscribe({
+      next: (items) => {
+        this.originalData = items || [];
+        this.dataSource.data = items || [];
+        if (this.paginator) this.dataSource.paginator = this.paginator;
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los tipos de tarifa.', 'error');
+        this.originalData = [];
+        this.dataSource.data = [];
+      }
+    });
+  }
 
-goToCreate(): void {
-  this.router.navigate(['/RatesType-form']);
-}
+  goToCreate(): void {
+    this.router.navigate(['/RatesType-form']); // usa tu ruta real
+  }
 
-goToEdit(RatesType: RateType): void {
-  this.router.navigate(['/RatesType-form', RatesType.id]);
-}
+  goToEdit(item: RateType): void {
+    this.router.navigate(['/RatesType-form', item.id]); // usa tu ruta real
+  }
 
+  deleteRateType(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el tipo de tarifa.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._generalService.delete('RatesType', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El tipo de tarifa ha sido eliminado.', 'success');
+            this.getAllTypeRates();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+          }
+        });
+      }
+    });
+  }
 
-deleteRateType(id: number): void {
-  Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el tipo de tarifa.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this._generalService.delete('RatesType', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El tipo de tarifa ha sido eliminado.', 'success');
-        this.getAllTypeRates();
-      });
-    }
-  });
-}
+  deletePermanentRateType(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el tipo de tarifa permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._generalService.delete('RatesType/permanent', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El tipo de tarifa ha sido eliminado permanentemente.', 'success');
+            this.getAllTypeRates();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+          }
+        });
+      }
+    });
+  }
 
-deletePermanentRateType(id: number): void {
-  Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el tipo de tarifa permanentemente.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this._generalService.delete('RatesType/permanent', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El tipo de tarifa ha sido eliminado permanentemente.', 'success');
-        this.getAllTypeRates();
-      });
-    }
-  });
-}
-
-// Funciones para las estadísticas del header
+  // Stats
   getTotalRateTypes(): number {
     return this.originalData.length;
   }
-
   getActiveRateTypes(): number {
-    return this.originalData.filter(rateType => rateType.asset && !rateType.isDeleted).length;
+    return this.originalData.filter(rt => rt.asset && !rt.isDeleted).length;
   }
-
   getDeletedRateTypes(): number {
-    return this.originalData.filter(rateType => rateType.isDeleted).length;
+    return this.originalData.filter(rt => rt.isDeleted).length;
   }
 
-  // Función para aplicar filtro de búsqueda
+  // Búsqueda + estado
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-
     let filteredData = this.originalData;
 
-    // Aplicar filtro de búsqueda
     if (filterValue) {
-      filteredData = filteredData.filter(rateType =>
-        rateType.name?.toLowerCase().includes(filterValue) ||
-        rateType.description?.toLowerCase().includes(filterValue)
+      filteredData = filteredData.filter(rt =>
+        rt.name?.toLowerCase().includes(filterValue) ||
+        rt.description?.toLowerCase().includes(filterValue)
       );
     }
 
-    // Aplicar filtro de estado si hay uno activo
     filteredData = this.applyStatusFilter(filteredData);
-
     this.dataSource.data = filteredData;
   }
 
-  // Función para filtrar por estado
   filterByStatus(status: string): void {
     this.selectedFilter = status;
 
-    // Obtener el valor actual del input de búsqueda
     const searchInput = document.querySelector('.search-input') as HTMLInputElement;
     const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
     let filteredData = this.originalData;
 
-    // Aplicar filtro de búsqueda primero si existe
     if (searchValue) {
-      filteredData = filteredData.filter(rateType =>
-        rateType.name?.toLowerCase().includes(searchValue) ||
-        rateType.description?.toLowerCase().includes(searchValue)
+      filteredData = filteredData.filter(rt =>
+        rt.name?.toLowerCase().includes(searchValue) ||
+        rt.description?.toLowerCase().includes(searchValue)
       );
     }
 
-    // Aplicar filtro de estado
     filteredData = this.applyStatusFilter(filteredData);
-
     this.dataSource.data = filteredData;
   }
 
-  // Función auxiliar para aplicar filtro de estado
   private applyStatusFilter(data: RateType[]): RateType[] {
     switch (this.selectedFilter) {
-      case 'active':
-        return data.filter(rateType => rateType.asset && !rateType.isDeleted);
-      case 'inactive':
-        return data.filter(rateType => !rateType.asset && !rateType.isDeleted);
-      case 'deleted':
-        return data.filter(rateType => rateType.isDeleted);
+      case 'active':   return data.filter(rt => rt.asset && !rt.isDeleted);
+      case 'inactive': return data.filter(rt => !rt.asset && !rt.isDeleted);
+      case 'deleted':  return data.filter(rt => rt.isDeleted);
       case 'all':
-      default:
-        return data;
+      default:         return data;
     }
   }
 }

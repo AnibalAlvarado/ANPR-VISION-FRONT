@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { GenericTable } from 'src/app/demo/ui-element/generic-table/generic-table';
@@ -14,78 +15,100 @@ import { FormModule } from 'src/app/generic/Models/Entitys';
   styleUrl: './form-module-index.scss'
 })
 export class FormModuleIndex implements OnInit {
-dataSource = new MatTableDataSource<FormModule>();
-columns = [
-  { key: 'moduleName', label: 'Nombre del Módulo' },
-  { key: 'formName', label: 'Nombre del Formulario' },
-  { key: 'asset', label: 'Estado' },
-  { key: 'isDeleted', label: 'Eliminado Lógicamente' }
-];
-
+  dataSource = new MatTableDataSource<FormModule>();
+  columns = [
+    { key: 'moduleName', label: 'Nombre del Módulo' },
+    { key: 'formName', label: 'Nombre del Formulario' },
+    { key: 'asset', label: 'Estado' },
+    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+  ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
- ngOnInit(): void {
+  ngOnInit(): void {
     this.getAllFormsModule();
   }
 
- getAllFormsModule(): void {
-  this._generalService.get<{ data: FormModule[] }>('FormModule/join').subscribe(response => {
-    this.dataSource.data = response.data;
-    this.dataSource.paginator = this.paginator;
-  });
-}
+  getAllFormsModule(): void {
+    this._generalService.get<FormModule[]>('FormModule/join').subscribe({
+      next: (items) => {
+        const rows = (items ?? []).map(it => {
+          const mod = (it as any)?.module;
+          const frm = (it as any)?.form;
+          return {
+            ...it,
+            moduleName: it.moduleName ?? mod?.name ?? '',
+            formName: it.formName ?? frm?.name ?? ''
+          } as FormModule;
+        });
+        this.dataSource.data = rows;
+        if (this.paginator) this.dataSource.paginator = this.paginator;
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los Formularios por Módulo.', 'error');
+        this.dataSource.data = [];
+      }
+    });
+  }
 
-goToCreate(): void {
-  this.router.navigate(['/formModule-form']);
-}
+  goToCreate(): void {
+    this.router.navigate(['/formModule-form']);
+  }
 
-goToEdit(form: FormModule): void {
-  this.router.navigate(['/formModule-form', form.id]);
-}
+  goToEdit(form: FormModule): void {
+    this.router.navigate(['/formModule-form', form.id]);
+  }
 
+  deleteModule(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el registro.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._generalService.delete('FormModule', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
+            this.getAllFormsModule();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+          }
+        });
+      }
+    });
+  }
 
-deleteModule(id: number): void {
-  Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el registro.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this._generalService.delete('FormModule', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
-        this.getAllFormsModule();
-      });
-    }
-  });
-}
-
-deletePermanentModule(id: number): void {
-  Swal.fire({
-    title: '¿Estás seguro?',
-    text: 'Esta acción eliminará el registro permanentemente.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this._generalService.delete('FormModule/permanent', id).subscribe(() => {
-        Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
-        this.getAllFormsModule();
-      });
-    }
-  });
-}
+  deletePermanentModule(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el registro permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._generalService.delete('FormModule/permanent', id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El registro ha sido eliminado permanentemente.', 'success');
+            this.getAllFormsModule();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+          }
+        });
+      }
+    });
+  }
 }
