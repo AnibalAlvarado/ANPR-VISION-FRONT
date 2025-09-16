@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
   styleUrl: './vehicle-index.scss'
 })
 export class VehicleIndex implements OnInit {
-dataSource = new MatTableDataSource<Vehicle>();
+  dataSource = new MatTableDataSource<Vehicle>();
   originalData: Vehicle[] = [];
   selectedFilter: string = 'all';
 
@@ -37,17 +37,22 @@ dataSource = new MatTableDataSource<Vehicle>();
   private _generalService = inject(General);
   private router = inject(Router);
 
-  constructor() {}
-
   ngOnInit(): void {
     this.getAllVehicles();
   }
 
   getAllVehicles(): void {
-    this._generalService.get<{ data: Vehicle[] }>('Vehicle/join').subscribe(response => {
-      this.originalData = response.data;
-      this.dataSource.data = response.data;
-      this.dataSource.paginator = this.paginator;
+    this._generalService.get<Vehicle[]>('Vehicle/join').subscribe({
+      next: (items) => {
+        this.originalData = items || [];
+        this.dataSource.data = items || [];
+        if (this.paginator) this.dataSource.paginator = this.paginator;
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudieron cargar los vehículos.', 'error');
+        this.originalData = [];
+        this.dataSource.data = [];
+      }
     });
   }
 
@@ -78,19 +83,24 @@ dataSource = new MatTableDataSource<Vehicle>();
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this._generalService.delete('Vehicle', id).subscribe(() => {
-          Swal.fire({
-            title: '¡Eliminado!',
-            text: 'El registro ha sido eliminado lógicamente.',
-            icon: 'success',
-            confirmButtonColor: '#4caf50',
-            customClass: {
-              popup: 'swal-popup',
-              title: 'swal-title',
-              confirmButton: 'swal-success-btn'
-            }
-          });
-          this.getAllVehicles();
+        this._generalService.delete('Vehicle', id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Eliminado!',
+              text: 'El registro ha sido eliminado lógicamente.',
+              icon: 'success',
+              confirmButtonColor: '#4caf50',
+              customClass: {
+                popup: 'swal-popup',
+                title: 'swal-title',
+                confirmButton: 'swal-success-btn'
+              }
+            });
+            this.getAllVehicles();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+          }
         });
       }
     });
@@ -115,19 +125,24 @@ dataSource = new MatTableDataSource<Vehicle>();
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this._generalService.delete('Vehicle/permanent', id).subscribe(() => {
-          Swal.fire({
-            title: '¡Eliminado permanentemente!',
-            text: 'El registro ha sido eliminado permanentemente.',
-            icon: 'success',
-            confirmButtonColor: '#4caf50',
-            customClass: {
-              popup: 'swal-popup',
-              title: 'swal-title',
-              confirmButton: 'swal-success-btn'
-            }
-          });
-          this.getAllVehicles();
+        this._generalService.delete('Vehicle/permanent', id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Eliminado permanentemente!',
+              text: 'El registro ha sido eliminado permanentemente.',
+              icon: 'success',
+              confirmButtonColor: '#4caf50',
+              customClass: {
+                popup: 'swal-popup',
+                title: 'swal-title',
+                confirmButton: 'swal-success-btn'
+              }
+            });
+            this.getAllVehicles();
+          },
+          error: (err: Error) => {
+            Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+          }
         });
       }
     });
@@ -152,7 +167,6 @@ dataSource = new MatTableDataSource<Vehicle>();
 
     let filteredData = this.originalData;
 
-    // Filtro de búsqueda por placa, cliente, tipo y color
     if (filterValue) {
       filteredData = filteredData.filter(v =>
         v.plate?.toLowerCase().includes(filterValue) ||
@@ -162,7 +176,6 @@ dataSource = new MatTableDataSource<Vehicle>();
       );
     }
 
-    // Filtro por estado
     filteredData = this.applyStatusFilter(filteredData);
 
     this.dataSource.data = filteredData;
@@ -171,7 +184,6 @@ dataSource = new MatTableDataSource<Vehicle>();
   filterByStatus(status: string): void {
     this.selectedFilter = status;
 
-    // Obtener valor actual del input de búsqueda
     const searchInput = document.querySelector('.search-input') as HTMLInputElement;
     const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
@@ -191,7 +203,6 @@ dataSource = new MatTableDataSource<Vehicle>();
     this.dataSource.data = filteredData;
   }
 
-  // Auxiliar: filtro por estado
   private applyStatusFilter(data: Vehicle[]): Vehicle[] {
     switch (this.selectedFilter) {
       case 'active':

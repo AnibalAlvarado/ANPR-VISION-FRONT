@@ -71,3 +71,13 @@ File: style.css
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* 1) Sube el overlay de Material por encima de TODO */
+.cdk-overlay-container,
+.cdk-overlay-connected-position-bounding-box,
+.cdk-overlay-pane {
+  z-index: 2147483647 !important; /* súper alto */
+}
+
+
+/* Asegura que los overlays de Material queden por encima de headers/cards/charts */
+.cdk-overlay-container { z-index: 10000 !important; }

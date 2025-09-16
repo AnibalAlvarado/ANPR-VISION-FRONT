@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { General } from 'src/app/generic/general.service';
 import { Camera } from 'src/app/generic/Models/Entitys';
-import { MatSidenavModule, MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
+import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-camera-index',
   imports: [
-    FormsModule, MatCardModule, CommonModule, MatDrawerContainer, MatProgressBarModule,
+    FormsModule, MatCardModule, CommonModule, MatProgressBarModule,
     MatButtonModule, MatIconModule, MatSnackBarModule, MatMenuModule, MatListModule,
     MatFormFieldModule, MatInputModule, MatSidenavModule, MatTableModule, MatTooltipModule
   ],
@@ -43,8 +43,8 @@ export class CameraIndex implements OnInit {
 
   private readonly ENDPOINTS = {
     camerasJoin: 'Cameras/join',
-    softDelete: 'Cameras',          // DELETE {baseUrl}/Cameras/{id}
-    hardDelete: 'Cameras/Permanent'      // DELETE {baseUrl}/Cameras/hard/{id}  <-- ajusta si difiere
+    softDelete: 'Cameras',             // DELETE {base}/Cameras/{id}
+    hardDelete: 'Cameras/permanent'    // DELETE {base}/Cameras/permanent/{id}
   };
 
   constructor(
@@ -57,9 +57,9 @@ export class CameraIndex implements OnInit {
 
   loadCameras(): void {
     this.loadingCameras = true;
-    this._generalService.get<{ data: Camera[] }>(this.ENDPOINTS.camerasJoin).subscribe({
-      next: (res) => {
-        const data = res?.data ?? [];
+    this._generalService.get<Camera[]>(this.ENDPOINTS.camerasJoin).subscribe({
+      next: (items) => {
+        const data = items || [];
         this.cameras = data;
         this.filteredCameras = [...data];
 
@@ -71,8 +71,8 @@ export class CameraIndex implements OnInit {
         }
         this.showDetails = false;
       },
-      error: () => {
-        this._snack.open('Error cargando cámaras', 'Cerrar', { duration: 3000 });
+      error: (err: Error) => {
+        this._snack.open(err.message || 'No se pudieron cargar las cámaras.', 'Cerrar', { duration: 3500 });
         this.cameras = []; this.filteredCameras = []; this.selectedCamera = null;
         this.showDetails = false;
       },
@@ -87,36 +87,32 @@ export class CameraIndex implements OnInit {
     this.filteredCameras = !t
       ? this.cameras
       : this.cameras.filter(c =>
-          `${c.name ?? ''} ${c.parking ?? ''} ${c.url} ${c.resolution}`.toLowerCase().includes(t)
+          `${c.name ?? ''} ${c.parking ?? ''} ${c.url ?? ''} ${c.resolution ?? ''}`
+            .toLowerCase()
+            .includes(t)
         );
   }
 
   clearCameraFilter(): void { this.filteredCameras = this.cameras; }
 
-  // Selección SOLO desde el ojito
   quickView(cam: Camera): void { this.selectCamera(cam); this.showDetails = false; }
-
   selectCamera(cam: Camera): void { this.selectedCamera = cam; }
 
-  // Botón "Detalles" muestra/oculta panel lateral
   openDetails(): void { this.showDetails = !this.showDetails; }
 
   trackById = (_: number, c: Camera) => c.id;
 
   addCamera(): void { this.router.navigate(['/cameras-form']); }
 
-  // Editar en mismo form (crear/editar)
- configure(cam: Camera | null): void {
-  if (!cam) return;
-  if (cam.isDeleted) {
-    this._snack.open('No se puede configurar una cámara eliminada.', 'Cerrar', { duration: 2500 });
-    return;
+  configure(cam: Camera | null): void {
+    if (!cam) return;
+    if (cam.isDeleted) {
+      this._snack.open('No se puede configurar una cámara eliminada.', 'Cerrar', { duration: 2500 });
+      return;
+    }
+    this.router.navigate(['/cameras-form', cam.id]);
   }
-  this.router.navigate(['/cameras-form', cam.id]);
-}
 
-
-  // Eliminar (dos fases): lógico -> permanente
   async onDelete(cam: Camera): Promise<void> {
     if (!cam || this.deleting) return;
 
@@ -142,28 +138,26 @@ export class CameraIndex implements OnInit {
         next: () => {
           this.cameras = this.cameras.filter(x => x.id !== cam.id);
           this.filteredCameras = this.filteredCameras.filter(x => x.id !== cam.id);
-          if (this.selectedCamera?.id === cam.id) {
-            this.selectedCamera = this.cameras[0] ?? null;
-          }
+          if (this.selectedCamera?.id === cam.id) this.selectedCamera = this.cameras[0] ?? null;
           Swal.fire({ icon: 'success', title: 'Eliminada definitivamente', timer: 1500, showConfirmButton: false });
         },
-        error: () => Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente' }),
+        error: (err: Error) => {
+          Swal.fire({ icon: 'error', title: 'No se pudo eliminar permanentemente', text: err.message });
+        },
         complete: () => { this.deleting = false; }
       });
-
     } else {
       // 🧹 Soft delete
       this._generalService.delete(this.ENDPOINTS.softDelete, cam.id).subscribe({
         next: () => {
-          // marca como eliminada en memoria
-          const a = this.cameras.find(x => x.id === cam.id);       if (a) a.isDeleted = true;
+          const a = this.cameras.find(x => x.id === cam.id);        if (a) a.isDeleted = true;
           const b = this.filteredCameras.find(x => x.id === cam.id); if (b) b.isDeleted = true;
-          if (this.selectedCamera?.id === cam.id) {
-            this.selectedCamera = { ...this.selectedCamera, isDeleted: true };
-          }
+          if (this.selectedCamera?.id === cam.id) this.selectedCamera = { ...this.selectedCamera, isDeleted: true };
           Swal.fire({ icon: 'success', title: 'Eliminada (lógico)', timer: 1300, showConfirmButton: false });
         },
-        error: () => Swal.fire({ icon: 'error', title: 'No se pudo eliminar' }),
+        error: (err: Error) => {
+          Swal.fire({ icon: 'error', title: 'No se pudo eliminar', text: err.message });
+        },
         complete: () => { this.deleting = false; }
       });
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Entities.ts
 import { IBaseEntity } from "./IBaseEntity";
 import { IEntity } from "./IEntity";
@@ -107,3 +108,22 @@ name: string;
 }
 
 
+export interface TotalResponse {
+  data: { total: number };
+  success: boolean;
+  message: string;
+  details: any;
+}
+
+export interface DashboardCard {
+  id: string;
+  background: string;
+  title: string;
+  icon: string;
+  number: number | string;   // 👈 importante
+}
+export interface TotalEnvelope { data?: { total?: number }; total?: number }
+export interface OccupancyEnvelope {
+  data?: { occupied?: number; total?: number; percentage?: number; free?: number };
+  occupied?: number; total?: number; percentage?: number; free?: number;
+}

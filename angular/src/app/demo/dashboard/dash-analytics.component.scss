@@ -71,3 +71,76 @@
 .mat-dialog-title {
   text-align: center;
 }
+
+
+/* Que los overlays de Material queden por encima de todo */
+.cdk-overlay-container { z-index: 10000 !important; }
+/* Eleva el select por encima del contenido de la card */
+.order-card mat-form-field { position: relative; z-index: 5; }
+
+/* Si el canvas del chart tapa clics, bájale prioridad o desactiva sus pointer-events */
+.order-card .apexcharts-canvas,
+.order-card apx-chart {
+  position: relative;
+  z-index: 1;
+}
+
+/* Por si tu tema bloquea eventos en la card */
+.order-card,
+.order-card * {
+  pointer-events: auto;
+}
+/* Tarjeta “manual” para la zona */
+/* Wrapper de los botones (alineación y separación) */
+.zone-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  max-width: 60%;
+  justify-content: flex-end;
+}
+
+/* Botón “píldora” con buen contraste en fondo oscuro */
+/* === Píldoras visibles en card CLARA === */
+.pill-btn {
+  /* colores base pensados para fondo claro */
+  --pill-border: rgba(17, 24, 39, .25);   /* gris oscuro 800 @ 25% */
+  --pill-bg:     rgba(17, 24, 39, .05);
+  --pill-text:   #111827;                 /* slate-900 */
+  --pill-bg-hover:     rgba(17, 24, 39, .10);
+  --pill-border-hover: rgba(17, 24, 39, .40);
+
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
+  color: var(--pill-text);
+  border-radius: 999px;
+  padding: .35rem .85rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease,
+              border-color .15s ease, box-shadow .15s ease;
+}
+
+.pill-btn:hover,
+.pill-btn:focus {
+  background: var(--pill-bg-hover);
+  border-color: var(--pill-border-hover);
+  box-shadow: 0 0 0 .12rem rgba(17, 24, 39, .12);
+  outline: none;
+}
+
+.pill-btn.active {
+  background: #111827;   /* oscuro sólido */
+  color: #fff;
+  border-color: #111827;
+  box-shadow: 0 3px 8px rgba(0,0,0,.18);
+}
+
+
+/* Texto tenue para el “Cargando zonas…” */
+.muted { opacity: .7; }
+
+
+
