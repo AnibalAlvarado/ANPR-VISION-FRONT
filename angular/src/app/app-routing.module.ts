@@ -46,6 +46,7 @@ import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehic
 import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
 import { ConfiguracionComponent } from './configuracion/configuracion';
+import { endUserComponent } from './end-user-component/end-user.component';
 const routes: Routes = [
   {
     path: '',
@@ -70,6 +71,8 @@ const routes: Routes = [
         path: 'role-index',
         component: RoleIndex
       },{ path: 'configuracion', component: ConfiguracionComponent },
+       { path: 'users/:id', component: endUserComponent },
+            { path: '', pathMatch: 'full', redirectTo: 'users/123' }, // opcional para probar
        { path: 'role-form', component: RoleForm },
       { path: 'role-form/:id', component: RoleForm },
       { path: 'user-index', component: UserIndex },
@@ -121,6 +124,8 @@ const routes: Routes = [
       {path: 'vehicles-form/:id', component: VehicleForm},
       {path: 'parking-management', component: ParkingManagement},
       {path: 'registeredVehicle-index', component: RegisteredVehicleIndex},
+     
+
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
