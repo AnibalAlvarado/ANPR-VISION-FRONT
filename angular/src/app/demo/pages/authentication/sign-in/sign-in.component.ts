@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // angular import
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { General } from 'src/app/generic/general.service';
 
 // project import
@@ -14,9 +16,17 @@ interface AuthData {
   // agrega otros campos si tu back los envía en data
 }
 
+interface ApiResponse<T> {
+  data: T;
+  success: boolean;
+  message?: string;
+  details?: any;
+}
+
 @Component({
   selector: 'app-sign-in',
-  imports: [SharedModule, RouterModule],
+  standalone: true,
+  imports: [SharedModule, RouterModule, FormsModule],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
@@ -26,10 +36,27 @@ export class SignInComponent {
     password: ''
   };
 
+  showPassword = false;
+  loading = false;
+
   private service = inject(General);
   private router = inject(Router);
 
   constructor() {}
+
+  private unwrapData(resp: AuthData | ApiResponse<AuthData>): AuthData | null {
+    // Soporta back con wrapper { success, data } o directo
+    const isWrapped = (resp as ApiResponse<AuthData>)?.data !== undefined;
+    if (isWrapped) {
+      const w = resp as ApiResponse<AuthData>;
+      if (!w.success) {
+        // General ya puede lanzar error, pero por si llega acá:
+        throw new Error(w.message || 'Error en autenticación.');
+      }
+      return w.data ?? null;
+    }
+    return resp as AuthData;
+  }
 
   login() {
     if (!this.LoginDto.username || !this.LoginDto.password) {
@@ -41,19 +68,20 @@ export class SignInComponent {
       return;
     }
 
-    // ⬇️ OJO: pedimos AuthData (el data del back), no el wrapper
-    this.service.post<AuthData>('User/login', this.LoginDto).subscribe({
-      next: (data) => {
-        // Si estamos aquí, el back respondió OK y success=true
-        // (o no hay wrapper). Guardamos credenciales.
+    this.loading = true;
+
+    // Pedimos AuthData o ApiResponse<AuthData> y lo des-empacamos
+    this.service.post<AuthData | ApiResponse<AuthData>>('User/login', this.LoginDto).subscribe({
+      next: (resp) => {
+        let data: AuthData | null = null;
+        try {
+          data = this.unwrapData(resp);
+        } catch (e: any) {
+          throw new Error(e?.message || 'Error de autenticación.');
+        }
+
         if (!data?.token) {
-          // Por si acaso no viene token, muestra error amistoso.
-          Swal.fire({
-            icon: 'error',
-            title: 'Error de autenticación',
-            text: 'Respuesta inválida del servidor.'
-          });
-          return;
+          throw new Error('Respuesta inválida del servidor (sin token).');
         }
 
         localStorage.setItem('authToken', data.token);
@@ -65,26 +93,27 @@ export class SignInComponent {
           icon: 'success',
           title: 'Bienvenido',
           text: 'Has iniciado sesión correctamente',
-          timer: 2000,
+          timer: 1500,
           showConfirmButton: false
         }).then(() => {
           this.router.navigate(['/analytics']);
         });
       },
       error: (err: Error) => {
-        // Aquí llegan:
-        // - 4xx/5xx con payload del back
-        // - 200 con success:false (General lanza Error(message))
         Swal.fire({
           icon: 'error',
           title: 'Error de autenticación',
-          text: err.message ?? 'Credenciales incorrectas.'
+          text: err?.message ?? 'Credenciales incorrectas.'
         });
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
   }
 
   restablecerContrasena() {
+    if (this.loading) return;
     this.router.navigate(['/reset-password']);
   }
 }

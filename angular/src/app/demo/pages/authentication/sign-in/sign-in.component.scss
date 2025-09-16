@@ -23,13 +23,13 @@ html,body{
 
 @keyframes cambiarImagen {
   0% {
-    background-image: url("../../../../../assets/imagen-parqueadero/1.png");
-  }
-  33% {
     background-image: url("../../../../../assets/imagen-parqueadero/2.png");
   }
+  33% {
+    background-image: url("../../../../../assets/imagen-parqueadero/8.jpg");
+  }
   66% {
-    background-image: url("../../../../../assets/imagen-parqueadero/3.webp");
+    background-image: url("../../../../../assets/imagen-parqueadero/6.jpeg");
   }
   100% {
     background-image: url("../../../../../assets/imagen-parqueadero/1.png");
@@ -41,7 +41,7 @@ html,body{
   width: 40%;
   margin: 0px;
   padding: .32 .20%;
-  background: #041130;
+  background: #041130cc;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -67,7 +67,7 @@ html,body{
     0% 100%,
     0% 0%
   );
-  
+
   transition: all 1s ease;
   animation: animarSisaDerecha 3s infinite ease-in-out;
 }
@@ -148,6 +148,8 @@ html,body{
     border: none;
     background: transparent;
     border-bottom: 2px solid #30CFD0;
+    color:white;
+    font-size: 16px;
 }
 .mini-contener:hover > div div div div div:hover > .input-registro{
   box-shadow: 0px 5px 10px 1px #30CFD0  !important;
@@ -166,4 +168,23 @@ html,body{
      box-shadow: 0px 5px 10px 1px #30CFD0  !important;
 
     border-bottom: 2px solid #30CFD0;
-}     
+}
+
+.olvidasteContraseña{
+  border:none;
+  background:none;
+  padding:0px;
+}
+
+/* Quita el ojito nativo en Chrome/Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-clear-button,
+input[type="password"]::-webkit-password-toggle {
+  display: none !important;
+  -webkit-appearance: none;
+}

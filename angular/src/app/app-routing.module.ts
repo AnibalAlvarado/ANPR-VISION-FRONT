@@ -54,6 +54,7 @@ import { MemberShipsIndex } from './demo/pages/operational/memberShips/member-sh
 import { MemberShipsForm } from './demo/pages/operational/memberShips/member-ships-form/member-ships-form';
 import { RatesIndex } from './demo/pages/operational/rates/rates-index/rates-index';
 import { RatesForm } from './demo/pages/operational/rates/rates-form/rates-form';
+import { Configuration } from './demo/configuration/configuration/configuration';
 
 const routes: Routes = [
   {
@@ -145,6 +146,8 @@ const routes: Routes = [
       {path: 'rates-index', component: RatesIndex},
       {path: 'rates-form', component: RatesForm},
       {path: 'rates-form/:id', component: RatesForm},
+      {path: 'configuracion', component: Configuration},
+
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)

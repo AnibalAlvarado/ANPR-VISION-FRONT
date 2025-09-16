@@ -83,12 +83,12 @@ export const NavigationItems: NavigationItem[] = [
         type: 'collapse',
         icon: 'feather icon-box',
         children: [
-          {
-            id: 'Memberships',
-            title: 'Membresías',
-            type: 'item',
-            url: '/memberShips-index'
-          },
+          // {
+          //   id: 'Memberships',
+          //   title: 'Membresías',
+          //   type: 'item',
+          //   url: '/memberShips-index'
+          // },
           {
             id: 'Rates',
             title: 'Tarifas',
@@ -126,12 +126,12 @@ export const NavigationItems: NavigationItem[] = [
         type: 'collapse',
         icon: 'feather icon-box',
         children: [
-          {
-            id: 'MembershipsType',
-            title: 'Tipo de Membresías',
-            type: 'item',
-            url: '/memberShipType-index'
-          },
+          // {
+          //   id: 'MembershipsType',
+          //   title: 'Tipo de Membresías',
+          //   type: 'item',
+          //   url: '/memberShipType-index'
+          // },
           {
             id: 'TypeVehicle',
             title: 'Tipo de Vehículos',
