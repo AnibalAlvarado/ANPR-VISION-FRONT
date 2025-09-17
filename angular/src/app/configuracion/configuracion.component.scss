@@ -1,16 +1,16 @@
 /* ===== Paleta ===== */
 :root{
-  --page:#eef3ff;
-  --card:#ffffff;
-  --ink:#1f2559;
-  --muted:#6b7093;
-  --line:#dde6ff;
-  --brand:#6b8cff;
-  --brand2:#7c5cff;
-  --ok:#36c36b;
-  --info:#5aa4ff;
-  --danger:#e55353;
-  --sh:0 8px 20px rgba(70,86,176,.12);
+  --page:#eef3ff !important;
+  --card:#ffffff !important;
+  --ink:#1f2559 !important;
+  --muted:#6b7093 !important;
+  --line:#dde6ff !important;
+  --brand:#6b8cff !important;
+  --brand2:#7c5cff !important;
+  --ok:#36c36b !important;
+  --info:#5aa4ff !important;
+  --danger:#e55353 !important;
+  --sh:0 8px 20px rgba(70,86,176,.12) !important;
 }
 
 *{ box-sizing:border-box; }
