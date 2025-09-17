@@ -39,17 +39,13 @@ export class DocumentationComponent {
 
     // Técnico
     { title: 'Manual técnico', description: 'Información detallada para desarrolladores.', link: '/assets/docs/tech-guide.pdf', category: 'technical', icon: 'engineering' },
-    { title: 'Integración con API', description: 'Cómo conectar ANPR Vision con APIs externas.', link: '/assets/docs/api-integration.pdf', category: 'technical', icon: 'api' },
-    { title: 'Base de datos', description: 'Estructura y diseño de la base de datos.', link: '/assets/docs/db-structure.pdf', category: 'technical', icon: 'storage' },
+    { title: 'Integración con API', description: 'Cómo conectar ANPR Vision con APIs externas.', link: '/assets/docs/api-integration.pdf', category: 'technical', icon: 'api' }
 
     // Mantenimiento
-    { title: 'Guía de mantenimiento', description: 'Pasos para mantener el sistema actualizado.', link: '/assets/docs/maintenance.pdf', category: 'maintenance', icon: 'construction' },
-    { title: 'Resolución de problemas', description: 'Errores comunes y cómo solucionarlos.', link: '/assets/docs/troubleshooting.pdf', category: 'maintenance', icon: 'bug_report' },
-    { title: 'Optimización del sistema', description: 'Mejores prácticas para mejorar el rendimiento.', link: '/assets/docs/optimization.pdf', category: 'maintenance', icon: 'speed' },
+   
+
 
     // Otros
-    { title: 'Historial de cambios', description: 'Registro de actualizaciones y nuevas funcionalidades.', link: '/assets/docs/changelog.pdf', category: 'manual', icon: 'history' },
-    { title: 'Preguntas frecuentes', description: 'Soluciones rápidas a problemas comunes.', link: '/assets/docs/faq.pdf', category: 'manual', icon: 'help' }
   ];
 
   get filteredDocuments() {

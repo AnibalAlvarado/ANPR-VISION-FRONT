@@ -79,6 +79,15 @@ export class ResetPassword {
     t.style.setProperty('--y', `${e.clientY - rect.top}px`);
   }
 
+
+  // (opcional) en (mousemove) del botón: setear las CSS vars
+onBtnMove(e: MouseEvent) {
+  const t = e.target as HTMLElement;
+  const rect = t.getBoundingClientRect();
+  t.style.setProperty('--x', `${e.clientX - rect.left}px`);
+  t.style.setProperty('--y', `${e.clientY - rect.top}px`);
+}
+
   // === VALIDADORES PERSONALIZADOS ===
   passwordsMatchValidator(form: FormGroup) {
     const newPassword = form.get('newPassword')?.value;
@@ -364,4 +373,96 @@ export class ResetPassword {
     const focusIndex = Math.min(lastIndex + 1, 5);
     cells[focusIndex]?.focus();
   }
+  // al inicio de la clase
+otp: string[] = ["", "", "", "", "", ""];
+
+// === OTP handlers ===
+onOtpInput(e: Event, i: number) {
+  const input = e.target as HTMLInputElement;
+  let v = input.value.replace(/\D/g, "");
+  if (v.length > 1) v = v.slice(-1);
+  input.value = v;
+
+  // 🔸 marca visualmente cuando hay valor
+  input.classList.toggle('has-value', !!v);
+
+  this.otp[i] = v;
+  this.codeForm.get('code')?.setValue(this.otp.join(""));
+
+  if (v && i < 5) {
+    const next = (input.parentElement as HTMLElement)
+      .querySelectorAll<HTMLInputElement>('.otp-cell')[i + 1];
+    next?.focus();
+    next?.select();
+  }
+}
+
+
+onOtpKeydown(event: KeyboardEvent, i: number) {
+  const input = event.target as HTMLInputElement;
+  const allowed = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+
+  // Permitir navegación/edición
+  if (allowed.includes(event.key)) {
+    if (event.key === 'Backspace' && !input.value && i > 0) {
+      const prev = (input.parentElement as HTMLElement)
+        .querySelectorAll<HTMLInputElement>('.otp-cell')[i - 1];
+      prev?.focus();
+      prev?.select();
+      this.otp[i - 1] = '';
+      this.codeForm.get('code')?.setValue(this.otp.join(''));
+      prev?.classList.toggle('has-value', !!prev?.value);
+    }
+    return;
+  }
+
+  // Solo dígitos
+  if (!/^\d$/.test(event.key)) {
+    event.preventDefault();
+    return;
+  }
+
+  // 🔥 Escribe SIEMPRE el dígito en la casilla actual
+  event.preventDefault();
+  input.value = event.key;
+  input.classList.add('has-value');
+
+  // Actualiza estado
+  this.otp[i] = event.key;
+  this.codeForm.get('code')?.setValue(this.otp.join(''));
+
+  // Avanza a la siguiente casilla
+  const next = (input.parentElement as HTMLElement)
+    .querySelectorAll<HTMLInputElement>('.otp-cell')[i + 1];
+  if (next) {
+    next.focus();
+    next.select();
+  }
+}
+
+
+onOtpPaste(e: ClipboardEvent) {
+  e.preventDefault();
+  const text = (e.clipboardData?.getData('text') || '')
+    .replace(/\D/g, '')
+    .slice(0, 6);
+  if (!text) return;
+
+  const cells = Array.from(
+    (e.currentTarget as HTMLElement).querySelectorAll<HTMLInputElement>('.otp-cell')
+  );
+  cells.forEach((cell, i) => {
+    const d = text[i] ?? '';
+    cell.value = d;
+    // 🔸 estado visual
+    cell.classList.toggle('has-value', !!d);
+    this.otp[i] = d;
+  });
+
+  this.codeForm.get('code')?.setValue(this.otp.join(''));
+
+  const lastIndex = Math.min(text.length, 6) - 1;
+  const focusIndex = Math.min(lastIndex + 1, 5);
+  cells[focusIndex]?.focus();
+}
 }

@@ -98,6 +98,10 @@ export class UserForm implements OnInit {
   private service = inject(General);
   userId: string = '';
 
+<<<<<<< HEAD
+=======
+   
+>>>>>>> 6a635e5b5fd11d04e0fa72261f5b03713fb660f6
   constructor() {
     this.form = this.FormBuilder.group({
       id: [null],
@@ -126,6 +130,13 @@ export class UserForm implements OnInit {
       hidePassword: [true]
     });
   }
+// (opcional) agrega (mousemove)="onRipple($event)" al botón submit
+onRipple(e: MouseEvent) {
+  const el = e.target as HTMLElement;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty('--x', `${e.clientX - r.left}px`);
+  el.style.setProperty('--y', `${e.clientY - r.top}px`);
+}
 
   onCancelar(): void {
     this.route.navigate(['/user-index']);
@@ -297,8 +308,54 @@ export class UserForm implements OnInit {
       });
     }
   }
+onCancelar(): void {
+    if (!this.shouldConfirmCancel()) {
+      this.route.navigate(['/user-index']);
+      return;
+    }
 
+<<<<<<< HEAD
   cancel(): void {
     this.route.navigate(['/user-index']);
   }
+=======
+    Swal.fire({
+      title: '¿Cancelar cambios?',
+      text: 'Se perderán los cambios no guardados.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, continuar editando'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.route.navigate(['/user-index']);
+      }
+    });
+  }
+
+  
+  private shouldConfirmCancel(): boolean {
+    if (this.isEdit) {
+      return this.form.dirty;
+    }
+    return this.hasAnyNonEmptyValue();
+  }
+
+  
+  private hasAnyNonEmptyValue(): boolean {
+    const ignoreKeys = new Set(['id', 'asset', 'hidePassword']);
+    return Object.entries(this.form.controls).some(([key, control]) => {
+      if (ignoreKeys.has(key)) return false;
+      const v = control.value;
+
+      if (Array.isArray(v)) return v.length > 0;
+      if (v === null || v === undefined) return false;
+      if (typeof v === 'number') return true;          
+      if (typeof v === 'boolean') return v === true;   
+      const s = String(v).trim();
+      return s.length > 0;
+    });
+  }
+
+>>>>>>> 6a635e5b5fd11d04e0fa72261f5b03713fb660f6
 }

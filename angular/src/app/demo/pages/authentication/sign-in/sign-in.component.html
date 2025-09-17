@@ -18,19 +18,11 @@
 
             <div class="input-group mb-4">
               <span class="input-group-text fondo-icono" id="basic-addon3"><i class="feather icon-lock"></i></span>
-              <input
-                [type]="showPassword ? 'text' : 'password'"
-                class="form-control input-registro"
-                placeholder="Contraseña"
-                [(ngModel)]="LoginDto.password"
-                name="password"
-                required />
-              <button
-                type="button"
-                class="btn btn-outline-secondary ojito"
-                (click)="showPassword = !showPassword">
-                <i class="feather" [ngClass]="showPassword ? 'icon-eye' : 'icon-eye-off'"></i>
-              </button>
+              <input type="password" class="form-control input-registro"
+       placeholder="Contraseña"
+       [(ngModel)]="LoginDto.password"
+       name="password"
+       required />
 
             </div>
 

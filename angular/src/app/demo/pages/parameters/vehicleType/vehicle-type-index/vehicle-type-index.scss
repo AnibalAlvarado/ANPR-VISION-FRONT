@@ -1,618 +1,348 @@
-/* CSS Styles para Tipos de Vehículos */
-.vehicle-type-container {
-  padding: 24px;
-  // background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  min-height: 100vh;
-
-  background-color: transparent;
-  border-radius: 16px;
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Header Section */
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 32px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.header-content {
-  flex: 1;
-}
-
-.page-title {
-  margin: 0 0 4px 0;
-  font-size: 32px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  letter-spacing: -0.025em;
-}
-
-.page-subtitle {
-  margin: 0;
-  color: #64748b;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.create-btn {
-  background: linear-gradient(135deg, #3fb7cf 0%, #66d4dc 100%);
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: 600;
-  text-transform: none;
-  transition: all 0.3s ease;
-}
-
-.create-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
-}
-
-.create-btn mat-icon {
-  margin-right: 8px;
-  animation: pulse 2s infinite;
-}
-
-/* Stats Section */
-.stats-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  border: 1px solid #f1f5f9;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.stat-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-}
-
-.stat-icon.active {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.stat-icon.total {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-.stat-icon.deleted {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-}
-
-.stat-icon mat-icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-}
-
-.stat-content h3 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.stat-content p {
-  margin: 4px 0 0 0;
-  color: #64748b;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* Vehicles Grid */
-.vehicles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-}
-
-/* Vehicle Cards */
-.vehicle-card {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  border: 2px solid transparent;
-}
-
-.vehicle-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-  border-color: #e2e8f0;
-}
-
-.vehicle-card.card-deleted {
-  opacity: 0.8;
-  border-color: #fca5a5;
-  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
-}
-
-.vehicle-card.card-inactive:not(.card-deleted) {
-  border-color: #fbbf24;
-  background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
-}
-
-/* Vehicle Icon Background */
-.vehicle-icon-bg {
-  height: 120px;
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.vehicle-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
-}
-
-.vehicle-icon mat-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-  color: white;
-}
-
-.icon-car {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-.icon-motorcycle {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-
-.icon-truck {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
-.icon-bus {
-  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-}
-
-.icon-taxi {
-  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
-}
-
-.vehicle-card:hover .vehicle-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.status-overlay {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(239, 68, 68, 0.9);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.status-overlay mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  color: white;
-}
-
-/* Status Badge */
-.status-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 25px;
-  font-size: 12px;
-  font-weight: 600;
-  z-index: 2;
-  backdrop-filter: blur(10px);
-}
-
-.badge-active {
-  background: rgba(16, 185, 129, 0.1);
-  color: #047857;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.badge-inactive {
-  background: rgba(251, 191, 36, 0.1);
-  color: #92400e;
-  border: 1px solid rgba(251, 191, 36, 0.3);
-}
-
-.status-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-}
-
-/* Card Content */
-.card-content {
-  padding: 24px;
-}
-
-.vehicle-name {
-  margin: 0 0 4px 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.vehicle-type {
-  margin: 0 0 20px 0;
-  color: #64748b;
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.vehicle-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.detail-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.detail-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  color: #64748b;
-}
-
-.detail-icon.warning {
-  color: #f59e0b;
-}
-
-.detail-label {
-  font-weight: 500;
-  color: #475569;
-}
-
-.detail-value {
-  font-weight: 600;
-  margin-left: auto;
-}
-
-.value-active {
-  color: #059669;
-}
-
-.value-inactive {
-  color: #d97706;
-}
-
-/* Card Actions */
-.card-actions {
-  padding: 16px 24px;
-  background: #f8fafc;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid #e2e8f0;
-}
-
-.action-btn {
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  width: 44px;
-  height: 44px;
-  position: relative;
-}
-
-.action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.edit-btn {
-  background: #f0f9ff;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
-}
-
-.edit-btn:hover:not(:disabled) {
-  background: #0369a1;
-  color: white;
-  transform: scale(1.05);
-}
-
-.delete-btn {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-.delete-btn:hover:not(:disabled) {
-  background: #dc2626;
-  color: white;
-  transform: scale(1.05);
-}
-
-.danger-btn {
-  background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
-  color: white;
-  border: 1px solid #7f1d1d;
-  position: relative;
-  overflow: hidden;
-}
-
-.danger-btn:hover {
-  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(127, 29, 29, 0.4);
-}
-
-.permanent-delete {
-  animation: dangerPulse 2s infinite;
-}
-
-/* Deleted Indicator */
-.deleted-indicator {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-  color: white;
-  padding: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.deleted-indicator mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 80px 32px;
-  background: transparent;
-  border-radius: 24px;
-  border: 3px dashed #24d3da;
-  margin-top: 40px;
-  position: relative;
-  overflow: hidden;
-}
-
-.empty-state::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(135deg, #3aedea 0%, #38c2cc 100%);
-}
-
-.empty-animation {
-  position: relative;
-  margin-bottom: 32px;
-}
-
-.membership-animation {
-  background: linear-gradient(135deg, #ddd6fe 0%, #aaeefc 100%);
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  animation: membershipBounce 3s infinite;
-  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.2);
-}
-
-.membership-animation mat-icon {
-  font-size: 60px;
-  width: 60px;
-  height: 60px;
-  color: #363636;
-}
-
-.floating-icons {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-}
-
-.floating-icons mat-icon {
-  position: absolute;
-  color: #c4b5fd;
-  opacity: 0.6;
-}
-
-.float-1 {
-  top: 20%;
-  left: 20%;
-  font-size: 24px;
-  animation: floatLeft 4s infinite;
-}
-
-.float-2 {
-  top: 30%;
-  right: 15%;
-  font-size: 20px;
-  animation: floatRight 3s infinite;
-}
-
-.float-3 {
-  bottom: 30%;
-  left: 25%;
-  font-size: 18px;
-  animation: floatUp 5s infinite;
-}
-
-.empty-state h3 {
-  margin: 0 0 16px 0;
-  // color: #374151;
-  font-size: 28px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #3aedea 0%, #55d7f7 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.empty-state p {
-  margin: 0 0 32px 0;
-  color: #6b7280;
-  font-size: 16px;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
-}
-
-.empty-actions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-/* Animations */
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-10px); }
-  60% { transform: translateY(-5px); }
-}
-
-@keyframes dangerPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(127, 29, 29, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(127, 29, 29, 0); }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .vehicle-type-container {
-    padding: 16px;
+/* ======================================================
+   AURORA v4 — Holographic Motion (SOLO ESTILOS) — VEHICLE TYPES
+   - Bonito, profesional, MUY animado, organizado y consistente
+   - Compatible con tu HTML actual (Angular + Material)
+   ====================================================== */
+
+/* ===================== Tokens / Design System ===================== */
+$bg-0: #070914;
+$bg-1: #0e1428;
+$glass-1: rgba(255,255,255,.08);
+$glass-2: rgba(255,255,255,.05);
+$stroke:  rgba(255,255,255,.16);
+
+$ink-1: #f5f8ff;
+$ink-2: #cad7ff;
+$muted: #9fb1e6;
+
+$pri-1: #33d4ff;  /* cyan */
+$pri-2: #8e5bff;  /* violeta */
+$pri-3: #22ffbb;  /* aqua */
+
+$ok:   #22c55e;   /* verde */
+$warn: #f59e0b;   /* ámbar */
+$err:  #ef4444;   /* rojo */
+
+$r-xxl: 28px;
+$r-xl:  22px;
+$r:     16px;
+$r-sm:  12px;
+
+$tr:  .28s cubic-bezier(.22,.7,.25,1);
+$trs: .18s cubic-bezier(.22,.7,.25,1);
+$sh-1: 0 24px 68px rgba(0,0,0,.46);
+$sh-2: 0 16px 38px rgba(0,0,0,.34);
+$sh-soft: 0 8px 26px rgba(0,0,0,.28);
+
+/* ===================== Mixins / Helpers ===================== */
+@mixin glass-panel {
+  background: linear-gradient(180deg, $glass-1, $glass-2);
+  border: 1px solid $stroke;
+  backdrop-filter: blur(14px);
+  box-shadow: $sh-soft;
+}
+
+@mixin neon-line($h:4px) {
+  content:''; position:absolute; left:0; right:0; height:$h; top:0;
+  background: linear-gradient(90deg, $pri-2, $pri-1, $pri-3, $pri-1, $pri-2);
+  background-size: 220% 100%;
+  animation: waveLine 9s ease infinite;
+  opacity:.95;
+}
+
+@mixin focus-ring($c: $pri-1, $a: .18) {
+  box-shadow: 0 0 0 4px rgba($c, $a);
+}
+
+@mixin lift { transform: translateY(-6px); box-shadow: 0 24px 64px rgba(0,0,0,.4); }
+
+@mixin btn-primary {
+  position:relative; overflow:hidden; isolation:isolate;
+  background: linear-gradient(135deg, $pri-2, $pri-1) !important;
+  color:#071018 !important; border-radius: 999px !important;
+  padding: 14px 22px !important; font-weight: 1000 !important; letter-spacing:.02em;
+  box-shadow: 0 12px 36px rgba(51,212,255,.32) !important;
+  transition: transform $tr, box-shadow $tr !important;
+
+  &::before{
+    content:''; position:absolute; inset:-2px; border-radius:inherit; padding:1px;
+    background: linear-gradient(90deg, $pri-2, $pri-1, $pri-3, $pri-1, $pri-2);
+    background-size:200% 100%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    animation: borderSweep 6s linear infinite; opacity:.65; pointer-events:none;
   }
+  &:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 18px 46px rgba(51,212,255,.42) !important; }
+  &:focus-visible{ outline:2px solid rgba($pri-1,.65); outline-offset:3px; }
+}
 
-  .header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
+/* Placeholders para reutilizar */
+%card-base {
+  position:relative; overflow:hidden; border-radius:$r-xl; padding:22px;
+  @include glass-panel;
+  background: rgba(20,24,44,.92);
+  border-radius:$r-xl; border:1px solid rgba(255,255,255,.18);
+  transition: transform $tr, box-shadow $tr, border-color $tr, background $tr;
+  transform-style: preserve-3d;
+}
+
+/* ===================== Animaciones ===================== */
+@keyframes riseIn     { from{opacity:0; transform: translateY(20px) scale(.985)} to{opacity:1; transform:none} }
+@keyframes fadeUp     { from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
+@keyframes floaty     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes waveLine   { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes borderSweep{ 0%{background-position:0 0} 100%{background-position:200% 0} }
+@keyframes glow       { 0%,100%{filter: drop-shadow(0 0 0 rgba($pri-1,.0))} 50%{filter: drop-shadow(0 0 10px rgba($pri-1,.35))} }
+@keyframes sheen      { 0%{transform: translateX(-140%) skewX(-18deg);opacity:0} 40%{opacity:.9} 100%{transform: translateX(160%) skewX(-18deg);opacity:0} }
+@keyframes spark      { 0%,100%{opacity:.05; transform:translate(0,0)} 25%{opacity:.12; transform:translate(1px,-1px)} 50%{opacity:.08; transform:translate(-1px,1px)} 75%{opacity:.14; transform:translate(1px,1px)} }
+@keyframes tiltGlow   { 0%,100%{transform: rotateX(0) rotateY(0)} 50%{transform: rotateX(.6deg) rotateY(-.6deg)} }
+@keyframes glitchText {
+  0%{transform:translate(0)} 20%{transform:translate(-1px,1px)} 40%{transform:translate(1px,-1px)}
+  60%{transform:translate(0.5px,0.5px)} 80%{transform:translate(-0.5px,-0.5px)} 100%{transform:translate(0)}
+}
+
+/* ===================== Container ===================== */
+.vehicle-type-container{
+  position:relative; min-height:100vh; padding:22px; color:$ink-1;
+  background:
+    radial-gradient(1100px 440px at 115% -10%, rgba($pri-1,.10), transparent 60%),
+    radial-gradient(960px 400px at -10% 120%, rgba($pri-2,.16), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  border-radius:$r-xxl; border:1px solid rgba(255,255,255,.10); box-shadow:$sh-1;
+  animation: riseIn .45s ease both; isolation:isolate;
+
+  &::before{
+    content:''; position:absolute; inset:0; border-radius:$r-xxl; pointer-events:none; opacity:.18;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px) 0 0/ 48px 48px,
+      linear-gradient(0deg,  rgba(255,255,255,.05) 1px, transparent 1px) 0 0/ 48px 48px;
   }
+  &::after{ @include neon-line(3px); border-top-left-radius:$r-xxl; border-top-right-radius:$r-xxl; }
+}
 
-  .page-title {
-    font-size: 28px;
-  }
+/* ===================== Header ===================== */
+.header-section{
+  display:flex; align-items:center; justify-content:flex-end; margin-bottom:18px;
 
-  .stats-section {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .vehicles-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .stat-card {
-    padding: 16px;
-  }
-
-  .card-content {
-    padding: 20px;
-  }
-
-  .card-actions {
-    padding: 12px 20px;
+  .create-btn{
+    @include btn-primary;
+    mat-icon{ margin-right:8px; animation: glow 2.4s ease-in-out infinite; }
   }
 }
 
-@media (max-width: 480px) {
-  .vehicle-card {
-    border-radius: 16px;
+/* ===================== Stats ===================== */
+.stats-section{
+  display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px; margin-bottom:18px;
+
+  .stat-card{
+    @extend %card-base;
+    display:flex; gap:14px; align-items:center; padding:14px 16px; animation: fadeUp .45s ease both;
+
+    &:hover{ @include lift; border-color: rgba($pri-1,.32); }
+
+    .stat-icon{
+      width:48px; height:48px; display:grid; place-items:center; border-radius:14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 8px 22px rgba(0,0,0,.24);
+      &.active  { background: linear-gradient(135deg, #22c55e, #16a34a); color:#08150c; }
+      &.total   { background: linear-gradient(135deg, $pri-2, $pri-1); color:#071018; }
+      &.deleted { background: linear-gradient(135deg, #ef4444, #dc2626); color:#fff; }
+      mat-icon{ font-size:22px; }
+    }
+
+    .stat-content h3{
+      margin:0; font-size:28px; font-weight:900; line-height:1;
+      background: linear-gradient(135deg, #fff, $ink-2);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .stat-content p{ margin:2px 0 0; color:$ink-2; font-weight:700; letter-spacing:.01em; }
+
+    &::after{
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background: linear-gradient(120deg, rgba(255,255,255,.18) 0%, transparent 20% 80%, rgba(255,255,255,.18) 100%);
+      transform: translateX(-160%) skewX(-18deg); filter: blur(.6px); opacity:.0;
+      transition: opacity $trs;
+    }
+    &:hover::after{ opacity:.9; animation: sheen 1.2s ease forwards; }
+  }
+}
+
+/* ===================== Grid / Cards ===================== */
+.vehicles-grid{
+  max-width:1200px; margin:0 auto; padding: 4px 8px 18px;
+  display:grid; grid-template-columns: repeat(3, 1fr); gap:18px;
+
+  @media (max-width:1160px){ grid-template-columns: repeat(2, 1fr); }
+  @media (max-width:760px){ grid-template-columns: 1fr; }
+
+  @supports(selector(:has(*))){
+    &:has(.vehicle-card:hover) .vehicle-card:not(:hover){
+      filter:saturate(.86) brightness(.94);
+      transform: translateY(4px);
+    }
+  }
+}
+
+.vehicle-card{
+  @extend %card-base;
+  min-height: 224px;
+
+  /* espacio reservado para el badge (fix de superposición) */
+  --badge-gap: clamp(38px, 5vw, 52px);
+
+  &::before{ @include neon-line(4px); }
+
+  &::after{
+    content:''; position:absolute; inset:-1px; pointer-events:none;
+    background:
+      linear-gradient(120deg, rgba(255,255,255,.08), transparent 40% 60%, rgba(255,255,255,.08)),
+      radial-gradient(800px 400px at -20% 120%, rgba($pri-1,.08), transparent 60%);
+    mix-blend-mode: screen; opacity:.42; transition: opacity $tr;
   }
 
-  .vehicle-name {
-    font-size: 20px;
+  &:hover{
+    transform: translateY(-8px) rotateX(.5deg) rotateY(-.5deg);
+    box-shadow: 0 24px 64px rgba(0,0,0,.42);
+    border-color: rgba($pri-1,.34);
+    background: rgba(22,26,52,.96);
+    &::after{ opacity:.58; }
   }
 
-  .status-badge {
-    top: 12px;
-    left: 12px;
-    padding: 6px 10px;
-    font-size: 11px;
+  &.card-inactive{ filter:saturate(.94) brightness(.98); }
+  &.card-deleted{
+    border-left:3px solid $err;
+    .vehicle-icon-bg::after{
+      content:''; position:absolute; inset:0;
+      background: repeating-linear-gradient(45deg, rgba(0,0,0,.58) 0 10px, rgba(0,0,0,.66) 10px 20px);
+    }
+  }
+}
+
+/* Icono de fondo (marca) */
+.vehicle-icon-bg{
+  position:absolute; right:-8px; top:-8px; width:168px; height:168px; opacity:.12; z-index:0;
+  filter: blur(.2px);
+  &::before{
+    content:''; position:absolute; inset:0; border-radius:24px;
+    background: radial-gradient(110px 110px at 70% 30%, rgba($pri-1,.58), transparent 60%);
+    animation: spark 6s steps(6,end) infinite;
+  }
+}
+.vehicle-icon{ position:absolute; inset:0; display:grid; place-items:center;
+  mat-icon{ font-size:124px; }
+}
+
+/* Overlay de eliminado */
+.status-overlay{
+  position:absolute; inset:0; display:grid; place-items:center; z-index:1; color:#fff;
+  background: rgba(0,0,0,.35);
+  mat-icon{ font-size:64px; opacity:.6; }
+}
+
+/* Badge de estado (con z-index alto y safeguards) */
+.status-badge{
+  position:absolute; left:16px; top:16px; z-index:6;
+  display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px;
+  font-weight:900; font-size:13px; box-shadow: 0 6px 18px rgba(0,0,0,.28);
+  transition: transform $tr, box-shadow $tr, filter $tr;
+
+  .status-icon{ font-size:18px; }
+  &:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.34); }
+  &.badge-active{   background: linear-gradient(135deg, #22c55e, #16a34a); color:#07120b; animation: tiltGlow 4s ease-in-out infinite; }
+  &.badge-inactive{ background: linear-gradient(135deg, $warn, #d97706); color:#120a05; }
+
+  span{ white-space: nowrap; }
+}
+
+/* Contenido de la card (reserva espacio para el badge) */
+.card-content{
+  position:relative; z-index:2; transform: translateZ(24px);
+  padding-top: var(--badge-gap);
+}
+
+.vehicle-name{
+  margin:0 0 10px 0; font-size:24px; font-weight:900; line-height:1.15;
+  background: linear-gradient(135deg, #ffffff, #eaf1ff);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow: 0 8px 24px rgba(0,0,0,.28);
+  position:relative;
+  display:inline-block;
+  padding-right:.5px; /* microajuste anti-subpixel */
+
+  &::after{
+    content:''; position:absolute; left:0; bottom:-6px; height:2px; width:0%;
+    background: linear-gradient(90deg, $pri-2, $pri-1, $pri-3);
+    transition: width $tr;
+  }
+  .vehicle-card:hover &::after{ width:100%; }
+}
+
+.vehicle-details{
+  display:flex; flex-direction:column; gap:8px;
+  .detail-item{ display:flex; align-items:center; gap:10px; color: rgba($ink-1,.92); font-weight:800; }
+  .detail-icon{ font-size:18px; color:$ink-2; &.warning{ color:$warn; } }
+  .detail-label{ opacity:.9; }
+  .detail-value.value-active{ color:#16a34a; }
+  .detail-value.value-inactive{ color:#eab308; }
+}
+
+/* Acciones */
+.card-actions{
+  position:absolute; right:12px; bottom:12px; display:flex; gap:8px; z-index:2;
+
+  .action-btn{
+    border-radius:12px !important;
+    background: rgba(255,255,255,.08) !important;
+    color:$ink-2 !important; border:1px solid rgba(255,255,255,.18) !important;
+    transition: transform $trs, box-shadow $trs, background $trs, color $trs;
+    &:hover{ transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.28); color:#fff !important; }
+    &:disabled{ opacity:.6; cursor:not-allowed; box-shadow:none !important; }
+  }
+  .edit-btn:hover{ background: linear-gradient(135deg, $pri-2, $pri-1) !important; color:#071018 !important; }
+  .delete-btn:hover{ background: linear-gradient(135deg, #ff6b6b, #ef4444) !important; color:#fff !important; }
+  .danger-btn.permanent-delete:hover{ background: linear-gradient(135deg, #ff6b35, #f97316) !important; color:#fff !important; }
+}
+
+/* Indicador “Eliminado” con glitch sutil */
+.deleted-indicator{
+  position:absolute; left:50%; transform:translateX(-50%); bottom:12px; z-index:7;
+  display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px;
+  background: linear-gradient(135deg, #ef4444, #dc2626); color:#fff; font-weight:900; font-size:12px;
+  box-shadow: 0 6px 18px rgba(239,68,68,.35);
+  mat-icon{ font-size:18px; }
+  span{ animation: glitchText 1.8s steps(8,end) infinite; }
+}
+
+/* ===================== Empty State ===================== */
+.empty-state{
+  text-align:center; margin: 36px auto 8px; max-width: 640px; padding: 28px; color:#1f2937;
+  background: rgba(255,255,255,.92); border-radius:$r-xxl; backdrop-filter: blur(20px);
+  box-shadow: 0 20px 80px rgba(0,0,0,.18); animation: riseIn .45s ease both;
+
+  .empty-animation{ position:relative; height:140px; margin-bottom:8px; }
+  .membership-animation{
+    position:absolute; inset:0; display:grid; place-items:center;
+    mat-icon{ font-size:88px; color:#cfe0ff; animation: floaty 3s ease-in-out infinite; }
+  }
+  .floating-icons mat-icon{
+    position:absolute; opacity:.75;
+    &.float-1{ left:18%; top:18%; animation: floaty 2.6s ease-in-out infinite .2s; }
+    &.float-2{ right:20%; top:30%; animation: floaty 3.2s ease-in-out infinite .6s; }
+    &.float-3{ left:40%; bottom:12%; animation: floaty 2.8s ease-in-out infinite .9s; }
   }
 
-  .action-btn {
-    width: 40px;
-    height: 40px;
-  }
+  h3{ margin:8px 0 6px; font-size:24px; font-weight:900; }
+  p{ margin:0 0 16px; color:#374151; }
+
+  .empty-actions button{ @include btn-primary; }
+}
+
+/* ===================== Responsive / Accesibilidad ===================== */
+@media (min-width: 900px){
+  /* Opción: mover el badge a la derecha y reducir el gap superior */
+  .status-badge{ left:auto; right:16px; }
+  .card-content{ padding-top: clamp(16px, 2vw, 24px); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
 }

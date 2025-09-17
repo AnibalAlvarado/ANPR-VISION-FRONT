@@ -1,16 +1,293 @@
-// This file is intentionally left empty to allow customers to add custom CSS if needed.
-.patient-photo {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin: 0;
-  overflow: hidden;
-  border: 3px solid #e0e0e0;
-  background-color: #27d3c8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
-  font-size: 25px;
-  color: #333;
+/* =========================================================
+   NOTIFICATION DROPDOWN — ULTRA PACK+ (animaciones extra)
+   Compatible con tu HTML (ngbDropdown).
+   Clases opcionales:
+   .dropdown.has-unread
+   .notification.unread / .success / .info / .warn / .critical / .skeleton
+   .notification--compact  (más pequeño)
+   .notification--sheet    (tipo hoja)
+   .notification--toast    (flotante esquina)
+   .notification.is-exiting (anim de salida)
+   .media[data-progress="0..100"] o style="--progress:70%"
+   ========================================================= */
+
+/* ---------- Paleta base ---------- */
+$ink-1: #0f172a;
+$ink-2: #111827;
+$fg-1:  #e6edff;
+$muted: #a9b7d9;
+
+$vio:   #7c3aed;
+$cy:    #06b6d4;
+$mi:    #22c55e;
+$in:    #3b82f6;
+$wa:    #fbbf24;
+$er:    #fb7185;
+
+$blur:  16px;
+$r-xl:  18px; $r-lg: 16px; $r-md: 12px; $r-sm: 10px;
+$tr: .22s cubic-bezier(.22,.7,.25,1);
+
+/* ---------- Campana + halo unread ---------- */
+.navbar-nav .dropdown > a{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  width:42px; height:42px; border-radius:999px; color:$fg-1;
+  transition: background $tr, transform $tr, box-shadow $tr, filter $tr;
+  .icon-bell{ font-size:20px; filter: drop-shadow(0 2px 10px rgba(6,182,212,.22)); }
+  &:hover{ background:linear-gradient(180deg, rgba(6,182,212,.12), rgba(124,58,237,.10));
+           transform:translateY(-1px); box-shadow:0 8px 24px rgba(6,182,212,.20); }
 }
+.dropdown.has-unread > a::before{
+  content:''; position:absolute; inset:-6px; border-radius:999px; pointer-events:none;
+  background:radial-gradient(closest-side, rgba(6,182,212,.28), transparent 66%);
+  filter:blur(8px); opacity:.85; animation: halo 2.8s ease-in-out infinite;
+}
+.navbar-nav .dropdown > a .badge{
+  position:absolute; top:2px; right:2px; min-width:18px; height:18px; padding:0 6px;
+  display:grid; place-items:center; border-radius:999px; font-size:10px; font-weight:900;
+  color:#121212; background:linear-gradient(135deg,#ff9a9e,#ff5b5b);
+  box-shadow:0 0 0 2px $ink-2, 0 6px 12px rgba(251,113,133,.35);
+  animation:pulseDot 2.2s ease-in-out infinite;
+}
+
+/* ---------- Panel dropdown ---------- */
+.notification.dropdown-menu{
+  width:min(410px,94vw); padding:0; margin-top:12px; border-radius:$r-xl;
+  border:1px solid rgba(255,255,255,.08); overflow:hidden; color:$fg-1;
+  background:
+    radial-gradient(140% 120% at 100% 0%, rgba(6,182,212,.10), transparent 60%),
+    radial-gradient(120% 120% at 0% 100%, rgba(124,58,237,.10), transparent 60%),
+    rgba(17,24,39,.86);
+  backdrop-filter: blur($blur);
+  box-shadow:0 22px 58px rgba(2,8,23,.62), 0 0 0 1px rgba(255,255,255,.06) inset;
+  animation: dropIn .26s ease both;
+}
+
+/* Header */
+.notification .noti-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 16px; background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  border-bottom:1px solid rgba(255,255,255,.08);
+  h6{ margin:0; font-weight:900; letter-spacing:.28em; font-size:12px; color:$muted; }
+  a{ display:inline-flex; align-items:center; gap:6px; text-decoration:none;
+     font-weight:800; font-size:12px; color:$cy; padding:6px 10px; border-radius:999px;
+     transition: background $tr, color $tr, box-shadow $tr;
+     &:hover{ background:rgba(6,182,212,.14); color:$fg-1; box-shadow:0 6px 18px rgba(6,182,212,.25); } }
+}
+
+/* Body con scroll suave + entrada escalonada */
+.notification .noti-body{
+  max-height:420px; overflow:auto; padding:8px 8px 10px;
+  &::-webkit-scrollbar{ width:10px; }
+  &::-webkit-scrollbar-thumb{ border-radius:999px; border:2px solid transparent;
+    background-clip:padding-box; background:linear-gradient(180deg, rgba(124,58,237,.35), rgba(6,182,212,.35)); }
+  /* stagger (cada item entra con pequeño retraso) */
+  > .notification{ animation:itemIn .3s ease both; }
+  > .notification:nth-child(1){ animation-delay:.02s }
+  > .notification:nth-child(2){ animation-delay:.05s }
+  > .notification:nth-child(3){ animation-delay:.08s }
+  > .notification:nth-child(4){ animation-delay:.11s }
+}
+
+/* Separadores NEW / EARLIER */
+.notification .n-title{ padding:6px 12px 2px;
+  p{ margin:0; font-size:11px; font-weight:900; letter-spacing:.22em; color:$muted; } }
+
+/* ---------- Item ---------- */
+.notification .notification{
+  position:relative; list-style:none; margin:0; padding:10px;
+
+  .media{
+    position:relative; display:flex; align-items:center; gap:12px;
+    padding:12px; border-radius:$r-lg;
+    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+    border:1px solid rgba(255,255,255,.06);
+    transition: transform $tr, box-shadow $tr, border-color $tr, background $tr, opacity $tr;
+    cursor:pointer; overflow:hidden; /* para ripple */
+
+    /* ripple hover */
+    &::after{
+      content:""; position:absolute; inset:0; opacity:0; pointer-events:none;
+      background:radial-gradient(200px 200px at var(--mx,50%) var(--my,50%), rgba(6,182,212,.18), transparent 60%);
+      transition:opacity .35s ease;
+    }
+    &:hover{ transform:translateY(-1px); border-color:rgba(6,182,212,.45);
+             box-shadow:0 14px 30px rgba(6,182,212,.22);
+             background:linear-gradient(180deg, rgba(6,182,212,.10), rgba(124,58,237,.08)), rgba(255,255,255,.04);
+             &::after{ opacity:1 } }
+    &:active{ transform:translateY(0) scale(.995); }
+
+    /* barra de progreso (tiempo de vida) */
+    &::before{
+      content:""; position:absolute; left:12px; right:12px; bottom:8px; height:3px; border-radius:6px;
+      background:linear-gradient(90deg, rgba(124,58,237,.25), rgba(6,182,212,.25));
+      transform:scaleX(calc(var(--progress, 0) / 100)); transform-origin:left; transition:transform .4s ease;
+    }
+    &[data-progress]{ --progress: attr(data-progress percentage); }
+  }
+
+  /* swipe/dismiss (añade .is-exiting desde TS para animar salida) */
+  &.is-exiting .media{ animation: slideOut .22s ease forwards; }
+
+  /* avatar + ring */
+  .img-radius{
+    width:44px; height:44px; border-radius:12px; object-fit:cover; position:relative; flex:0 0 auto;
+    box-shadow:0 8px 18px rgba(2,8,23,.45), 0 0 0 1px rgba(255,255,255,.08) inset;
+    animation: pop .24s ease both;
+  }
+  .img-radius::after{
+    content:''; position:absolute; inset:-2px; border-radius:inherit; pointer-events:none;
+    box-shadow:0 0 0 2px rgba(124,58,237,.55), 0 0 20px rgba(124,58,237,.25);
+  }
+
+  .media-body p{
+    margin:0; line-height:1.35; color:$fg-1;
+    strong{ font-weight:900; }
+    .n-time{ font-size:12px; color:$muted; margin-left:8px; white-space:nowrap; position:relative; }
+    /* ping (no leída) */
+    .n-time::before{
+      content:''; width:6px; height:6px; border-radius:999px; margin-right:6px; display:inline-block;
+      background:radial-gradient(circle at 30% 30%, $cy, $vio);
+      box-shadow:0 0 0 6px rgba(6,182,212,.18);
+      transform:translateY(-1px);
+      opacity:0; transition:opacity $tr;
+    }
+  }
+
+  /* quick actions */
+  .actions{ margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+  .actions .btn-mini{
+    font-weight:900; font-size:11px; text-decoration:none; color:$fg-1;
+    padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.04);
+    transition: background $tr, border-color $tr, transform $tr, box-shadow $tr;
+    &:hover{ background:rgba(6,182,212,.14); border-color:rgba(6,182,212,.35);
+             transform:translateY(-1px); box-shadow:0 8px 20px rgba(6,182,212,.22); }
+  }
+
+  /* estado: no leída */
+  &.unread .media{
+    box-shadow:0 0 0 2px rgba(6,182,212,.20) inset, 0 12px 28px rgba(6,182,212,.18);
+  }
+  &.unread .media-body .n-time::before{ opacity:1; }
+
+  /* variantes por tipo */
+  &.success  .media{ border-color:rgba($mi,.45); background:linear-gradient(180deg, rgba($mi,.12), rgba(255,255,255,.03)); }
+  &.info     .media{ border-color:rgba($in,.45); background:linear-gradient(180deg, rgba($in,.12), rgba(255,255,255,.03)); }
+  &.warn     .media{ border-color:rgba($wa,.50); background:linear-gradient(180deg, rgba($wa,.12), rgba(255,255,255,.03)); }
+  &.critical .media{ border-color:rgba($er,.55); background:linear-gradient(180deg, rgba($er,.12), rgba(255,255,255,.03));
+                     animation: criticalGlow 2.2s ease-in-out infinite; }
+
+  /* skeleton */
+  &.skeleton .media{ position:relative; overflow:hidden; pointer-events:none; }
+  &.skeleton .media::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+    animation: shimmer 1.6s linear infinite;
+  }
+  &.skeleton .img-radius{ background:rgba(255,255,255,.08); }
+  &.skeleton .media-body p{ color:transparent; border-radius:$r-sm; background:rgba(255,255,255,.06); height:12px; margin:6px 0; }
+}
+
+/* Footer */
+.notification .noti-footer{
+  padding:12px 14px; display:flex; justify-content:center; align-items:center;
+  border-top:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  a{ display:inline-flex; align-items:center; gap:8px; font-weight:900; font-size:12.5px; color:$fg-1; text-decoration:none;
+     padding:10px 14px; border-radius:999px;
+     background:linear-gradient(90deg, rgba(124,58,237,.25), rgba(6,182,212,.25));
+     transition: transform $tr, box-shadow $tr, opacity $tr;
+     &:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(124,58,237,.25); } }
+}
+
+/* ---------- Variantes layout ---------- */
+/* Hoja (sheet) pegada al borde del menú */
+.notification.notification--sheet{ width:min(460px,95vw); border-radius:22px; }
+
+/* Toast (flotante esquina, por si lo usas fuera del menú) */
+.notification.notification--toast{
+  position:fixed; right:16px; bottom:16px; width:min(360px, 92vw); z-index:1050;
+  animation: toastIn .28s ease both;
+}
+
+/* ---------- Compact ---------- */
+.notification.notification--compact{
+  width:min(340px,92vw); border-radius:14px;
+  .noti-head{ padding:10px 12px; }
+  .noti-body{ max-height:340px; padding:6px; }
+  .n-title{ padding:4px 8px 0; }
+  .notification{ padding:6px;
+    .media{ padding:8px 10px; border-radius:10px; gap:10px; &:hover{ transform:translateY(-.5px); } }
+    .img-radius{ width:36px; height:36px; border-radius:10px; }
+    .media-body p{ line-height:1.3; }
+    .actions{ margin-top:6px; gap:6px; }
+    .actions .btn-mini{ padding:5px 8px; font-size:11px; }
+  }
+  .noti-footer{ padding:8px 10px; }
+  .noti-footer a{ padding:8px 12px; border-radius:999px; }
+}
+.notification.notification--compact .noti-body::-webkit-scrollbar{ width:8px; }
+
+/* ---------- Perfil a juego ---------- */
+.profile-notification.dropdown-menu{
+  width:300px; padding:0; overflow:hidden; border-radius:$r-xl;
+  border:1px solid rgba(255,255,255,.08); color:$fg-1;
+  background:rgba(17,24,39,.88); backdrop-filter: blur($blur);
+  box-shadow:0 22px 58px rgba(2,8,23,.62);
+  .pro-head{ display:flex; align-items:center; gap:12px; padding:14px 16px;
+             background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+             border-bottom:1px solid rgba(255,255,255,.08); span{ font-weight:900; } }
+  .pro-body{ list-style:none; margin:0; padding:8px;
+    .dropdown-item{ display:flex; align-items:center; gap:10px; border-radius:$r-md; font-weight:800;
+      color:$fg-1; padding:10px 12px; transition: background $tr, transform $tr, box-shadow $tr;
+      i{ color:$cy; } &:hover{ background:rgba(6,182,212,.12); transform:translateY(-1px); } }
+  }
+}
+
+/* ---------- Empty state ---------- */
+.notification.empty .noti-body{ display:grid; place-items:center; padding:26px 12px; }
+.notification.empty .noti-body::before{
+  content:"No notifications yet"; color:$muted; font-weight:800; letter-spacing:.2px;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.03));
+  border:1px dashed rgba(255,255,255,.12); padding:14px 18px; border-radius:$r-lg;
+}
+
+/* ---------- Accesibilidad ---------- */
+.notification a:focus-visible,
+.profile-notification .dropdown-item:focus-visible,
+.navbar-nav .dropdown > a:focus-visible{
+  outline:0; box-shadow:0 0 0 3px rgba(34,197,94,.35), 0 0 0 6px rgba(124,58,237,.25); border-radius:$r-lg;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:480px){
+  .notification.dropdown-menu{ width:calc(100vw - 24px); margin-left:12px; margin-right:12px; }
+  .notification .media{ padding:10px; }
+  .notification .img-radius{ width:40px; height:40px; }
+}
+
+/* ---------- Modo claro ---------- */
+@media (prefers-color-scheme: light){
+  .notification.dropdown-menu,
+  .profile-notification.dropdown-menu{
+    color:#0f172a; background:#ffffffcc; border-color:rgba(15,23,42,.08);
+    box-shadow:0 18px 45px rgba(2,8,23,.18);
+  }
+  .notification .media{ border-color:rgba(15,23,42,.08); }
+  .navbar-nav .dropdown > a{ color:#0f172a; }
+}
+
+/* ---------- Animaciones ---------- */
+@keyframes dropIn{ from{ opacity:0; transform:translateY(6px) scale(.98) } to{ opacity:1; transform:none } }
+@keyframes itemIn{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+@keyframes toastIn{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+@keyframes slideOut{ to{ opacity:0; transform:translateX(12px) } }
+@keyframes pop{ from{ transform:scale(.9); opacity:.6 } to{ transform:scale(1); opacity:1 } }
+@keyframes pulseDot{ 0%,100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(251,113,133,.35) } 50%{ transform:scale(1.12); box-shadow:0 0 0 10px rgba(251,113,133,0) } }
+@keyframes shimmer{ from{ transform:translateX(-100%) } to{ transform:translateX(100%) } }
+@keyframes criticalGlow{ 0%,100%{ box-shadow:0 0 0 0 rgba($er,.25) inset } 50%{ box-shadow:0 0 0 6px rgba($er,0) inset } }
+@keyframes halo{ 0%,100%{ opacity:.65; transform:scale(1) } 50%{ opacity:1; transform:scale(1.05) } }
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }

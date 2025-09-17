@@ -1,9 +1,10 @@
 
 <app-generic-form
-    [title]="'Roles'"
+  [title]="isEdit ? 'Editar Rol' : 'Crear Rol'"
   [config]="formConfig"
   [isEdit]="isEdit"
   [initialData]="initialData"
+  [uniqueCheck]="uniqueCheck"
   (saveForm)="save($event)"
   (cancelForm)="cancel()">
 </app-generic-form>

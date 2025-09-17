@@ -168,23 +168,4 @@ html,body{
      box-shadow: 0px 5px 10px 1px #30CFD0  !important;
 
     border-bottom: 2px solid #30CFD0;
-}
-
-.olvidasteContraseña{
-  border:none;
-  background:none;
-  padding:0px;
-}
-
-/* Quita el ojito nativo en Chrome/Edge */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-  display: none;
-}
-
-input[type="password"]::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-clear-button,
-input[type="password"]::-webkit-password-toggle {
-  display: none !important;
-  -webkit-appearance: none;
-}
+}     

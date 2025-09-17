@@ -1,9 +1,11 @@
 
 <app-generic-form
-    [title]="'Permisos'"
+  [title]="isEdit ? 'Editar Permiso' : 'Crear Permiso'"
   [config]="formConfig"
   [isEdit]="isEdit"
   [initialData]="initialData"
+  [uniqueCheck]="uniqueCheck"
   (saveForm)="save($event)"
   (cancelForm)="cancel()">
 </app-generic-form>
+
