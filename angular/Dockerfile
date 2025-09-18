@@ -1,20 +1,27 @@
-# ============ Build Angular ============
-FROM node:20-alpine AS build
+# ---- Build Angular ----
+FROM node:20 AS build
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm ci --no-fund --no-audit
-COPY . .
+RUN npm ci
+
+COPY angular.json ./
+COPY tsconfig*.json ./
+COPY .browserslistrc ./
+COPY src ./src
+
 RUN npm run build -- --configuration=production
 
-# ============ Nginx (serve estático) ============
-FROM nginx:alpine AS nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# ---- Nginx para servir la SPA ----
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
 
-# ⚠️ Si NO usas SSR:
-COPY --from=build /app/dist/skeleton /usr/share/nginx/html/
+# Tu angular.json usa "outputPath": "dist/skeleton"
+COPY --from=build /app/dist/skeleton/ ./
 
-# ⚠️ Si USAS SSR (comenta la línea anterior y descomenta esta):
-# COPY --from=build /app/dist/skeleton/browser /usr/share/nginx/html/
+# Config mínima de SPA (fallback); ESTE archivo debe estar en ANPR-VISION-FRONT/angular/default.conf
+COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

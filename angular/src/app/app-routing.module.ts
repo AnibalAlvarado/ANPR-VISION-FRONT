@@ -45,6 +45,8 @@ import { ParkingManagement } from './demo/pages/parking-zone/parking-management/
 import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
 import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
+import { ConfiguracionComponent } from './configuracion/configuracion';
+import { endUserComponent } from './end-user-component/end-user.component';
 
 const routes: Routes = [
   {

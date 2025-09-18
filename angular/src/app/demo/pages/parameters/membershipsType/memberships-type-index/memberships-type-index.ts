@@ -162,8 +162,6 @@ export class MembershipsTypeIndex implements OnInit {
     this.dataSource.data = filteredData;
   }
 
-<<<<<<< HEAD
-=======
   selectedMembership: any | null = null;
 
   openDetails(membership: any) {
@@ -176,7 +174,6 @@ export class MembershipsTypeIndex implements OnInit {
     try { document.body.style.overflow = ''; } catch {}
   }
   // Función auxiliar para aplicar filtro de estado
->>>>>>> 6a635e5b5fd11d04e0fa72261f5b03713fb660f6
   private applyStatusFilter(data: MembershipsType[]): MembershipsType[] {
     switch (this.selectedFilter) {
       case 'active':   return data.filter(m => m.asset && !m.isDeleted);

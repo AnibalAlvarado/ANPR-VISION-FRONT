@@ -27,11 +27,8 @@ export enum ValidatorNames {
   Pattern = 'pattern',
   Min = 'min',
   Max = 'max',
-<<<<<<< HEAD
-  MinDate = "MinDate"
-=======
-   UniqueName = 'uniqueName' // <- Para verificar nombres duplicados
->>>>>>> 6a635e5b5fd11d04e0fa72261f5b03713fb660f6
+  MinDate = "MinDate",
+  UniqueName = 'uniqueName' // <- Para verificar nombres duplicados
 }
 export interface FieldValidation {
   validator: ValidatorNames | string; // Permitimos custom names

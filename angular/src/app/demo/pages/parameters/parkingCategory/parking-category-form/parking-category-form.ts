@@ -22,13 +22,14 @@ export class ParkingCategoryForm implements OnInit {
       label: 'Nombre',
       type: 'text',
       required: true,
-      validations: [
-        { name: ValidatorNames.Required,   validator: ValidatorNames.Required,   message: 'El nombre es obligatorio.' },
-        { name: ValidatorNames.MinLength,  validator: ValidatorNames.MinLength,  value: 3,  message: 'El nombre debe tener al menos 3 caracteres.' },
-        { name: ValidatorNames.MaxLength,  validator: ValidatorNames.MaxLength,  value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
-        { name: ValidatorNames.Pattern,    validator: ValidatorNames.Pattern,    value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' },
-        { name: ValidatorNames.UniqueName, validator: ValidatorNames.UniqueName, message: 'El nombre ya existe.' }
-      ]
+     validations: [
+      { name: ValidatorNames.Required,  validator: ValidatorNames.Required,  message: 'El nombre es obligatorio.' },
+      { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3,  message: 'El nombre debe tener al menos 3 caracteres.' },
+      { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
+      { name: ValidatorNames.Pattern,   validator: ValidatorNames.Pattern,   value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' },
+      // 👇 usar la clave string que tu GenericForm espera
+      { name: 'uniqueName', validator: 'uniqueName', message: 'El nombre ya existe.' }
+    ]
     },
     {
       name: 'description',
@@ -49,7 +50,6 @@ export class ParkingCategoryForm implements OnInit {
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El código es obligatorio.' },
-<<<<<<< HEAD
         { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 2, message: 'El código debe tener al menos 2 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 10, message: 'El código no puede exceder los 10 caracteres.' },
         { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-Z0-9]+$', message: 'El código solo puede contener letras y números.' },
@@ -57,10 +57,8 @@ export class ParkingCategoryForm implements OnInit {
         //   name: ValidatorNames.Pattern,validator: ValidatorNames.Pattern,value: '^(1|2|3)$',message: 'Ingrese un código válido: 1, 2 o 3.'
         // }
 
-=======
         { name: ValidatorNames.Min,      validator: ValidatorNames.Min,      value: 1, message: 'Ingrese un código válido: 1, 2 o 3.' },
         { name: ValidatorNames.Max,      validator: ValidatorNames.Max,      value: 3, message: 'Ingrese un código válido: 1, 2 o 3.' }
->>>>>>> 6a635e5b5fd11d04e0fa72261f5b03713fb660f6
       ]
     },
     {
