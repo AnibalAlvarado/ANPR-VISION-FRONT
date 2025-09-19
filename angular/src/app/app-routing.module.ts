@@ -47,17 +47,20 @@ import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
 import { ConfiguracionComponent } from './configuracion/configuracion';
 import { endUserComponent } from './end-user-component/end-user.component';
-
+import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
+      { path: 'user-dashboard', component: UserDashboardComponent },
       {
         path: '',
         redirectTo: '/login',
         pathMatch: 'full'
       },
+
+
       {
         path: 'analytics',
         loadComponent: () => import('./demo/dashboard/dash-analytics.component').then((c) => c.DashAnalyticsComponent)
@@ -133,9 +136,6 @@ const routes: Routes = [
         path: 'chart',
         loadComponent: () => import('./demo/chart-maps/core-apex.component').then((c) => c.CoreApexComponent)
       },
-
-
-
       {
         path: 'zonas-parqueadero',
         loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
@@ -165,7 +165,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes)
+
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

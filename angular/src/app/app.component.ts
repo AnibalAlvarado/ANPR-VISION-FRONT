@@ -7,6 +7,7 @@ import { SpinnerComponent } from './theme/shared/components/spinner/spinner.comp
 
 @Component({
   selector: 'app-root',
+  standalone: true, // 👈 Importante: componente standalone
   imports: [RouterModule, SpinnerComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
