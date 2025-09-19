@@ -47,13 +47,11 @@ import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
 import { ConfiguracionComponent } from './configuracion/configuracion';
 import { endUserComponent } from './end-user-component/end-user.component';
-import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
-      { path: 'user-dashboard', component: UserDashboardComponent },
       {
         path: '',
         redirectTo: '/login',
