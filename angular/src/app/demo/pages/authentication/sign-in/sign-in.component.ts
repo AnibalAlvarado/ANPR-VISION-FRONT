@@ -4,6 +4,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { General } from 'src/app/generic/general.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -26,7 +27,7 @@ interface ApiResponse<T> {
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [SharedModule, RouterModule, FormsModule],
+  imports: [SharedModule, RouterModule, FormsModule,MatProgressSpinnerModule],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })

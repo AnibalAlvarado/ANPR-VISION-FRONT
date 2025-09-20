@@ -4,6 +4,14 @@
       <i class="bi bi-person-plus-fill"></i>
       <span>Nuevo</span>
     </button>
+
+    <mat-form-field class="search-field" appearance="outline">
+      <mat-label>Buscar</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Buscar..." />
+      <button mat-icon-button matSuffix *ngIf="searchText" (click)="clearFilter()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
   </div>
 
   <table mat-table [dataSource]="dataSource" class="styled-table">
@@ -35,8 +43,14 @@
   </ng-template>
 
   <ng-template #defaultCell>
+  <ng-container *ngIf="col.key === 'restrictionDate'; else normalCell">
+    {{ element[col.key] | formatDate }}
+  </ng-container>
+  <ng-template #normalCell>
     {{ element[col.key] }}
   </ng-template>
+</ng-template>
+
 </td>
 
     </ng-container>

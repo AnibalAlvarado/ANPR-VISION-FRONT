@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { ChartDB } from 'src/app/fack-db/chartData';
+// import { ChartDB } from 'src/app/fack-db/chartData';
 
 // 3rd party import
 import {
@@ -94,8 +94,7 @@ export class DashAnalyticsComponent implements OnInit {
   chartOptions_1!: Partial<ApexOptions>;
   chartOptions_2!: Partial<ApexOptions>;
   chartOptions_3!: Partial<ApexOptions>;
-  bar1CAC: ApexOptions;
-  radialBar1CAC: ApexOptions;
+
 
   // Donut global
   occupancyDonutOptions: NonAxisChartOptions = {
@@ -186,10 +185,7 @@ export class DashAnalyticsComponent implements OnInit {
   };
 
   constructor(private dialog: MatDialog) {
-    this.chartDB = ChartDB;
-    const { bar1CAC, radialBar1CAC } = this.chartDB;
-    this.bar1CAC = bar1CAC;
-    this.radialBar1CAC = radialBar1CAC;
+
 
     // tus charts demo
     this.chartOptions = {

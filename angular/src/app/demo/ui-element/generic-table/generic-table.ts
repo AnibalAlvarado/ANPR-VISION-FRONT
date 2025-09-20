@@ -10,10 +10,11 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { General } from 'src/app/generic/general.service';
+import { FormatDatePipe } from "../../../theme/shared/formatDate/format-date-pipe";
 
 @Component({
   selector: 'app-generic-table',
-  imports: [MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, CommonModule, FormsModule, MatTooltipModule],
+  imports: [MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, CommonModule, FormsModule, MatTooltipModule, FormatDatePipe],
   templateUrl: './generic-table.html',
   styleUrl: './generic-table.scss'
 })
@@ -33,6 +34,7 @@ export class GenericTable<T = any> implements OnInit, AfterViewInit, OnChanges {
   userRoles: string[] = [];
   isAdmin: boolean = false;
 isUser: boolean = false;
+searchText: string = '';
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -76,6 +78,17 @@ isUser: boolean = false;
 
   console.log('isAdmin:', this.isAdmin);
   console.log('isUser:', this.isUser);
+}
+
+applyFilter(event: Event) {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.searchText = filterValue.trim().toLowerCase();
+  this.dataSource.filter = this.searchText;
+}
+
+clearFilter() {
+  this.searchText = '';
+  this.dataSource.filter = '';
 }
 
 }

@@ -155,19 +155,35 @@ export class ParkingManagement implements OnInit {
 
   // Consulta al backend para traer la info del vehículo en el slot
   loadVehicleData(slotId: number): void {
-    this._generalService.get<any>(`Vehicle/slot/${slotId}`).subscribe({
-      next: (response) => {
-        this.vehicleData = response; // General ya desenvuelve .data si viene ApiResponse
-        if (this.vehicleData?.vehicleId) {
-          this._generalService.get<any>(`Vehicle/${this.vehicleData.vehicleId}`).subscribe({
-            next: (vehicle) => { this.vehicleData.vehicle = vehicle; },
-            error: (err) => console.error('Error cargando datos del vehículo', err)
-          });
-        }
-      },
-      error: (err) => console.error('Error cargando info de slot', err)
-    });
-  }
+  this._generalService.get<any>(`Vehicle/slot/${slotId}`).subscribe({
+    next: (response) => {
+      this.vehicleData = response;
+
+      if (this.vehicleData?.vehicleId) {
+        // Primero traigo el vehículo
+        this._generalService.get<any>(`Vehicle/${this.vehicleData.vehicleId}`).subscribe({
+          next: (vehicle) => {
+            this.vehicleData.vehicle = vehicle;
+
+            // Ahora si existe clientId, hago la consulta del cliente
+            if (vehicle?.clientId) {
+              this._generalService.get<any>(`Client/${vehicle.clientId}`).subscribe({
+                next: (client) => {
+                  this.vehicleData.vehicle.client = client;
+                  console.log("Cliente cargado:", client);
+                },
+                error: (err) => console.error('Error cargando datos del cliente', err)
+              });
+            }
+          },
+          error: (err) => console.error('Error cargando datos del vehículo', err)
+        });
+      }
+    },
+    error: (err) => console.error('Error cargando info de slot', err)
+  });
+}
+
 
   // --- UTILIDADES ---
   getStatusColor(status: string): string {

@@ -152,10 +152,10 @@ const routes: Routes = [
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
       },
-      {
-        path: 'chart',
-        loadComponent: () => import('./demo/chart-maps/core-apex.component').then((c) => c.CoreApexComponent)
-      },
+      // {
+      //   path: 'chart',
+      //   loadComponent: () => import('./demo/chart-maps/core-apex.component').then((c) => c.CoreApexComponent)
+      // },
 
 
 
