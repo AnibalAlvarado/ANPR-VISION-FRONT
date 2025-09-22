@@ -5,7 +5,7 @@
 
     <!-- Search Bar -->
     <div class="search-container">
-      <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar espacio, sector o placa..." class="search-input" />
+      <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar sector..." class="search-input" />
     </div>
 
     <!-- Zone Tabs -->
@@ -29,6 +29,7 @@
     <!-- Sectors Grid -->
     <div class="sectors-grid">
       <div *ngFor="let sector of filteredSectors" class="sector-card" (click)="openSectorModal(sector)">
+
         <div class="sector-header">
           <div>
             <h3>{{ sector.name }}</h3>
@@ -54,6 +55,7 @@
             <span class="stat-text">Ocupados</span>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -67,23 +69,11 @@
       </div>
 
       <div class="modal-content" *ngIf="selectedSector">
-        <p class="modal-subtitle">Espacios de estacionamiento</p>
 
-        <!-- Status Summary -->
-        <div class="status-summary">
-          <div class="status-item">
-            <div class="status-number green">{{ getSectorStatusCount('libre', selectedSector) }}</div>
-            <div class="status-label">Libres</div>
-          </div>
-          <div class="status-item">
-            <div class="status-number red">{{ getSectorStatusCount('ocupado', selectedSector) }}</div>
-            <div class="status-label">Ocupados</div>
-          </div>
-        </div>
 
-        <p class="slots-instruction">Haz clic en cualquier espacio para ver detalles</p>
 
-        <!-- Parking Slots -->
+        <p class="modal-subtitle">Haz clic en cualquier espacio para ver detalles</p>
+
         <div class="slots-container">
           <button
             *ngFor="let slot of filteredSlots"
@@ -101,9 +91,7 @@
           <div class="slot-header">
             <h3>Espacio {{ selectedSlot.name }}</h3>
           </div>
-          <!-- <div class="slot-header">
-            <h3>Espacio {{ selectedSlot.name }}</h3>
-          </div> -->
+
 
           <div class="detail-row">
             <span class="detail-label">Estado:</span>
@@ -113,18 +101,20 @@
           </div>
 
           <div *ngIf="selectedSlot.isAvailable" class="empty-slot-info">
-            <p class="empty-message">🚗 Este espacio está disponible</p>
+            <p class="empty-message">Este espacio está disponible</p>
           </div>
 
           <div *ngIf="!selectedSlot.isAvailable && vehicleData?.vehicle" class="vehicle-info">
-            <!-- <div class="detail-row">
+            <div class="detail-row">
               <span class="detail-label">Placa:</span>
               <span class="vehicle-plate">{{ vehicleData.vehicle.plate }}</span>
-            </div> -->
-            <!-- <div class="detail-row">
+            </div>
+            <div class="detail-row">
               <span class="detail-label">Propietario:</span>
-              <span>{{ vehicleData.vehicle.owner }}</span>
-            </div> -->
+               <span>{{ vehicleData.vehicle.client.name }}</span>
+
+            </div>
+
             <div class="detail-row">
               <span class="detail-label">Hora de entrada:</span>
               <span>{{ vehicleData.entryDate | date:'short' }}</span>

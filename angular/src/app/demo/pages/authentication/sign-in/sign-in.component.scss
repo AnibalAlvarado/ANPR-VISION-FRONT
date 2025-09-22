@@ -255,3 +255,40 @@ html,body{
 .input-registro {
   font-size: 18px !important;  /* mantiene tu tamaño actual */
 }
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15); // mucho más sutil
+  backdrop-filter: blur(8px); // mantiene el efecto glass
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.spinner-overlay {
+  text-align: center;
+  color: #fff; // texto más elegante sobre el fondo
+  animation: fadeUp 0.5s ease-in-out;
+}
+
+.spinner-overlay p {
+  margin-top: 18px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #f5f5f5; // gris claro delicado
+  letter-spacing: 0.4px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { transform: translateY(15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+

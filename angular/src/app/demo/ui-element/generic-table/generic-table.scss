@@ -52,10 +52,14 @@
 /* =========================== */
 .table-header {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 
+  .search-field {
+    width: 300px;
+  }
+}
 .new-user-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;

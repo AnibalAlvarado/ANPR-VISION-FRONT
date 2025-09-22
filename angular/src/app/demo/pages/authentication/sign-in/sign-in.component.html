@@ -73,3 +73,16 @@
     </div>
   </div>
 </div>
+
+<div class="loading-overlay" *ngIf="loading">
+  <div class="spinner-overlay">
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="60"
+      strokeWidth="4"
+      color="accent">
+    </mat-progress-spinner>
+    <p>Cargando...</p>
+  </div>
+</div>
+

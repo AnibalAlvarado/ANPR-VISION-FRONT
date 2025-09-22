@@ -1,9 +1,7 @@
 // angular import
-import { Component, ElementRef, OnInit, output, viewChild, input } from '@angular/core';
+import { Component, ElementRef, output, viewChild, input } from '@angular/core';
 
 // project import
-import { FriendsList } from 'src/app/fack-db/friends-list';
-import { UserChat } from 'src/app/fack-db/user-chat';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 
 @Component({
@@ -12,12 +10,12 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
   templateUrl: './chat-msg.component.html',
   styleUrls: ['./chat-msg.component.scss']
 })
-export class ChatMsgComponent implements OnInit {
+export class ChatMsgComponent   {
   friendId = input.required<number>();
   ChatToggle = output();
   newChat = viewChild.required('newChat', { read: ElementRef });
-  friendsList = FriendsList.friends;
-  userChat = UserChat.chat;
+  // friendsList = FriendsList.friends;
+  // userChat = UserChat.chat;
   // eslint-disable-next-line
   chatMessage: any;
   message!: string;
@@ -36,15 +34,15 @@ export class ChatMsgComponent implements OnInit {
     this.direction = isRtl === true ? 'rtl' : 'ltr';
   }
 
-  ngOnInit() {
-    this.chatMessage = findObjectByKeyValue(this.friendsList, 'id', this.friendId());
-    if (this.chatMessage) {
-      const message = findObjectByKeyValue(this.userChat, 'friend_id', this.friendId());
-      if (message) {
-        this.chatMessage['chat'] = message['messages'];
-      }
-    }
-  }
+  // ngOnInit() {
+  //   this.chatMessage = findObjectByKeyValue(this.friendsList, 'id', this.friendId());
+  //   if (this.chatMessage) {
+  //     const message = findObjectByKeyValue(this.userChat, 'friend_id', this.friendId());
+  //     if (message) {
+  //       this.chatMessage['chat'] = message['messages'];
+  //     }
+  //   }
+  // }
 
   sentMsg(flag: number) {
     if (this.message === '' || this.message === undefined) {
@@ -98,11 +96,11 @@ export class ChatMsgComponent implements OnInit {
   }
 }
 
-function findObjectByKeyValue<T>(array: T[], key: keyof T, value: T[keyof T]) {
-  for (let i = 0; i < array.length; i++) {
-    if (array[i][key] === value) {
-      return array[i];
-    }
-  }
-  return false;
-}
+// function findObjectByKeyValue<T>(array: T[], key: keyof T, value: T[keyof T]) {
+//   for (let i = 0; i < array.length; i++) {
+//     if (array[i][key] === value) {
+//       return array[i];
+//     }
+//   }
+//   return false;
+// }

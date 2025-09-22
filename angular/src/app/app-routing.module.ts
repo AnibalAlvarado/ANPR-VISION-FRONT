@@ -134,6 +134,9 @@ const routes: Routes = [
         path: 'chart',
         loadComponent: () => import('./demo/chart-maps/core-apex.component').then((c) => c.CoreApexComponent)
       },
+
+
+
       {
         path: 'zonas-parqueadero',
         loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)

@@ -2,6 +2,12 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
+<<<<<<< HEAD
+=======
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+// project import
+>>>>>>> e9076a282ddcfa699d6b6deba241f4e31f07d85e
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import Swal from 'sweetalert2';
 
@@ -21,7 +27,11 @@ interface ApiResponse<T> {
 @Component({
   selector: 'app-sign-in',
   standalone: true,
+<<<<<<< HEAD
   imports: [SharedModule, RouterModule],
+=======
+  imports: [SharedModule, RouterModule, FormsModule,MatProgressSpinnerModule],
+>>>>>>> e9076a282ddcfa699d6b6deba241f4e31f07d85e
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
