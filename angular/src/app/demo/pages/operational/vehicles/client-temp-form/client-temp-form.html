@@ -1,0 +1,49 @@
+<h2 class="modal-title">Nuevo Cliente</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="modal-form">
+  <!-- Nombre -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nombre del cliente</mat-label>
+    <input matInput formControlName="name" required />
+    <mat-error *ngIf="form.get('name')?.hasError('required')">
+      El nombre del cliente es obligatorio
+    </mat-error>
+    <mat-error *ngIf="form.get('name')?.hasError('minlength')">
+      Debe tener al menos 2 caracteres
+    </mat-error>
+    <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
+      No puede exceder los 50 caracteres
+    </mat-error>
+    <mat-error *ngIf="form.get('name')?.hasError('pattern')">
+      Solo se permiten letras y espacios
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Persona asociada -->
+  <div class="person-section">
+    <mat-form-field appearance="outline" class="flex-grow">
+      <mat-label>Persona Asociada</mat-label>
+      <mat-select formControlName="personId" required panelClass="custom-select-panel">
+        <mat-option *ngFor="let p of people" [value]="p.value">
+          {{ p.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('personId')?.hasError('required')">
+        Debe seleccionar una persona
+      </mat-error>
+    </mat-form-field>
+
+    <!-- 🚀 Botón nuevo persona -->
+    <button mat-stroked-button color="primary" type="button" (click)="openPersonTempModal()">
+      [+] Nueva Persona
+    </button>
+  </div>
+
+  <!-- Botones -->
+  <div class="actions">
+    <button mat-stroked-button type="button" (click)="close()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      Aceptar
+    </button>
+  </div>
+</form>

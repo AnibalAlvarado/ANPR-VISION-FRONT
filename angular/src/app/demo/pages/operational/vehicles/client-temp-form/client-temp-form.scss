@@ -1,0 +1,134 @@
+/* ===== Modal - Nuevo Cliente ===== */
+
+/* Título */
+.modal-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222; /* Más contraste */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Contenedor del formulario */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 8px;
+}
+
+/* Inputs y selects */
+::ng-deep mat-form-field {
+  width: 100%;
+}
+
+::ng-deep input.mat-mdc-input-element {
+  color: #222 !important; /* Texto oscuro */
+  font-weight: 500;
+}
+
+::ng-deep .mat-mdc-floating-label {
+  color: #666 !important;
+  font-weight: 500;
+}
+
+::ng-deep .mdc-floating-label--float-above {
+  color: #3f51b5 !important; /* Azul Material */
+  font-weight: 600;
+}
+
+/* ====== Select - estilos mejorados ====== */
+
+/* Panel desplegable */
+::ng-deep .custom-select-panel {
+  background: #fafafa !important; /* Fondo claro */
+  border-radius: 10px !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+  max-height: 260px !important;
+  padding: 4px 0 !important;
+}
+
+/* Opciones */
+::ng-deep .custom-select-panel .mat-mdc-option {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 16px;
+  color: #333 !important; /* Texto gris oscuro */
+}
+
+/* Hover */
+::ng-deep .custom-select-panel .mat-mdc-option:hover {
+  background: #e8eaf6 !important; /* Azul tenue */
+  color: #222 !important;
+}
+
+/* Opción activa (cuando pasas con teclado o clic) */
+::ng-deep .custom-select-panel .mat-mdc-option-active {
+  background: #d1d9ff !important;
+  color: #222 !important;
+}
+
+/* Opción seleccionada */
+::ng-deep .custom-select-panel .mat-mdc-option.mdc-list-item--selected {
+  background: #c5cae9 !important; /* Azul más marcado */
+  color: #222 !important;
+  font-weight: 600 !important;
+}
+
+/* Opción deshabilitada */
+::ng-deep .custom-select-panel .mat-mdc-option[aria-disabled="true"] {
+  color: rgba(0, 0, 0, 0.3) !important;
+  background: transparent !important;
+}
+
+/* 🔹 Texto del valor seleccionado en el campo */
+::ng-deep .mat-mdc-select-value,
+::ng-deep .mat-mdc-select-value-text {
+  color: #222 !important;  /* Texto oscuro */
+  font-weight: 500 !important;
+}
+
+/* ===== Botones ===== */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+button[mat-stroked-button] {
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 500;
+  color: #555;
+}
+
+button[mat-flat-button] {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button[mat-flat-button]:hover:not([disabled]) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+button[mat-flat-button][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.person-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+

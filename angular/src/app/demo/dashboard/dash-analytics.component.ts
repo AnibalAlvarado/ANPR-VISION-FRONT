@@ -213,7 +213,7 @@ export class DashAnalyticsComponent implements OnInit {
     { id: 'currentVehicles', background: 'bg-c-blue', title: 'Vehículos estacionados hoy', icon: 'fas fa-car', number: '—' },
     { id: 'dailyRevenue', background: 'bg-c-green', title: 'Ingresos del día', icon: 'fas fa-dollar-sign', number: '—' },
     { id: 'availableSlots', background: 'bg-c-yellow', title: 'Slots disponibles', icon: 'fas fa-draw-polygon', number: '—' },
-    { id: 'activeMemberships', background: 'bg-c-red', title: 'Membresías activas', icon: 'fas fa-credit-card', number: '—' }
+    // { id: 'activeMemberships', background: 'bg-c-red', title: 'Membresías activas', icon: 'fas fa-credit-card', number: '—' }
   ];
 
   ngOnInit(): void {

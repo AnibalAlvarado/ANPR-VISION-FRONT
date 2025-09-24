@@ -69,7 +69,7 @@ export class SignInComponent {
       return;
     }
 
-    this.loading = true;
+    // this.loading = true;
 
     // Pedimos AuthData o ApiResponse<AuthData> y lo des-empacamos
     this.service.post<AuthData | ApiResponse<AuthData>>('User/login', this.LoginDto).subscribe({
@@ -108,13 +108,13 @@ export class SignInComponent {
         });
       },
       complete: () => {
-        this.loading = false;
+        // this.loading = false;
       }
     });
   }
 
   restablecerContrasena() {
-    if (this.loading) return;
+    // if (this.loading) return;
     this.router.navigate(['/reset-password']);
   }
 }

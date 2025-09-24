@@ -1,9 +1,64 @@
-<app-generic-form
-  [config]="formConfig"
-  [isEdit]="isEdit"
-  [initialData]="initialData"
-  (saveForm)="save($event)"
-  (cancelForm)="cancel()">
-</app-generic-form>
+<div class="vehicle-form">
+  <h2>{{ isEdit ? 'Editar Vehículo' : 'Registrar Vehículo' }}</h2>
 
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <!-- Placa -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Placa</mat-label>
+      <input matInput formControlName="plate" required>
+      <mat-error *ngIf="form.get('plate')?.hasError('required')">
+        La placa es obligatoria
+      </mat-error>
+    </mat-form-field>
 
+    <!-- Color -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Color</mat-label>
+      <input matInput formControlName="color" required>
+      <mat-error *ngIf="form.get('color')?.hasError('required')">
+        El color es obligatorio
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Tipo de Vehículo -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tipo de Vehículo</mat-label>
+      <mat-select formControlName="typeVehicleId" required>
+        <mat-option *ngFor="let t of typeVehicles" [value]="t.value">{{ t.label }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('typeVehicleId')?.hasError('required')">
+        El tipo de vehículo es obligatorio
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Cliente -->
+    <div class="client-section">
+      <mat-form-field appearance="outline" class="flex-grow">
+        <mat-label>Dueño del Vehículo</mat-label>
+        <mat-select formControlName="clientId" required>
+          <mat-option *ngFor="let c of clients" [value]="c.value">{{ c.label }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('clientId')?.hasError('required')">
+          El cliente es obligatorio
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Botón nuevo cliente -->
+      <button mat-stroked-button color="primary" type="button" (click)="openClientTempModal()">
+        [+] Nuevo Cliente
+      </button>
+    </div>
+
+    <!-- Botones -->
+    <div class="actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid">
+        {{ isEdit ? 'Actualizar' : 'Guardar' }}
+      </button>
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

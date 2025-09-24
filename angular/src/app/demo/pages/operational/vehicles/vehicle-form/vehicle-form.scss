@@ -1,0 +1,124 @@
+/* ===== FORMULARIO VEHÍCULO - DARK MODE ELEGANTE ===== */
+
+.vehicle-form {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 32px;
+  border-radius: 20px;
+  background: rgba(25, 25, 35, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.vehicle-form h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Inputs y selects */
+::ng-deep mat-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field {
+  margin-bottom: 16px;
+}
+
+::ng-deep .mat-mdc-form-field-outline {
+  border-radius: 12px !important;
+}
+
+::ng-deep .mat-mdc-floating-label {
+  color: #b0b7c3 !important;
+  font-weight: 500;
+}
+
+::ng-deep .mdc-floating-label--float-above {
+  color: #667eea !important;
+  font-weight: 600;
+}
+
+::ng-deep input.mat-mdc-input-element,
+::ng-deep .mat-mdc-select-value {
+  color: #fff !important;
+  font-weight: 500;
+}
+
+/* Panel del select */
+::ng-deep .mat-mdc-select-panel {
+  background: #2b2b2b !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+::ng-deep .mat-mdc-option {
+  padding: 12px 16px !important;
+  color: #eee !important;
+}
+
+::ng-deep .mat-mdc-option:hover {
+  background: rgba(102, 126, 234, 0.15) !important;
+}
+
+::ng-deep .mat-mdc-option.mat-mdc-option-active {
+  background: rgba(102, 126, 234, 0.25) !important;
+  color: #667eea !important;
+}
+
+/* Sección cliente */
+.client-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.client-section button {
+  height: 56px;
+  border-radius: 10px !important;
+  font-weight: 500;
+  padding: 0 14px !important;
+  min-width: 120px;
+}
+
+/* Botones de acción */
+.actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+button[mat-flat-button] {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  font-weight: 600;
+  padding: 12px 28px !important;
+  transition: all 0.3s ease;
+}
+
+button[mat-flat-button]:hover:not([disabled]) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+button[mat-flat-button][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button[mat-button] {
+  color: #9ca3af !important;
+  font-weight: 500;
+}
+
+/* Errores */
+::ng-deep mat-error {
+  font-size: 0.85rem;
+  color: #ef4444 !important;
+  margin-top: 2px;
+}

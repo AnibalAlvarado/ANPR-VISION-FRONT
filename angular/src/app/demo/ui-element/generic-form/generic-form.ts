@@ -35,6 +35,7 @@ export class GenericForm implements OnInit, OnChanges {
   @Output() saveForm = new EventEmitter<any>();
   @Output() cancelForm = new EventEmitter<void>();
 
+
   form!: FormGroup;
   private fb = inject(FormBuilder);
 
