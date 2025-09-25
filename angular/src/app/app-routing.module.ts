@@ -45,17 +45,8 @@ import { ParkingManagement } from './demo/pages/parking-zone/parking-management/
 import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
 import { HelpCenterComponent } from './help/help-center.component';
 import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
-import { ClientIndex } from './demo/pages/segurity/client/client-index/client-index';
-import { ClientForm } from './demo/pages/segurity/client/client-form/client-form';
-import { BlackListForm } from './demo/pages/segurity/backlist/black-list-form/black-list-form';
-import { CameraIndex } from './demo/pages/cameras/camera-index/camera-index';
-import { CameraForm } from './demo/pages/cameras/camera-form/camera-form';
-import { MemberShipsIndex } from './demo/pages/operational/memberShips/member-ships-index/member-ships-index';
-import { MemberShipsForm } from './demo/pages/operational/memberShips/member-ships-form/member-ships-form';
-import { RatesIndex } from './demo/pages/operational/rates/rates-index/rates-index';
-import { RatesForm } from './demo/pages/operational/rates/rates-form/rates-form';
-import { Configuration } from './demo/configuration/configuration/configuration';
-
+import { ConfiguracionComponent } from './configuracion/configuracion';
+import { endUserComponent } from './end-user-component/end-user.component';
 const routes: Routes = [
   {
     path: '',
@@ -66,6 +57,8 @@ const routes: Routes = [
         redirectTo: '/login',
         pathMatch: 'full'
       },
+
+
       {
         path: 'analytics',
         loadComponent: () => import('./demo/dashboard/dash-analytics.component').then((c) => c.DashAnalyticsComponent)
@@ -79,7 +72,9 @@ const routes: Routes = [
        {
         path: 'role-index',
         component: RoleIndex
-      },
+      },{ path: 'configuracion', component: ConfiguracionComponent },
+       { path: 'users/:id', component: endUserComponent },
+            { path: '', pathMatch: 'full', redirectTo: 'users/123' }, // opcional para probar
        { path: 'role-form', component: RoleForm },
       { path: 'role-form/:id', component: RoleForm },
       { path: 'user-index', component: UserIndex },
@@ -131,23 +126,6 @@ const routes: Routes = [
       {path: 'vehicles-form/:id', component: VehicleForm},
       {path: 'parking-management', component: ParkingManagement},
       {path: 'registeredVehicle-index', component: RegisteredVehicleIndex},
-      {path: 'client-index', component: ClientIndex},
-      {path: 'client-form', component: ClientForm},
-      {path: 'client-form/:id', component: ClientForm},
-      {path: 'blackList-index', component: BackListIndex},
-      {path: 'blackList-form', component: BlackListForm},
-      {path: 'blackList-form/:id', component: BlackListForm},
-      {path: 'cameras-index', component: CameraIndex},
-      {path: 'cameras-form', component: CameraForm},
-      {path: 'cameras-form/:id', component: CameraForm},
-      {path: 'memberShips-index', component: MemberShipsIndex},
-      {path: 'memberShips-form', component: MemberShipsForm},
-      {path: 'memberShips-form/:id', component: MemberShipsForm},
-      {path: 'rates-index', component: RatesIndex},
-      {path: 'rates-form', component: RatesForm},
-      {path: 'rates-form/:id', component: RatesForm},
-      {path: 'configuracion', component: Configuration},
-
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
@@ -188,7 +166,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes)
+
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

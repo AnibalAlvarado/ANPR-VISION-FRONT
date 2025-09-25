@@ -28,12 +28,11 @@ export function usernameExistsValidator(service: General, getUserId: () => strin
         const params = new HttpParams().set('username', username);
         return service.get<any>('User/check-username', params).pipe(
           map(res => {
-            // Soporta boolean directo o { exists: boolean }
             const exists = typeof res === 'boolean' ? res : !!res?.exists;
             const currentId = getUserId() ?? control.parent?.get('id')?.value ?? null;
             return exists && control.parent?.get('id')?.value !== currentId ? { usernameExists: true } : null;
           }),
-          catchError(() => of(null)) // si falla la API, no bloquea
+          catchError(() => of(null))
         );
       })
     );
@@ -81,7 +80,6 @@ export function emailExistsValidator(service: General, getUserId: () => string |
   styleUrl: './user-form.scss'
 })
 export class UserForm implements OnInit {
-  [x: string]: any;
   form: FormGroup;
   isEdit = false;
   persons: { id: number; firstName: string; lastName?: string }[] = [];
@@ -122,13 +120,16 @@ export class UserForm implements OnInit {
       ],
       personId: ['', Validators.required],
       asset: [true],
-      // el template usa hidePassword → lo agregamos
       hidePassword: [true]
     });
   }
 
-  onCancelar(): void {
-    this.route.navigate(['/user-index']);
+  // (opcional) agrega (mousemove)="onRipple($event)" al botón submit
+  onRipple(e: MouseEvent) {
+    const el = e.target as HTMLElement;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--x', `${e.clientX - r.left}px`);
+    el.style.setProperty('--y', `${e.clientY - r.top}px`);
   }
 
   ngOnInit(): void {
@@ -298,7 +299,46 @@ export class UserForm implements OnInit {
     }
   }
 
-  cancel(): void {
-    this.route.navigate(['/user-index']);
+  /** ÚNICA implementación correcta */
+  onCancelar(): void {
+    if (!this.shouldConfirmCancel()) {
+      this.route.navigate(['/user-index']);
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Cancelar cambios?',
+      text: 'Se perderán los cambios no guardados.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, continuar editando'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.route.navigate(['/user-index']);
+      }
+    });
+  }
+
+  private shouldConfirmCancel(): boolean {
+    if (this.isEdit) {
+      return this.form.dirty;
+    }
+    return this.hasAnyNonEmptyValue();
+  }
+
+  private hasAnyNonEmptyValue(): boolean {
+    const ignoreKeys = new Set(['id', 'asset', 'hidePassword']);
+    return Object.entries(this.form.controls).some(([key, control]) => {
+      if (ignoreKeys.has(key)) return false;
+      const v = control.value;
+
+      if (Array.isArray(v)) return v.length > 0;
+      if (v === null || v === undefined) return false;
+      if (typeof v === 'number') return true;
+      if (typeof v === 'boolean') return v === true;
+      const s = String(v).trim();
+      return s.length > 0;
+    });
   }
 }

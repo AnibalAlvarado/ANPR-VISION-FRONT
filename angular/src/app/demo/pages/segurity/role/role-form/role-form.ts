@@ -6,9 +6,12 @@ import Swal from 'sweetalert2';
 import { GenericForm } from 'src/app/demo/ui-element/generic-form/generic-form';
 import { FieldConfig, ValidatorNames } from 'src/app/demo/ui-element/generic-form/field-config.model';
 import { Role } from 'src/app/generic/Models/Entitys';
+import { UniqueCheckService } from 'src/app/demo/ui-element/generic-form/unique-check.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-role-form',
+  standalone: true,
   imports: [GenericForm],
   templateUrl: './role-form.html',
   styleUrl: './role-form.scss'
@@ -21,10 +24,12 @@ export class RoleForm implements OnInit {
       type: 'text',
       required: true,
       validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'El nombre debe tener al menos 3 caracteres.' },
+        { name: ValidatorNames.Required,  validator: ValidatorNames.Required,  message: 'El nombre es obligatorio.' },
+        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3,  message: 'El nombre debe tener al menos 3 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 50, message: 'El nombre no puede exceder los 50 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern,   validator: ValidatorNames.Pattern,   value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'El nombre solo puede contener letras y espacios.' },
+        // El GenericForm usa 'uniqueName' (string) en el template
+        { name: 'uniqueName', validator: 'uniqueName', message: 'El nombre ya existe.' }
       ]
     },
     {
@@ -33,10 +38,10 @@ export class RoleForm implements OnInit {
       type: 'text',
       required: true,
       validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La descripción es obligatoria.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5, message: 'La descripción debe tener al menos 5 caracteres.' },
+        { name: ValidatorNames.Required,  validator: ValidatorNames.Required,  message: 'La descripción es obligatoria.' },
+        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 5,   message: 'La descripción debe tener al menos 5 caracteres.' },
         { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 200, message: 'La descripción no puede exceder los 200 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
+        { name: ValidatorNames.Pattern,   validator: ValidatorNames.Pattern,   value: '^[a-zA-ZÀ-ÿ\\s]+$', message: 'La descripción solo puede contener letras y espacios.' }
       ]
     },
     {
@@ -49,11 +54,21 @@ export class RoleForm implements OnInit {
   ];
 
   isEdit = false;
-  initialData: any = {};
+  initialData: Partial<Role> = {};
 
-  private service = inject(General);
-  private route = inject(Router);
+  private service        = inject(General);
+  private router         = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private uniqueService  = inject(UniqueCheckService);
+
+  // 🔹 El generic-form espera esta firma
+  uniqueCheck = (
+    fieldName: string,
+    value: any,
+    formValue: any
+  ): Observable<{ exists: boolean; message?: string }> => {
+    return this.uniqueService.checkUnique('Rol', fieldName, value, formValue);
+  };
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -65,7 +80,7 @@ export class RoleForm implements OnInit {
         },
         error: (err: Error) => {
           Swal.fire('Error', err.message || 'No se pudo cargar el rol.', 'error');
-          this.route.navigate(['/role-index']);
+          this.router.navigate(['/role-index']);
         }
       });
     }
@@ -80,6 +95,7 @@ export class RoleForm implements OnInit {
     };
   }
 
+  // Recibe el payload emitido por <app-generic-form (saveForm)="save($event)">
   save(data: any) {
     if (this.isEdit) {
       this.service.put('Rol', data).subscribe({
@@ -91,7 +107,7 @@ export class RoleForm implements OnInit {
             timer: 2000,
             timerProgressBar: true
           });
-          this.route.navigate(['/role-index']);
+          this.router.navigate(['/role-index']);
         },
         error: (err: Error) => {
           Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
@@ -99,7 +115,7 @@ export class RoleForm implements OnInit {
       });
     } else {
       const payload = { ...data };
-      delete payload.id;
+      delete (payload as any).id;
 
       this.service.post('Rol', payload).subscribe({
         next: () => {
@@ -110,7 +126,7 @@ export class RoleForm implements OnInit {
             timer: 2000,
             timerProgressBar: true
           });
-          this.route.navigate(['/role-index']);
+          this.router.navigate(['/role-index']);
         },
         error: (err: Error) => {
           Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
@@ -120,6 +136,6 @@ export class RoleForm implements OnInit {
   }
 
   cancel() {
-    this.route.navigate(['/role-index']);
+    this.router.navigate(['/role-index']);
   }
 }

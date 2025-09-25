@@ -1,0 +1,126 @@
+<!-- Fondo y contenedor -->
+<div class="page-bg">
+  <div class="page-container">
+    <!-- Columna izquierda -->
+    <div class="col col-main">
+
+      <!-- Tarjeta resumen de perfil -->
+      <section class="panel profile-card">
+        <div class="avatar">
+          <img src="https://i.pravatar.cc/160?img=47" alt="Avatar" />
+        </div>
+        <div class="info">
+          <h2 class="name">Prokhorova Nikol</h2>
+
+          <div class="meta-grid">
+            <div class="meta"><span class="k">Fecha de registro</span><span class="v">24 de noviembre de 2022</span></div>
+            <div class="meta"><span class="k">Ciudad</span><span class="v">Bogotá, Colombia</span></div>
+            <div class="meta"><span class="k">Email</span><span class="v">nikol&#64;example.com</span></div>
+            <div class="meta"><span class="k">Teléfono</span><span class="v">+278 965 236 25</span></div>
+          </div>
+
+          <div class="chips">
+            <span class="chip">UX/UI</span>
+            <span class="chip">Premium</span>
+            <span class="chip">Activa</span>
+          </div>
+          <div class="social">
+            <a href="#" aria-label="Telegram">✈️</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="GitHub">🐙</a>
+            <a href="#" aria-label="Dribbble">🏀</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mis cursos -->
+      <section class="panel">
+        <h4 class="panel-title">Mis cursos</h4>
+        <ul class="timeline">
+          <li class="t-item" *ngFor="let c of cursos">
+            <div class="dot" [class.pulse]="c.estado === 'iniciado'"></div>
+
+            <!-- Tarjeta clickeable -->
+            <div
+              class="card mini"
+              role="button"
+              tabindex="0"
+              (click)="selectCourse(c)"
+              (keyup.enter)="selectCourse(c)"
+              [class.active]="selectedCourse?.id === c.id">
+              <div>
+                <div class="title">{{ c.titulo }}</div>
+                <div class="sub">{{ c.subtitulo }}</div>
+              </div>
+
+              <span class="badge"
+                    [class.success]="c.estado==='completado'"
+                    [class.start]="c.estado==='iniciado'">
+                {{ c.estado | titlecase }}
+              </span>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- Columna derecha -->
+    <aside class="col col-side">
+      <!-- Panel de detalle dinámico -->
+      <div *ngIf="selectedCourse as sc; else sideDefault"
+           class="card side-card detail-card animate-in">
+        <div class="detail-head">
+          <h5>{{ sc.titulo }}</h5>
+          <button class="ghost sm" (click)="closeDetail()">✕ Cerrar</button>
+        </div>
+
+        <p class="detail-desc">{{ sc.descripcion }}</p>
+
+        <div class="detail-meta">
+          <div><span class="k">Instructor</span><span class="v">{{ sc.instructor }}</span></div>
+          <div><span class="k">Nivel</span><span class="v">{{ sc.nivel }}</span></div>
+          <div><span class="k">Duración</span><span class="v">{{ sc.horas }} h</span></div>
+        </div>
+
+        <div class="progress">
+          <div class="bar" [style.width.%]="sc.progreso"></div>
+        </div>
+        <div class="progress-label">{{ sc.progreso }}% completado</div>
+
+        <ul class="bullets">
+          <li *ngFor="let b of sc.beneficios">{{ b }}</li>
+        </ul>
+
+        <div class="detail-actions">
+          <button class="primary" (click)="continuar(sc)">Continuar curso</button>
+          <button class="ghost" *ngIf="sc.estado==='completado'" (click)="verCertificado(sc)">Ver certificado</button>
+        </div>
+      </div>
+
+      <!-- Lado derecho por defecto -->
+      <ng-template #sideDefault>
+        <div class="card side-card pay">
+          <h5>Datos de pago</h5>
+          <div class="pay-row">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="VISA" />
+            <div class="num">•••• •••• •••• 2956</div>
+          </div>
+          <div class="pay-icons">
+            <span>Apple Pay</span><span>G Pay</span><span>VISA</span>
+          </div>
+          <button class="ghost block">Administrar</button>
+        </div>
+
+        <div class="card side-card promo">
+          <h5>Suscripción individual Success Premium</h5>
+          <ul class="bullets">
+            <li>Clases en vivo</li>
+            <li>Acceso ilimitado</li>
+            <li>Certificados</li>
+          </ul>
+          <button class="primary block">Suscribirse</button>
+        </div>
+      </ng-template>
+    </aside>
+  </div>
+</div>

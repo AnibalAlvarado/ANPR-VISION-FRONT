@@ -1,0 +1,284 @@
+<mat-drawer-container
+  class="user-layout"
+  style="
+    --bg:#f9fbff;
+    --surface:#ffffff;
+    --ink:#25324b;
+    --muted:#667085;
+    --line:#e7ecf5;
+    --primary:#3d5afe;
+    --primary-ink:#1e2db7;
+    --accent:#00b8d9;
+    --ok:#16a34a;
+    --warn:#f59e0b;
+    --err:#ef4444;
+    color-scheme:light;
+  "
+  
+>
+
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <mat-drawer-content>
+    <!-- ===== HERO / RESUMEN SUPERIOR (deja tu hero tal cual) ===== -->
+    <section class="hero">
+      <mat-card class="hero-card">
+        <div class="hero-row">
+          <div class="hero-left">
+            <div class="avatar"><mat-icon aria-hidden="true">account_circle</mat-icon></div>
+            <div class="hero-texts">
+              <h2 class="hero-title">Hola, {{ user?.fullName || 'Usuario' }}</h2>
+              <div class="hero-sub">
+                <span *ngIf="membership?.active; else noMember" class="badge badge--ok">
+                  <mat-icon aria-hidden="true">verified</mat-icon>
+                  Membresía activa: {{ membership?.name }}
+                </span>
+                <ng-template #noMember>
+                  <span class="badge badge--warn">
+                    <mat-icon aria-hidden="true">info</mat-icon>
+                    Sin membresía activa
+                  </span>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-right">
+            <div class="kpis">
+              <div class="kpi">
+                <div class="kpi-top"><mat-icon>local_parking</mat-icon><span class="kpi-label">Parqueadero</span></div>
+                <div class="kpi-value">{{ parking?.name || '—' }}</div>
+              </div>
+
+              <div class="kpi">
+                <div class="kpi-top"><mat-icon>access_time</mat-icon><span class="kpi-label">Tiempo</span></div>
+                <div class="kpi-value">{{ ((currentStay?.elapsedMinutes || 0) / 60) | number:'1.0-1' }} h</div>
+              </div>
+
+              <div class="kpi">
+                <div class="kpi-top"><mat-icon>payments</mat-icon><span class="kpi-label">Saldo</span></div>
+                <div class="kpi-value">{{ (balance ?? 0) | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+              </div>
+
+              <div class="kpi" *ngIf="membership?.active">
+                <div class="kpi-top"><mat-icon>event</mat-icon><span class="kpi-label">Vence</span></div>
+                <div class="kpi-value">{{ membership?.endDate | date:'mediumDate' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </section>
+
+    <!-- ===== GRID DE TARJETAS (cada una abre el drawer lateral) ===== -->
+    <section class="grid">
+      <!-- Parqueadero -->
+      <mat-card class="card hover-card">
+        <div class="card-header">
+          <mat-icon>apartment</mat-icon><h3>Parqueadero</h3>
+          <button mat-button class="link-btn" (click)="openPanel('parking')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row">
+            <mat-icon>place</mat-icon>
+            <div class="col">
+              <div class="label">Dirección</div>
+              <div class="value">{{ parking?.address || '—' }}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Vehículo -->
+      <mat-card class="card hover-card">
+        <div class="card-header">
+          <mat-icon>directions_car</mat-icon><h3>Mi vehículo</h3>
+          <button mat-button class="link-btn" (click)="openPanel('vehicle')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row">
+            <mat-icon>confirmation_number</mat-icon>
+            <div class="col"><div class="label">Placa</div><div class="value">{{ vehicle?.plate || '—' }}</div></div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Membresía -->
+      <mat-card class="card hover-card">
+        <div class="card-header">
+          <mat-icon>card_membership</mat-icon><h3>Membresía</h3>
+          <button mat-button class="link-btn" (click)="openPanel('membership')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row">
+            <mat-icon>workspace_premium</mat-icon>
+            <div class="col"><div class="label">Estado</div>
+              <div class="value">{{ membership?.active ? 'Activa' : 'Sin membresía' }}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Ubicación actual -->
+      <mat-card class="card hover-card">
+        <div class="card-header">
+          <mat-icon>map</mat-icon><h3>Ubicación actual</h3>
+          <button mat-button class="link-btn" (click)="openPanel('location')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row">
+            <mat-icon>layers</mat-icon>
+            <div class="col"><div class="label">Zona</div><div class="value">{{ currentStay?.zoneName || '—' }}</div></div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Tarifas -->
+      <mat-card class="card hover-card">
+        <div class="card-header">
+          <mat-icon>receipt_long</mat-icon><h3>Tarifas</h3>
+          <button mat-button class="link-btn" (click)="openPanel('tariffs')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row">
+            <mat-icon>sell</mat-icon>
+            <div class="col"><div class="label">Disponibles</div><div class="value">{{ tariffs?.length || 0 }}</div></div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Acciones -->
+      <mat-card class="card hover-card">
+        <div class="card-header">
+          <mat-icon>bolt</mat-icon><h3>Acciones</h3>
+          <button mat-button class="link-btn" (click)="openPanel('actions')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row"><mat-icon>touch_app</mat-icon><div class="col"><div class="label">Rápidas</div><div class="value">Pagar, Historial, Salida</div></div></div>
+        </div>
+      </mat-card>
+
+      <!-- Actividad -->
+      <mat-card class="card hover-card" *ngIf="history?.length">
+        <div class="card-header">
+          <mat-icon>history</mat-icon><h3>Actividad reciente</h3>
+          <button mat-button class="link-btn" (click)="openPanel('history')">
+            Ver detalles <mat-icon>east</mat-icon>
+          </button>
+        </div>
+        <div class="card-body compact">
+          <div class="row"><mat-icon>timeline</mat-icon><div class="col"><div class="label">Movimientos</div><div class="value">{{ history.length }}</div></div></div>
+        </div>
+      </mat-card>
+    </section>
+  </mat-drawer-content>
+
+  <!-- DRAWER LATERAL DE DETALLES -->
+  <mat-drawer #detailDrawer class="detail-drawer" position="end" mode="over">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <mat-icon>{{ drawerIcon }}</mat-icon>
+        <h3>{{ drawerTitle }}</h3>
+      </div>
+      <button mat-icon-button (click)="closePanel()"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="drawer-body">
+      <ng-container [ngSwitch]="selectedPanel">
+        <!-- Detalle: Parqueadero -->
+        <ng-container *ngSwitchCase="'parking'">
+          <div class="row"><mat-icon>apartment</mat-icon><div class="col"><div class="label">Nombre</div><div class="value">{{ parking?.name || '—' }}</div></div></div>
+          <div class="row"><mat-icon>place</mat-icon><div class="col"><div class="label">Dirección</div><div class="value">{{ parking?.address || '—' }}</div></div></div>
+          <div class="row"><mat-icon>schedule</mat-icon><div class="col"><div class="label">Horario</div><div class="value">{{ parking?.hours || '—' }}</div></div></div>
+          <div class="row"><mat-icon>call</mat-icon><div class="col"><div class="label">Contacto</div><div class="value">{{ parking?.phone || '—' }}</div></div></div>
+        </ng-container>
+
+        <!-- Detalle: Vehículo -->
+        <ng-container *ngSwitchCase="'vehicle'">
+          <div class="row"><mat-icon>confirmation_number</mat-icon><div class="col"><div class="label">Placa</div><div class="value">{{ vehicle?.plate || '—' }}</div></div></div>
+          <div class="row"><mat-icon>commute</mat-icon><div class="col"><div class="label">Tipo</div><div class="value">{{ vehicle?.type || '—' }}</div></div></div>
+          <div class="row"><mat-icon>build</mat-icon><div class="col"><div class="label">Marca / Modelo</div><div class="value">{{ vehicle?.brand || '—' }} {{ vehicle?.model ? ('• ' + vehicle?.model) : '' }}</div></div></div>
+          <div class="row"><mat-icon>palette</mat-icon><div class="col"><div class="label">Color</div><div class="value">{{ vehicle?.color || '—' }}</div></div></div>
+        </ng-container>
+
+        <!-- Detalle: Membresía -->
+        <ng-container *ngSwitchCase="'membership'">
+          <div *ngIf="membership?.active; else noMembershipDrawer">
+            <div class="row"><mat-icon>workspace_premium</mat-icon><div class="col"><div class="label">Plan</div><div class="value">{{ membership?.name }}</div></div></div>
+            <div class="row"><mat-icon>event_available</mat-icon><div class="col"><div class="label">Inicio</div><div class="value">{{ membership?.startDate | date:'mediumDate' }}</div></div></div>
+            <div class="row"><mat-icon>event_busy</mat-icon><div class="col"><div class="label">Fin</div><div class="value">{{ membership?.endDate | date:'mediumDate' }}</div></div></div>
+            <div class="row"><mat-icon>hourglass_bottom</mat-icon><div class="col"><div class="label">Días restantes</div><div class="value">{{ membership?.remainingDays ?? '—' }}</div></div></div>
+            <div class="row" *ngIf="membership?.benefits?.length">
+              <mat-icon>star</mat-icon>
+              <div class="col"><div class="label">Beneficios</div><ul class="value"><li *ngFor="let b of membership?.benefits">{{ b }}</li></ul></div>
+            </div>
+            <div class="drawer-actions">
+              <button mat-flat-button color="primary">Renovar</button>
+            </div>
+          </div>
+          <ng-template #noMembershipDrawer>
+            <div class="empty"><mat-icon>info</mat-icon><span>No tienes una membresía activa.</span></div>
+            <div class="drawer-actions"><button mat-stroked-button color="primary">Adquirir membresía</button></div>
+          </ng-template>
+        </ng-container>
+
+        <!-- Detalle: Ubicación -->
+        <ng-container *ngSwitchCase="'location'">
+          <div class="row"><mat-icon>layers</mat-icon><div class="col"><div class="label">Zona</div><div class="value">{{ currentStay?.zoneName || '—' }}</div></div></div>
+          <div class="row"><mat-icon>grid_view</mat-icon><div class="col"><div class="label">Sector</div><div class="value">{{ currentStay?.sectorName || '—' }}</div></div></div>
+          <div class="row"><mat-icon>crop_square</mat-icon><div class="col"><div class="label">Espacio</div><div class="value">{{ currentStay?.slotCode || '—' }}</div></div></div>
+          <div class="row" *ngIf="currentStay?.since"><mat-icon>access_time</mat-icon><div class="col"><div class="label">Desde</div><div class="value">{{ currentStay?.since | date:'short' }}</div></div></div>
+          <div class="row" *ngIf="currentStay?.estimatedCost != null"><mat-icon>attach_money</mat-icon><div class="col"><div class="label">Costo estimado</div><div class="value">{{ currentStay?.estimatedCost | currency:'COP':'symbol-narrow':'1.0-0' }}</div></div></div>
+        </ng-container>
+
+        <!-- Detalle: Tarifas -->
+        <ng-container *ngSwitchCase="'tariffs'">
+          <div *ngIf="tariffs?.length; else noRatesDrawer">
+            <div class="rate" *ngFor="let t of tariffs; trackBy: trackById">
+              <div class="rate-left"><mat-icon>sell</mat-icon><div class="rate-texts"><div class="rate-name">{{ t?.name || 'Tarifa' }}</div><div class="rate-desc">{{ t?.description || '' }}</div></div></div>
+              <div class="rate-price">{{ (t?.price ?? t?.pricePerHour ?? 0) | currency:'COP':'symbol-narrow':'1.0-0' }}<span *ngIf="t?.pricePerHour">/ hora</span></div>
+            </div>
+          </div>
+          <ng-template #noRatesDrawer><div class="empty"><mat-icon>info</mat-icon><span>No hay tarifas disponibles.</span></div></ng-template>
+        </ng-container>
+
+        <!-- Detalle: Acciones -->
+        <ng-container *ngSwitchCase="'actions'">
+          <div class="drawer-actions">
+            <button mat-flat-button color="primary" (click)="onPayNow?.()">Pagar ahora</button>
+            <button mat-stroked-button color="primary" (click)="onSeeHistory?.()">Ver historial</button>
+            <button mat-stroked-button color="accent" (click)="onRequestExit?.()">Solicitar salida</button>
+          </div>
+          <div class="card-help" *ngIf="helpText"><mat-icon>help_outline</mat-icon><span>{{ helpText }}</span></div>
+        </ng-container>
+
+        <!-- Detalle: Historial -->
+        <ng-container *ngSwitchCase="'history'">
+          <div class="event" *ngFor="let ev of history; trackBy: trackById">
+            <mat-icon>{{ ev?.icon || 'circle' }}</mat-icon>
+            <div class="event-texts"><div class="event-title">{{ ev?.title || 'Evento' }}</div><div class="event-sub">{{ ev?.at | date:'short' }} • {{ ev?.desc || '' }}</div></div>
+            <div class="event-right" *ngIf="ev?.amount != null">{{ ev?.amount | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+          </div>
+        </ng-container>
+
+        <!-- Default -->
+        <div *ngSwitchDefault class="drawer-empty">
+          <mat-icon>info</mat-icon>
+          <p>Selecciona un bloque para ver más detalles.</p>
+        </div>
+      </ng-container>
+    </div>
+  </mat-drawer>
+</mat-drawer-container>

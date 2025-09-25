@@ -2,118 +2,199 @@
   {{ title }}
 </h2>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <ng-container *ngFor="let field of config">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <ng-container *ngFor="let field of config; trackBy: trackByName">
 
-    <ng-container [ngSwitch]="field.type">
+    <!-- Text, Tel, Number -->
+    <mat-form-field
+      *ngIf="field.type === 'text' || field.type === 'tel' || field.type === 'number'"
+      appearance="outline"
+      style="width:100%"
+    >
+      <mat-label>{{ field.label }}</mat-label>
+      <input
+        matInput
+        [type]="field.type"
+        [formControlName]="field.name"
+        [required]="!!field.required"
+      />
 
-      <!-- Text -->
-      <mat-form-field *ngSwitchCase="'text'" appearance="outline" style="width:100%;">
-        <mat-label>{{ field.label }}</mat-label>
-        <input matInput type="text" [formControlName]="field.name" [required]="!!field.required" />
-        <mat-error *ngFor="let v of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Tel -->
-      <mat-form-field *ngSwitchCase="'tel'" appearance="outline" style="width:100%;">
-        <mat-label>{{ field.label }}</mat-label>
-        <input matInput type="tel" [formControlName]="field.name" [required]="!!field.required" />
-        <mat-error *ngFor="let v of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Number -->
-      <mat-form-field *ngSwitchCase="'number'" appearance="outline" style="width:100%;">
-        <mat-label>{{ field.label }}</mat-label>
-        <input matInput type="number" [formControlName]="field.name" [required]="!!field.required" />
-        <mat-error *ngFor="let v of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Textarea -->
-      <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" style="width:100%;">
-        <mat-label>{{ field.label }}</mat-label>
-        <textarea matInput rows="4" [formControlName]="field.name" [required]="!!field.required"></textarea>
-        <mat-error *ngFor="let v of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Select -->
-      <mat-form-field *ngSwitchCase="'select'" appearance="outline" style="width:100%;">
-        <mat-label>{{ field.label }}</mat-label>
-        <mat-select
-          [formControlName]="field.name"
-          [required]="!!field.required"
-          [multiple]="!!field.multiple"
-          [compareWith]="compareByValue">
-          <mat-option *ngFor="let opt of field.options" [value]="opt.value">
-            {{ opt.label }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngFor="let v of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Date (Material Datepicker con calendario) -->
-      <!-- Date (Material Datepicker con calendario) -->
-<mat-form-field *ngSwitchCase="'date'" appearance="outline" style="width:100%;">
-  <mat-label>{{ field.label }}</mat-label>
-  <input
-    matInput
-    [matDatepicker]="picker"
-    [formControlName]="field.name"
-    [required]="!!field.required"
-    [min]="getDateBoundary(field,'MinDate')"
-    [max]="getDateBoundary(field,'MaxDate')" />
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker startView="month"></mat-datepicker>
-
-  <mat-error *ngFor="let v of field.validations" class="error-message">
-    <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-  </mat-error>
-</mat-form-field>
-
-
-      <!-- Time (nativo) -->
-      <mat-form-field *ngSwitchCase="'time'" appearance="outline" style="width:100%;">
-        <mat-label>{{ field.label }}</mat-label>
-        <input
-          matInput
-          type="time"
-          [step]="60"
-          [formControlName]="field.name"
-          [required]="!!field.required"
-          [min]="getTimeBoundary(field,'MinTime')"
-          [max]="getTimeBoundary(field,'MaxTime')" />
-        <mat-error *ngFor="let v of field.validations" class="error-message">
-          <span *ngIf="form.get(field.name)?.hasError(v.validator)">{{ v.message }}</span>
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Toggle -->
-      <ng-container *ngSwitchCase="'toggle'">
-        <mat-slide-toggle
-          *ngIf="!field.hidden"
-          [formControlName]="field.name"
-          color="primary">
-          {{ field.label }}
-        </mat-slide-toggle>
+      <!-- Errores (excluye uniqueName) -->
+      <ng-container *ngFor="let validation of field.validations">
+        <ng-container *ngIf="validation.validator !== 'uniqueName'">
+          <mat-error class="error-message"
+            *ngIf="form.get(field.name)?.hasError(validation.validator)
+                   && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+            <ng-container *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else textErrObj">
+              {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+            </ng-container>
+            <ng-template #textErrObj>
+              {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+            </ng-template>
+          </mat-error>
+        </ng-container>
       </ng-container>
 
-    </ng-container>
+      <!-- Único bloque para uniqueName -->
+      <mat-error class="error-message"
+        *ngIf="form.get(field.name)?.hasError('uniqueName')
+               && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+        {{ form.get(field.name)?.getError('uniqueName')?.message }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Textarea -->
+    <mat-form-field
+      *ngIf="field.type === 'textarea'"
+      appearance="outline"
+      style="width:100%"
+    >
+      <mat-label>{{ field.label }}</mat-label>
+      <textarea
+        matInput
+        [formControlName]="field.name"
+        [required]="!!field.required"
+        rows="4"
+      ></textarea>
+
+      <!-- Errores (excluye uniqueName) -->
+      <ng-container *ngFor="let validation of field.validations">
+        <ng-container *ngIf="validation.validator !== 'uniqueName'">
+          <mat-error class="error-message"
+            *ngIf="form.get(field.name)?.hasError(validation.validator)
+                   && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+            <ng-container *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else areaErrObj">
+              {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+            </ng-container>
+            <ng-template #areaErrObj>
+              {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+            </ng-template>
+          </mat-error>
+        </ng-container>
+      </ng-container>
+
+      <!-- Único bloque para uniqueName -->
+      <mat-error class="error-message"
+        *ngIf="form.get(field.name)?.hasError('uniqueName')
+               && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+        {{ form.get(field.name)?.getError('uniqueName')?.message }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Select -->
+    <mat-form-field
+      *ngIf="field.type === 'select'"
+      appearance="outline"
+      style="width:100%"
+    >
+      <mat-label>{{ field.label }}</mat-label>
+      <mat-select
+        [formControlName]="field.name"
+        [required]="!!field.required"
+        [multiple]="!!field.multiple"
+        [compareWith]="compareByValue"
+      >
+        <mat-option *ngFor="let opt of field.options" [value]="opt.value">
+          {{ opt.label }}
+        </mat-option>
+      </mat-select>
+
+      <!-- Errores (excluye uniqueName) -->
+      <ng-container *ngFor="let validation of field.validations">
+        <ng-container *ngIf="validation.validator !== 'uniqueName'">
+          <mat-error class="error-message"
+            *ngIf="form.get(field.name)?.hasError(validation.validator)
+                   && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+            <ng-container *ngIf="isString(form.get(field.name)?.getError(validation.validator)); else selectErrObj">
+              {{ form.get(field.name)?.getError(validation.validator) || validation.message }}
+            </ng-container>
+            <ng-template #selectErrObj>
+              {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+            </ng-template>
+          </mat-error>
+        </ng-container>
+      </ng-container>
+
+      <!-- Único bloque para uniqueName -->
+      <mat-error class="error-message"
+        *ngIf="form.get(field.name)?.hasError('uniqueName')
+               && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+        {{ form.get(field.name)?.getError('uniqueName')?.message }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Date (Material Datepicker) -->
+    <mat-form-field
+      *ngIf="field.type === 'date'"
+      appearance="outline"
+      style="width:100%"
+    >
+      <mat-label>{{ field.label }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControlName]="field.name"
+        [required]="!!field.required"
+        [min]="getDateBoundary(field,'MinDate')"
+        [max]="getDateBoundary(field,'MaxDate')"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker startView="month"></mat-datepicker>
+
+      <ng-container *ngFor="let validation of field.validations">
+        <mat-error class="error-message"
+          *ngIf="form.get(field.name)?.hasError(validation.validator)
+                 && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+          {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+        </mat-error>
+      </ng-container>
+    </mat-form-field>
+
+    <!-- Time -->
+    <mat-form-field
+      *ngIf="field.type === 'time'"
+      appearance="outline"
+      style="width:100%"
+    >
+      <mat-label>{{ field.label }}</mat-label>
+      <input
+        matInput
+        type="time"
+        [step]="60"
+        [formControlName]="field.name"
+        [required]="!!field.required"
+        [min]="getTimeBoundary(field,'MinTime')"
+        [max]="getTimeBoundary(field,'MaxTime')"
+      />
+      <ng-container *ngFor="let validation of field.validations">
+        <mat-error class="error-message"
+          *ngIf="form.get(field.name)?.hasError(validation.validator)
+                 && (form.get(field.name)?.dirty || form.get(field.name)?.touched)">
+          {{ form.get(field.name)?.getError(validation.validator)?.message || validation.message }}
+        </mat-error>
+      </ng-container>
+    </mat-form-field>
+
+    <!-- Toggle -->
+    <mat-slide-toggle
+      *ngIf="field.type === 'toggle' && !field.hidden"
+      [formControlName]="field.name"
+      color="primary"
+    >
+      {{ field.label }}
+    </mat-slide-toggle>
 
   </ng-container>
 
-  <div style="margin-top:1rem;">
-    <button mat-raised-button color="primary" type="submit">
+  <div style="margin-top: 1rem;">
+    <button
+      mat-raised-button
+      (mousemove)="onRipple($event)"
+      type="submit"
+      [disabled]="form.invalid || form.pending">
       {{ isEdit ? 'Actualizar' : 'Crear' }}
     </button>
-    <button mat-button type="button" (click)="cancelForm.emit()">Cancelar</button>
+
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
   </div>
 </form>
