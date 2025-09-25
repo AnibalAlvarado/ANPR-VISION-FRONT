@@ -2,14 +2,12 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
-<<<<<<< HEAD
-=======
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // project import
->>>>>>> e9076a282ddcfa699d6b6deba241f4e31f07d85e
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 interface AuthData {
   userId: number;
@@ -27,23 +25,23 @@ interface ApiResponse<T> {
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-<<<<<<< HEAD
-  imports: [SharedModule, RouterModule],
-=======
-  imports: [SharedModule, RouterModule, FormsModule,MatProgressSpinnerModule],
->>>>>>> e9076a282ddcfa699d6b6deba241f4e31f07d85e
+  imports: [SharedModule, RouterModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent {
-  LoginDto = {
+  // DTO enlazado con ngModel
+  public LoginDto = {
     username: '',
     password: ''
   };
 
-  // 👁️ Mostrar/ocultar contraseña en el input del template
-  showPwd = false;
-  togglePwd(): void { this.showPwd = !this.showPwd; }
+  // Propiedad que faltaba en la clase (resuelve el error TS2339)
+  public loading: boolean = false;
+
+  // Control para mostrar/ocultar contraseña en el input del template
+  public showPwd: boolean = false;
+  public togglePwd(): void { this.showPwd = !this.showPwd; }
 
   private service = inject(General);
   private router = inject(Router);
@@ -60,8 +58,14 @@ export class SignInComponent {
       return;
     }
 
+    // mostramos overlay
+    this.loading = true;
+
     this.service.post<ApiResponse<AuthData>>('User/login', this.LoginDto).subscribe({
       next: (response) => {
+        // ocultar overlay al recibir respuesta
+        this.loading = false;
+
         const data = response.data;
 
         if (response.success && data?.token) {
@@ -88,6 +92,9 @@ export class SignInComponent {
         }
       },
       error: (err) => {
+        // ocultar overlay si hay error
+        this.loading = false;
+
         console.error('Error en login:', err);
         Swal.fire({
           icon: 'error',
