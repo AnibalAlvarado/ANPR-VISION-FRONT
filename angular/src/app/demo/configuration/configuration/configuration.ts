@@ -93,5 +93,4 @@ export class Configuration implements OnInit {
   guardarApariencia() {
     console.log('Apariencia ->', this.aparienciaForm.value);
 }
-
 }
