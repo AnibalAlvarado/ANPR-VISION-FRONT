@@ -11,22 +11,24 @@ import { AuthService } from 'src/app/generic/Auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './reset-password.html',
-  styleUrl: './reset-password.scss'
+  styleUrls: ['./reset-password.scss']
 })
 export class ResetPassword {
-  // === PROPIEDADES ===
-  step: number = 1; // 1=solicitar, 2=verificar, 3=resetear, 4=completado
+  step = 1; // 1=solicitar, 2=verificar, 3=resetear, 4=completado
   emailForm!: FormGroup;
-  codeForm!: FormGroup;
+  codeForm!: FormGroup;            // '0'...'5'
   resetForm!: FormGroup;
   loading = false;
   message = '';
   email = '';
 
-  // OTP state
-  otp: string[] = ['', '', '', '', '', ''];
+  otpIdx: number[] = [0, 1, 2, 3, 4, 5];
 
-  // === INYECCIÓN DE DEPENDENCIAS ===
+  // 👁️ toggles para ver/ocultar contraseña
+  showNew = false;
+  showConfirm = false;
+
+  // DI
   private fb = inject(FormBuilder);
   private router = inject(Router);
 
@@ -34,36 +36,27 @@ export class ResetPassword {
     this.initForms();
   }
 
-  // === INICIALIZACIÓN DE FORMULARIOS ===
   initForms(): void {
     this.emailForm = this.fb.group({
       email: [
         '',
-        [
-          Validators.required,
-          Validators.email,
-          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-        ]
+        [Validators.required, Validators.email,
+         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]
       ]
     });
 
-    this.codeForm = this.fb.group({
-      code: [
-        '',
-        [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(/^\d{6}$/)]
-      ]
-    });
+    const otpControls: Record<string, any> = {};
+    for (let i = 0; i < 6; i++) {
+      otpControls[String(i)] = ['', [Validators.required, Validators.pattern(/^\d$/)]];
+    }
+    this.codeForm = this.fb.group(otpControls);
 
     this.resetForm = this.fb.group(
       {
         newPassword: [
           '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            // Al menos una minúscula, una mayúscula y un número
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
-          ]
+          [Validators.required, Validators.minLength(15),
+           Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)]
         ],
         confirmPassword: ['', [Validators.required]]
       },
@@ -71,276 +64,171 @@ export class ResetPassword {
     );
   }
 
-  // (mousemove) del botón: setear las CSS vars
-  onBtnMove(e: MouseEvent) {
-    const t = e.target as HTMLElement;
-    const rect = t.getBoundingClientRect();
-    t.style.setProperty('--x', `${e.clientX - rect.left}px`);
-    t.style.setProperty('--y', `${e.clientY - rect.top}px`);
-  }
-
-  // === VALIDADORES PERSONALIZADOS ===
   passwordsMatchValidator(form: FormGroup) {
-    const newPassword = form.get('newPassword')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-    return newPassword === confirmPassword ? null : { mismatch: true };
+    const a = form.get('newPassword')?.value;
+    const b = form.get('confirmPassword')?.value;
+    return a === b ? null : { mismatch: true };
   }
 
-  // === PASO 1: SOLICITAR RESET ===
- requestReset(): void {
-  if (this.emailForm.invalid) {
-    this.markFormGroupTouched(this.emailForm);
-    return;
-  }
-  this.loading = true;
-  this.message = '';
-  this.email = this.emailForm.value.email;
+  // Paso 1
+  requestReset(): void {
+    if (this.emailForm.invalid) { this.markFormGroupTouched(this.emailForm); return; }
+    this.loading = true; this.message = ''; this.email = this.emailForm.value.email;
 
-  this.authService.requestPasswordReset(this.email).subscribe({
-    next: () => {
-      this.loading = false;
-      this.step = 2;
-      this.message = '📧 Código enviado a tu correo electrónico';
-      this.startCodeTimer();
-    },
-    error: (err) => {
-      this.loading = false;
-      this.message = this.getErrorMessage(err, 'Error al solicitar el restablecimiento');
-    }
-  });
-}
-
-
-  // === PASO 2: VERIFICAR CÓDIGO ===
-  verifyCode(): void {
-  if (this.codeForm.invalid) {
-    this.markFormGroupTouched(this.codeForm);
-    return;
-  }
-
-  this.loading = true;
-  this.message = '';
-
-  this.authService.verifyCode(this.email, this.codeForm.value.code).subscribe({
-    next: (res: any) => {
-      this.loading = false;
-
-      if (res?.valid === true) {
-        this.step = 3;
-        this.message = '✅ Código verificado correctamente';
-      } else {
-        this.message = '❌ Código inválido. Verifica e intenta nuevamente';
-        this.codeForm.patchValue({ code: '' });
-      }
-    },
-    error: (err) => {
-      this.loading = false;
-      this.message = this.getErrorMessage(err, 'Error al verificar el código');
-      this.codeForm.patchValue({ code: '' });
-    }
-  });
-}
-
-
-  // === PASO 3: RESETEAR CONTRASEÑA ===
-  resetPassword(): void {
-  if (this.resetForm.invalid) {
-    this.markFormGroupTouched(this.resetForm);
-    return;
-  }
-
-  this.loading = true;
-  this.message = '';
-
-  const { newPassword } = this.resetForm.value;
-  const code = this.codeForm.value.code;
-
-  this.authService.resetPassword(this.email, code, newPassword).subscribe({
-    next: () => {
-      this.loading = false;
-      this.step = 4;
-      this.message = '🎉 Contraseña restablecida con éxito';
-      this.autoRedirectToLogin();
-    },
-    error: (err) => {
-      this.loading = false;
-      this.message = this.getErrorMessage(err, 'Error al restablecer la contraseña');
-    }
-  });
-}
-  // === MÉTODOS AUXILIARES ===
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach((key) => {
-      const control = formGroup.get(key);
-      control?.markAsTouched();
+    this.authService.requestPasswordReset(this.email).subscribe({
+      next: () => { this.loading = false; this.step = 2; this.message = '📧 Código enviado a tu correo electrónico'; },
+      error: (err) => { this.loading = false; this.message = this.getErrorMessage(err, 'Error al solicitar el restablecimiento'); }
     });
   }
 
- private getErrorMessage(error: any, defaultMessage: string): string {
-  return `❌ ${error?.message || defaultMessage}`;
-}
-
-
-  private startCodeTimer(): void {
-    // contador opcional
-  }
-
-  private autoRedirectToLogin(): void {
-    setTimeout(() => {
-      this.router.navigate(['/login']);
-    }, 3000);
-  }
-
-  // === MÉTODOS PÚBLICOS PARA EL TEMPLATE ===
-  goToStep(stepNumber: number): void {
-    if (stepNumber < this.step) {
-      this.step = stepNumber;
-      this.message = '';
+  // Paso 2
+  verifyCode(): void {
+    if (this.codeForm.invalid || this.code.length !== 6) {
+      this.markFormGroupTouched(this.codeForm); return;
     }
+    this.loading = true; this.message = '';
+    this.authService.verifyCode(this.email, this.code).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        if (res?.valid === true) { this.step = 3; this.message = '✅ Código verificado correctamente'; }
+        else { this.message = '❌ Código inválido. Verifica e intenta nuevamente'; this.clearOtp(); }
+      },
+      error: (err) => { this.loading = false; this.message = this.getErrorMessage(err, 'Error al verificar el código'); this.clearOtp(); }
+    });
+  }
+
+  // Paso 3
+  resetPassword(): void {
+    if (this.resetForm.invalid) { this.markFormGroupTouched(this.resetForm); return; }
+    this.loading = true; this.message = '';
+    const { newPassword } = this.resetForm.value;
+
+    this.authService.resetPassword(this.email, this.code, newPassword).subscribe({
+      next: () => { this.loading = false; this.step = 4; this.message = '🎉 Contraseña restablecida con éxito'; setTimeout(()=>this.router.navigate(['/login']), 3000); },
+      error: (err) => { this.loading = false; this.message = this.getErrorMessage(err, 'Error al restablecer la contraseña'); }
+    });
+  }
+
+  // Aux
+  private markFormGroupTouched(form: FormGroup): void {
+    Object.keys(form.controls).forEach(k => form.get(k)?.markAsTouched());
+  }
+  private getErrorMessage(error: any, fallback: string): string {
+    return `❌ ${error?.message || fallback}`;
   }
 
   resendCode(): void {
-    if (this.step === 2) {
-      this.loading = true;
-      this.authService.requestPasswordReset(this.email).subscribe({
-        next: () => {
-          this.loading = false;
-          this.message = '📧 Nuevo código enviado';
-        },
-        error: (err) => {
-          this.loading = false;
-          this.message = this.getErrorMessage(err, 'Error al reenviar código');
-        }
-      });
-    }
-  }
-
-  // === GETTERS PARA VALIDACIONES ===
-  get emailErrors() {
-    const control = this.emailForm.get('email');
-    if (control?.errors && control?.touched) {
-      if (control.errors['required']) return 'El correo es requerido';
-      if (control.errors['email']) return 'Ingresa un correo válido';
-      if (control.errors['pattern']) return 'Formato de correo inválido';
-    }
-    return null;
-  }
-
-  get codeErrors() {
-    const control = this.codeForm.get('code');
-    if (control?.errors && control?.touched) {
-      if (control.errors['required']) return 'El código es requerido';
-      if (control.errors['minlength'] || control.errors['maxlength']) return 'El código debe tener 6 dígitos';
-      if (control.errors['pattern']) return 'Solo se permiten números';
-    }
-    return null;
-  }
-
-  get passwordErrors() {
-    const control = this.resetForm.get('newPassword');
-    if (control?.errors && control?.touched) {
-      if (control.errors['required']) return 'La contraseña es requerida';
-      if (control.errors['minlength']) return 'Mínimo 6 caracteres';
-      if (control.errors['pattern']) return 'Debe contener al menos: 1 mayúscula, 1 minúscula y 1 número';
-    }
-    return null;
-  }
-
-  get confirmPasswordErrors() {
-    const control = this.resetForm.get('confirmPassword');
-    if (control?.errors && control?.touched) {
-      if (control.errors['required']) return 'Confirma tu contraseña';
-    }
-    if (this.resetForm.hasError('mismatch') && control?.touched) {
-      return 'Las contraseñas no coinciden';
-    }
-    return null;
-  }
-
-  // === NAVEGACIÓN ===
-  goToLogin(): void {
-    this.router.navigate(['/login']);
+    if (this.step !== 2) return;
+    this.loading = true;
+    this.authService.requestPasswordReset(this.email).subscribe({
+      next: () => { this.loading = false; this.message = '📧 Nuevo código enviado'; },
+      error: (err) => { this.loading = false; this.message = this.getErrorMessage(err, 'Error al reenviar código'); }
+    });
   }
 
   resetFlow(): void {
-    this.step = 1;
-    this.message = '';
-    this.email = '';
-    this.loading = false;
-    this.initForms();
+    this.step = 1; this.message = ''; this.email = ''; this.loading = false; this.initForms();
   }
 
-  // === VALIDACIÓN EN TIEMPO REAL ===
-  onEmailInput(): void {
-    const emailControl = this.emailForm.get('email');
-    if (emailControl?.valid && emailControl?.value) {
-      // validación opcional
-    }
-  }
-
-  onCodeInput(): void {
-    const codeControl = this.codeForm.get('code');
-    if (codeControl?.value?.length === 6) {
-      // this.verifyCode();
-    }
-  }
-
+  onEmailInput(): void {}
   onPasswordInput(): void {
-    const confirmControl = this.resetForm.get('confirmPassword');
-    if (confirmControl?.value) confirmControl.updateValueAndValidity();
+    const c = this.resetForm.get('confirmPassword');
+    if (c?.value) c.updateValueAndValidity();
   }
 
-  // === OTP handlers ===
-  onOtpInput(e: Event, i: number) {
+  // Getters de errores
+  get emailErrors(): string | null {
+    const c = this.emailForm.get('email');
+    if (c?.errors && c?.touched) {
+      if (c.errors['required']) return 'El correo es requerido';
+      if (c.errors['email']) return 'Ingresa un correo válido';
+      if (c.errors['pattern']) return 'Formato de correo inválido';
+    }
+    return null;
+  }
+  get codeErrors(): string | null {
+    const filled = this.code.replace(/\D/g, '');
+    if (filled.length === 0 && !this.anyOtpTouched) return null;
+    if (filled.length < 6) return 'El código debe tener 6 dígitos';
+    if (!/^\d{6}$/.test(filled)) return 'Solo se permiten números';
+    return null;
+  }
+  get passwordErrors(): string | null {
+    const c = this.resetForm.get('newPassword');
+    if (c?.errors && c?.touched) {
+      if (c.errors['required']) return 'La contraseña es requerida';
+      if (c.errors['minlength']) return 'Mínimo 6 caracteres';
+      if (c.errors['pattern']) return 'Debe contener al menos: 1 mayúscula, 1 minúscula y 1 número';
+    }
+    return null;
+  }
+  get confirmPasswordErrors(): string | null {
+    const c = this.resetForm.get('confirmPassword');
+    if (c?.errors && c?.touched) {
+      if (c.errors['required']) return 'Confirma tu contraseña';
+    }
+    if (this.resetForm.hasError('mismatch') && c?.touched) return 'Las contraseñas no coinciden';
+    return null;
+  }
+
+  private get anyOtpTouched(): boolean {
+    return this.otpIdx.some(i => this.codeForm.get(String(i))?.touched);
+  }
+
+  // Código OTP directamente desde el FormGroup
+  get code(): string {
+    return this.otpIdx.map(i => this.codeForm.get(String(i))?.value || '').join('');
+  }
+
+  private clearOtp(): void {
+    this.otpIdx.forEach(i => {
+      this.codeForm.get(String(i))?.setValue('');
+      this.codeForm.get(String(i))?.markAsUntouched();
+    });
+    (document.getElementById('otp-0') as HTMLInputElement | null)?.focus();
+  }
+
+  // Handlers OTP (actualizan el FormControl)
+  onOtpInput(i: number, e: Event) {
     const input = e.target as HTMLInputElement;
     let v = input.value.replace(/\D/g, '');
     if (v.length > 1) v = v.slice(-1);
     input.value = v;
-    input.classList.toggle('has-value', !!v);
-
-    this.otp[i] = v;
-    this.codeForm.get('code')?.setValue(this.otp.join(''));
+    this.codeForm.get(String(i))?.setValue(v);
+    this.codeForm.get(String(i))?.markAsTouched();
 
     if (v && i < 5) {
-      const next = (input.parentElement as HTMLElement).querySelectorAll<HTMLInputElement>('.otp-cell')[i + 1];
-      next?.focus();
-      next?.select();
+      const next = (input.parentElement as HTMLElement)
+        .querySelectorAll<HTMLInputElement>('.otp-box')[i + 1];
+      next?.focus(); next?.select();
     }
   }
 
-  onOtpKeydown(event: KeyboardEvent, i: number) {
+  onOtpKeydown(i: number, event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const allowed = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
 
     if (allowed.includes(event.key)) {
       if (event.key === 'Backspace' && !input.value && i > 0) {
-        const prev = (input.parentElement as HTMLElement).querySelectorAll<HTMLInputElement>('.otp-cell')[i - 1];
-        prev?.focus();
-        prev?.select();
-        this.otp[i - 1] = '';
-        this.codeForm.get('code')?.setValue(this.otp.join(''));
-        prev?.classList.toggle('has-value', !!prev?.value);
+        const prev = (input.parentElement as HTMLElement)
+          .querySelectorAll<HTMLInputElement>('.otp-box')[i - 1];
+        prev?.focus(); prev?.select();
+        this.codeForm.get(String(i - 1))?.setValue('');
+        this.codeForm.get(String(i - 1))?.markAsTouched();
       }
       return;
     }
 
-    if (!/^\d$/.test(event.key)) {
-      event.preventDefault();
-      return;
-    }
+    if (!/^\d$/.test(event.key)) { event.preventDefault(); return; }
 
     event.preventDefault();
     input.value = event.key;
-    input.classList.add('has-value');
+    this.codeForm.get(String(i))?.setValue(event.key);
+    this.codeForm.get(String(i))?.markAsTouched();
 
-    this.otp[i] = event.key;
-    this.codeForm.get('code')?.setValue(this.otp.join(''));
-
-    const next = (input.parentElement as HTMLElement).querySelectorAll<HTMLInputElement>('.otp-cell')[i + 1];
-    if (next) {
-      next.focus();
-      next.select();
-    }
+    const next = (input.parentElement as HTMLElement)
+      .querySelectorAll<HTMLInputElement>('.otp-box')[i + 1];
+    if (next) { next.focus(); next.select(); }
   }
 
   onOtpPaste(e: ClipboardEvent) {
@@ -349,19 +237,16 @@ export class ResetPassword {
     if (!text) return;
 
     const cells = Array.from(
-      (e.currentTarget as HTMLElement).querySelectorAll<HTMLInputElement>('.otp-cell')
+      (e.currentTarget as HTMLElement).querySelectorAll<HTMLInputElement>('.otp-box')
     );
-    cells.forEach((cell, i) => {
-      const d = text[i] ?? '';
+    cells.forEach((cell, idx) => {
+      const d = text[idx] ?? '';
       cell.value = d;
-      cell.classList.toggle('has-value', !!d);
-      this.otp[i] = d;
+      this.codeForm.get(String(idx))?.setValue(d);
+      this.codeForm.get(String(idx))?.markAsTouched();
     });
 
-    this.codeForm.get('code')?.setValue(this.otp.join(''));
-
-    const lastIndex = Math.min(text.length, 6) - 1;
-    const focusIndex = Math.min(lastIndex + 1, 5);
+    const focusIndex = Math.min(text.length, 5);
     cells[focusIndex]?.focus();
   }
 }
