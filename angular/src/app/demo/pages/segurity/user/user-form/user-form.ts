@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpParams } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, AsyncValidatorFn, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -62,6 +62,56 @@ export function emailExistsValidator(service: General, getUserId: () => string |
   };
 }
 
+/* --- VALIDADOR SÍNCRONO ADICIONAL PARA EMAIL (comprueba @, . y TLD) --- */
+/**
+ * Validador que verifica:
+ *  - existencia de '@' y no en la primera posición
+ *  - que exista al menos un '.' después del '@'
+ *  - que la TLD final tenga al menos 2 letras (ej. "com", "io", "dev")
+ *
+ * Opcionalmente podrías pasar una lista de TLDs permitidas: emailDomainValidator(['com','net'])
+ */
+export function emailDomainValidator(allowedTlds?: string[]): ValidatorFn {
+  const allowed = allowedTlds?.map(t => t.toLowerCase()) ?? null;
+
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = (control.value ?? '').toString().trim();
+
+    if (!value) {
+      // vacío lo maneja Validators.required
+      return null;
+    }
+
+    const atIndex = value.indexOf('@');
+    if (atIndex <= 0) {
+      return { invalidEmailStructure: 'missing-at' };
+    }
+
+    const domainPart = value.slice(atIndex + 1);
+    if (!domainPart || domainPart.indexOf('.') === -1) {
+      return { invalidEmailStructure: 'missing-dot-after-at' };
+    }
+
+    const parts = domainPart.split('.');
+    const tld = parts.length ? parts[parts.length - 1].toLowerCase() : '';
+
+    // TLD básico: al menos 2 letras (a-z)
+    const tldValidBasic = /^[a-z]{2,}$/.test(tld);
+
+    if (allowed) {
+      if (!allowed.includes(tld)) {
+        return { invalidTld: { required: allowed } };
+      }
+    } else {
+      if (!tldValidBasic) {
+        return { invalidTld: true };
+      }
+    }
+
+    return null;
+  };
+}
+
 @Component({
   selector: 'app-user-form',
   imports: [
@@ -108,7 +158,7 @@ export class UserForm implements OnInit {
       ],
       email: [
         '',
-        [Validators.required, Validators.email],
+        [Validators.required, Validators.email, emailDomainValidator()], // <-- agregado aquí
         [emailExistsValidator(this.service, () => this.userId)]
       ],
       password: [
@@ -220,6 +270,46 @@ export class UserForm implements OnInit {
         });
       }
     });
+  }
+
+  /** Devuelve un mensaje legible para el usuario según el error del control email */
+  getEmailErrorMessage(): string {
+    const ctrl = this.form.get('email');
+    if (!ctrl) return '';
+
+    // Mostrar solo después de interacción
+    if (!ctrl.touched && !ctrl.dirty && !ctrl.invalid) return '';
+
+    const errors: { [key: string]: any } = ctrl.errors || {};
+
+    if (errors['required']) {
+      return 'El correo es obligatorio.';
+    }
+    if (errors['email']) {
+      return 'El formato del correo es inválido (ej. usuario@dominio.com).';
+    }
+    if (errors['invalidEmailStructure'] === 'missing-at') {
+      return "El correo debe contener el carácter '@'.";
+    }
+    if (errors['invalidEmailStructure'] === 'missing-dot-after-at') {
+      return 'Debe haber al menos un punto (.) después del dominio.';
+    }
+
+    const invalidTld = errors['invalidTld'];
+    if (invalidTld) {
+      // Si el validador devolvió lista requerida
+      if (typeof invalidTld === 'object' && invalidTld?.required) {
+        return `Extensiones permitidas: ${invalidTld.required.join(', ')}.`;
+      }
+      return 'La extensión del correo no es válida.';
+    }
+
+    if (errors['emailExists']) {
+      return 'Este correo ya está registrado.';
+    }
+
+    // Mensaje por defecto si hay otro error
+    return 'Correo inválido.';
   }
 
   save(): void {

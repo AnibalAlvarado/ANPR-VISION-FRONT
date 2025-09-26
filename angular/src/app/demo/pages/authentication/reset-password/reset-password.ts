@@ -55,8 +55,12 @@ export class ResetPassword {
       {
         newPassword: [
           '',
-          [Validators.required, Validators.minLength(15),
-           Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)]
+          [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(20),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
+        ]
         ],
         confirmPassword: ['', [Validators.required]]
       },
