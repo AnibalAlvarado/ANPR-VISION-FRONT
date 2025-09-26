@@ -8,7 +8,6 @@ import { FormsModule } from '@angular/forms';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-// import { ChartDB } from 'src/app/fack-db/chartData';
 
 // 3rd party import
 import {
@@ -20,7 +19,8 @@ import {
   ApexLegend,
   ApexDataLabels,
   ApexPlotOptions,
-  ApexTooltip
+  ApexTooltip,
+  ApexStroke
 } from 'ng-apexcharts';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -45,6 +45,8 @@ type NonAxisChartOptions = {
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
   tooltip: ApexTooltip;
+  colors?: string[];
+  stroke?: ApexStroke;
 };
 
 type ZoneOption = { value: number; label: string };
@@ -64,6 +66,29 @@ type ZoneOption = { value: number; label: string };
   styleUrls: ['./dash-analytics.component.scss']
 })
 export class DashAnalyticsComponent implements OnInit {
+  /**
+   * Paleta suavizada — menos saturada que antes.
+   * Si quieres aún más apagado, baja los valores hex o usa opacidades más altas en stroke/fill.
+   */
+  private softPalette = {
+    primary: '#5aa8c8',      // azul suave, menos vivo
+    primaryDark: '#3f8fb8',  // azul slightly stronger for gradients
+    green: '#6fc9a8',        // verde suave
+    yellow: '#d8b46a',       // amarillo cálido y desaturado
+    purple: '#9b86d6',       // morado suave
+    neutral: '#98a3ad'       // texto/leyendas muted
+  };
+
+  // paleta para pies con varias categorías (desaturadas)
+  private piePalette = [
+    '#d8b46a', // amarillo suave
+    '#5aa8c8', // azul suave
+    '#6fc9a8', // verde suave
+    '#a6b3bb', // gris azulado (categorías pequeñas)
+    '#9b86d6', // morado suave
+    '#ffb4aa'  // coral muy suave
+  ];
+
   formData: any = {};
   vehicleTypes: { value: number; label: string }[] = [];
   clients: { value: number; label: string }[] = [];
@@ -96,13 +121,26 @@ export class DashAnalyticsComponent implements OnInit {
   chartOptions_3!: Partial<ApexOptions>;
 
 
-  // Donut global
+  // Donut global (suavizado)
   occupancyDonutOptions: NonAxisChartOptions = {
     series: [0.0001, 0.0001],
-    chart: { type: 'donut', height: 240, toolbar: { show: false } },
+    chart: {
+      type: 'donut',
+      height: 240,
+      toolbar: { show: false },
+      // states is accepted by Apex, but some versions may ignore; keeping minimal hover effects
+      // to avoid bright highlight we rely on stroke & fill opacities instead.
+    },
+    colors: [ this.softPalette.primary, this.softPalette.green ],
     labels: ['Ocupados', 'Libres'],
-    legend: { position: 'bottom', offsetY: 6, fontSize: '12px' },
+    legend: {
+      position: 'bottom',
+      offsetY: 6,
+      fontSize: '12px',
+      labels: { colors: this.softPalette.neutral }
+    },
     dataLabels: { enabled: false },
+    stroke: { width: 1, colors: ['rgba(255,255,255,0.06)'] },
     plotOptions: {
       pie: {
         expandOnClick: false,
@@ -126,22 +164,32 @@ export class DashAnalyticsComponent implements OnInit {
         }
       }
     },
-    tooltip: { y: { formatter: (val: number) => `${val} cupos` } }
+    tooltip: { theme: 'dark', y: { formatter: (val: number) => `${val} cupos` } }
   };
 
-  // Pie distribución por tipo
+
+  // Pie distribución por tipo (suavizado)
   vehicleTypePieOptions: NonAxisChartOptions = {
     series: [1],
     chart: { type: 'pie', height: 240, toolbar: { show: false } },
+    colors: this.piePalette,
     labels: ['Sin datos'],
-    legend: { position: 'bottom', offsetY: 6, fontSize: '12px' },
+    legend: {
+      position: 'bottom',
+      offsetY: 6,
+      fontSize: '12px',
+      labels: { colors: this.softPalette.neutral }
+    },
     dataLabels: {
       enabled: true,
+      style: { colors: ['#ffffff'] },
       formatter: (_val: number, ctx: any) =>
         `${Math.round(ctx?.w?.globals?.seriesPercent?.[ctx.seriesIndex]?.[0] ?? 0)}%`
     },
+    stroke: { width: 1, colors: ['rgba(255,255,255,0.06)'] },
     plotOptions: { pie: { expandOnClick: false } },
     tooltip: {
+      theme: 'dark',
       custom: ({ series, seriesIndex, w }: any) => {
         const count = Number(series?.[seriesIndex] ?? 0);
         const pct = Math.round(w?.globals?.seriesPercent?.[seriesIndex]?.[0] ?? 0);
@@ -151,13 +199,21 @@ export class DashAnalyticsComponent implements OnInit {
     }
   };
 
-  // Donut por zona (nuevo)
+
+  // Donut por zona (suavizado)
   zoneDonutOptions: NonAxisChartOptions = {
     series: [0.0001, 0.0001],
     chart: { type: 'donut', height: 240, toolbar: { show: false } },
+    colors: [ this.softPalette.primary, this.softPalette.green ],
     labels: ['Ocupados', 'Libres'],
-    legend: { position: 'bottom', offsetY: 6, fontSize: '12px' },
+    legend: {
+      position: 'bottom',
+      offsetY: 6,
+      fontSize: '12px',
+      labels: { colors: this.softPalette.neutral }
+    },
     dataLabels: { enabled: false },
+    stroke: { width: 1, colors: ['rgba(255,255,255,0.06)'] },
     plotOptions: {
       pie: {
         expandOnClick: false,
@@ -181,13 +237,15 @@ export class DashAnalyticsComponent implements OnInit {
         }
       }
     },
-    tooltip: { y: { formatter: (val: number) => `${val} cupos` } }
+    tooltip: { theme: 'dark', y: { formatter: (val: number) => `${val} cupos` } }
   };
+
+
+  // palette suave y coherente para todo el dashboard
 
   constructor(private dialog: MatDialog) {
 
-
-    // tus charts demo
+    // tus charts demo (lineas suavizadas y colores desaturados)
     this.chartOptions = {
       chart: { height: 205, type: 'line', toolbar: { show: false } },
       dataLabels: { enabled: false },
@@ -196,16 +254,88 @@ export class DashAnalyticsComponent implements OnInit {
         { name: 'Arts', data: [20, 50, 30, 60, 30, 50] },
         { name: 'Commerce', data: [60, 30, 65, 45, 67, 35] }
       ],
-      legend: { position: 'top' },
-      xaxis: { type: 'datetime', categories: ['1/11/2000','2/11/2000','3/11/2000','4/11/2000','5/11/2000','6/11/2000'], axisBorder: { show: false } },
-      yaxis: { show: true, min: 10, max: 70 },
-      colors: ['#73b4ff', '#59e0c5'],
-      fill: { type: 'gradient', gradient: { shade: 'light', gradientToColors: ['#4099ff','#2ed8b6'], shadeIntensity: .5, type: 'horizontal', opacityFrom: 1, opacityTo: 1, stops: [0,100] } },
-      grid: { borderColor: '#cccccc3b' }
+      legend: { position: 'top', labels: { colors: this.softPalette.neutral } },
+      xaxis: {
+        type: 'datetime',
+        categories: ['1/11/2000','2/11/2000','3/11/2000','4/11/2000','5/11/2000','6/11/2000'],
+        axisBorder: { show: false },
+        labels: { style: { colors: this.softPalette.neutral } }
+      },
+      yaxis: {
+        show: true,
+        min: 10,
+        max: 70,
+        labels: { style: { colors: this.softPalette.neutral } }
+      },
+      colors: [ this.softPalette.primary, this.softPalette.green ],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'light',
+          gradientToColors: [ this.softPalette.primaryDark, this.softPalette.green ],
+          shadeIntensity: 0.28,
+          type: 'horizontal',
+          opacityFrom: 0.55, // reduce opacity to make it less vivid
+          opacityTo: 0.28,
+          stops: [0, 100]
+        }
+      },
+      grid: { borderColor: 'rgba(255,255,255,0.03)' },
+      markers: {
+        size: 4,
+        hover: { size: 5, sizeOffset: 0 }
+      }
     };
-    this.chartOptions_1 = { chart: { height: 150, type: 'donut' }, dataLabels: { enabled: false }, plotOptions: { pie: { donut: { size: '75%' } } }, labels: ['New','Return'], series: [39,10], legend: { show: false }, tooltip: { theme: 'dark' }, grid: { padding: { top: 20, right: 0, bottom: 0, left: 0 } }, colors: ['#4680ff','#2ed8b6'], fill: { opacity: [1,1] }, stroke: { width: 0 } };
-    this.chartOptions_2 = { chart: { height: 150, type: 'donut' }, dataLabels: { enabled: false }, plotOptions: { pie: { donut: { size: '75%' } } }, labels: ['New','Return'], series: [20,15], legend: { show: false }, tooltip: { theme: 'dark' }, grid: { padding: { top: 20, right: 0, bottom: 0, left: 0 } }, colors: ['#fff','#2ed8b6'], fill: { opacity: [1,1] }, stroke: { width: 0 } };
-    this.chartOptions_3 = { chart: { type: 'area', height: 145, sparkline: { enabled: true } }, dataLabels: { enabled: false }, colors: ['#ff5370'], fill: { type: 'gradient', gradient: { shade: 'dark', gradientToColors: ['#ff869a'], shadeIntensity: 1, type: 'horizontal', opacityFrom: 1, opacityTo: .8, stops: [0,100,100,100] } }, stroke: { curve: 'smooth', width: 2 }, series: [{ data: [45,35,60,50,85,70] }], yaxis: { min: 5, max: 90 }, tooltip: { fixed: { enabled: false }, x: { show: false }, marker: { show: false } } };
+
+    this.chartOptions_1 = {
+      chart: { height: 150, type: 'donut' },
+      dataLabels: { enabled: false },
+      plotOptions: { pie: { donut: { size: '75%' } } },
+      labels: ['New','Return'],
+      series: [39,10],
+      legend: { show: false },
+      tooltip: { theme: 'dark' },
+      grid: { padding: { top: 20, right: 0, bottom: 0, left: 0 } },
+      colors: [ this.softPalette.primary, this.softPalette.green ],
+      stroke: { width: 1, colors: ['rgba(255,255,255,0.06)'] },
+      fill: { opacity: [0.95, 0.9] }
+    };
+
+    this.chartOptions_2 = {
+      chart: { height: 150, type: 'donut' },
+      dataLabels: { enabled: false },
+      plotOptions: { pie: { donut: { size: '75%' } } },
+      labels: ['New','Return'],
+      series: [20,15],
+      legend: { show: false },
+      tooltip: { theme: 'dark' },
+      grid: { padding: { top: 20, right: 0, bottom: 0, left: 0 } },
+      colors: [ '#f0f3f6', this.softPalette.green ],
+      fill: { opacity: [0.9, 0.9] },
+      stroke: { width: 1, colors: ['rgba(255,255,255,0.06)'] }
+    };
+
+    this.chartOptions_3 = {
+      chart: { type: 'area', height: 145, sparkline: { enabled: true } },
+      dataLabels: { enabled: false },
+      colors: [ this.softPalette.yellow ],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          gradientToColors: [ '#f6b87a' ],
+          shadeIntensity: 0.6,
+          type: 'horizontal',
+          opacityFrom: 0.65,
+          opacityTo: 0.25,
+          stops: [0,100]
+        }
+      },
+      stroke: { curve: 'smooth', width: 2 },
+      series: [{ data: [45,35,60,50,85,70] }],
+      yaxis: { min: 5, max: 90, labels: { style: { colors: this.softPalette.neutral } } },
+      tooltip: { fixed: { enabled: false }, x: { show: false }, marker: { show: false } }
+    };
   }
 
   // Cards
@@ -386,6 +516,83 @@ export class DashAnalyticsComponent implements OnInit {
       Swal.fire({ icon: 'success', title: 'Vehículo creado exitosamente', showConfirmButton: false, timer: 2000, timerProgressBar: true })
         .then(() => { this.dialog.closeAll(); this.dialog.open(this.secondModal, { width: '400px' }); });
     });
+  }
+
+  // Helper para obtener la clase CSS de la card basada en el background
+  getCardClass(background: string): string {
+    const classMap: { [key: string]: string } = {
+      'bg-c-blue': 'blue',
+      'bg-c-green': 'green',
+      'bg-c-yellow': 'yellow',
+      'bg-c-red': 'red',
+      'bg-c-orange': 'yellow' // Mapear orange a yellow para consistencia
+    };
+    return classMap[background] || 'blue';
+  }
+
+  // Helper para obtener la clase del icono basada en el background
+  getIconClass(background: string): string {
+    return this.getCardClass(background);
+  }
+
+  // Helper para obtener porcentaje de cambio (puedes conectar con datos reales)
+  getChangePercentage(cardId: string): string | null {
+    const changes: { [key: string]: string } = {
+      'currentVehicles': '+12%',
+      'dailyRevenue': '+8%',
+      'availableSlots': '-5%'
+    };
+    return changes[cardId] || null;
+  }
+
+  /** Devuelve la clase completa que se pasará a app-card.
+   *  type: 'stat' | 'chart' (puedes añadir más variantes si quieres)
+   */
+  getCardClassString(bgClass: string | undefined, type: 'stat' | 'chart' | string = 'chart'): string {
+    const bg = (bgClass || '').trim();
+
+    // Mapa desde tu clase bg-c-* a la clase de acento que definimos en CSS
+    const accentMap: { [k: string]: string } = {
+      'bg-c-blue': 'card-accent-blue',
+      'bg-c-green': 'card-accent-green',
+      'bg-c-yellow': 'card-accent-yellow',
+      'bg-c-orange': 'card-accent-yellow', // orange → yellow accent (opcional)
+      'bg-c-red': 'card-accent-purple'     // red → purple (ajusta si quieres otro)
+    };
+
+    const accent = accentMap[bg] || 'card-accent-blue';
+
+    // Elige clases base según tipo (stat vs chart)
+    if (type === 'stat') {
+      // stat-card y variante vibrante
+      return `${bg} stat-card stat-card--vibrant ${accent}`;
+    } else if (type === 'chart') {
+      // chart-card para graficos
+      return `${bg} chart-card ${accent}`;
+    } else {
+      // fallback genérico
+      return `${bg} order-card ${accent}`;
+    }
+  }
+
+  // Helper para generar alertas de ejemplo (reemplaza con tu lógica real)
+  getRecentAlerts() {
+    return [
+      {
+        message: `<strong>Entrada de vehículo registrada:</strong>
+                  ¡Vehículo ingresado! <span class="label">Placa:</span> ABC123 –
+                  <span class="label">Hora:</span> 10:30 AM`
+      },
+      {
+        message: `<strong>Zonas disponibles al límite:</strong>
+                  ¡Advertencia! Solo quedan 2 plazas disponibles`
+      },
+      {
+        message: `<strong>Vehículo detectado en la lista negra:</strong>
+                  ¡Ojo! el vehículo con <span class="label">Placa:</span> ABC123 –
+                  <span class="label">Esta en la lista negra</span>`
+      }
+    ];
   }
 
   ngOnDestroy(): void {

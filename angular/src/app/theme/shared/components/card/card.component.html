@@ -1,75 +1,70 @@
-<div class="card" [ngClass]="cardClass" [@cardRemove]="cardRemove" #toAnimate>
-  @if (!hidHeader) {
-    <div class="card-header" [ngClass]="headerClass()">
-      @if (!customHeader) {
-        <h5>{{ cardTitle }}</h5>
-      }
-      @if (!customDate) {
-        <span class="d-block">{{ CardDate() }}</span>
-      }
-      @if (this.options && !customHeader) {
-        <div class="card-header-right">
-          <div class="btn-group card-option dropdown" ngbDropdown>
-            <button type="button" class="btn dropdown-toggle btn-icon" ngbDropdownToggle>
-              <i class="feather icon-more-horizontal"></i>
-            </button>
-            <ul class="list-unstyled card-option dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-              <li class="dropdown-item full-card" (click)="fullCardToggle(toAnimate, '', true)">
-                <a href="javascript:">
-                  <span>
-                    <i class="feather" [ngClass]="fullIcon"></i>
-                    {{ this.cardClass === 'full-card' ? 'Restore' : 'Maximize' }}
-                  </span>
-                </a>
-              </li>
-              <li class="dropdown-item minimize-card" (click)="collapsedCardToggle()">
-                <a href="javascript:">
-                  <span>
-                    <i class="feather" [ngClass]="collapsedIcon"></i>
-                    {{ this.collapsedCard === 'collapsed' ? 'Expand' : 'Collapse' }}
-                  </span>
-                  <span style="display: none"><i class="feather icon-plus"></i></span>
-                </a>
-              </li>
-              <li class="dropdown-item reload-card" (click)="cardRefresh()">
-                <a href="javascript:">
-                  <i class="feather icon-refresh-cw"></i>
-                  Reload
-                </a>
-              </li>
-              <li class="dropdown-item close-card" (click)="cardRemoveAction()">
-                <a href="javascript:">
-                  <i class="feather icon-trash"></i>
-                  Remove
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      }
-      <div></div>
-      @if (customHeader) {
-        <ng-content select=".app-card-header"></ng-content>
-      }
-      @if (customDate) {
-        <ng-content select=".app-card-subheader"></ng-content>
-      }
-    </div>
-  }
+<div class="card" [ngClass]="cardClass" [@cardRemove]="cardRemove" #toAnimate
+     role="region" [attr.aria-label]="cardTitle || 'card'">
 
-  <div [@collapsedCard]="collapsedCard">
+  <!-- HEADER (ocultable con hidHeader) -->
+  <ng-container *ngIf="!hidHeader">
+    <header class="card-header" [ngClass]="headerClass()">
+
+      <div class="card-header-left">
+        <div class="card-title-row">
+          <!-- optional small accent dot (controlled by cardClass like 'card-accent-blue') -->
+          <span class="card-accent" aria-hidden="true"></span>
+
+          <!-- Título principal -->
+          <h5 class="card-title">{{ cardTitle }}</h5>
+        </div>
+
+        <!-- Subtítulo / Fecha (opcional) -->
+        <span *ngIf="!customDate" class="card-subtitle" aria-hidden="true">{{ CardDate() }}</span>
+
+        <!-- Slot para header personalizado -->
+        <ng-content *ngIf="customHeader" select=".app-card-header"></ng-content>
+      </div>
+
+      <!-- Acciones a la derecha -->
+      <div class="card-header-right" *ngIf="options">
+        <div class="actions" role="toolbar" aria-label="Acciones de la tarjeta">
+          <!-- Maximize / Restore -->
+          <button class="action-btn" type="button" aria-label="Maximize" (click)="fullCardToggle(toAnimate, '', true)">
+            <i class="feather" [ngClass]="fullIcon"></i>
+          </button>
+
+          <!-- Collapse / Expand -->
+          <button class="action-btn" type="button" aria-label="Collapse" (click)="collapsedCardToggle()">
+            <i class="feather" [ngClass]="collapsedIcon"></i>
+          </button>
+
+          <!-- Refresh -->
+          <button class="action-btn" type="button" aria-label="Reload" (click)="cardRefresh()">
+            <i class="feather icon-refresh-cw"></i>
+          </button>
+
+          <!-- Remove -->
+          <button class="action-btn danger" type="button" aria-label="Remove" (click)="cardRemoveAction()">
+            <i class="feather icon-trash"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+  </ng-container>
+
+  <!-- COLLAPSIBLE BODY -->
+  <div [@collapsedCard]="collapsedCard" class="card-collapse-wrapper">
     <div class="card-body" [ngClass]="blockClass()">
       <ng-content></ng-content>
     </div>
   </div>
-  @if (isCardFooter) {
-    <div class="card-footer" [ngClass]="footerClass()">
-      <ng-content select=".app-card-footer"></ng-content>
+
+  <!-- FOOTER SLOT -->
+  <footer *ngIf="isCardFooter" class="card-footer" [ngClass]="footerClass()">
+    <ng-content select=".app-card-footer"></ng-content>
+  </footer>
+
+  <!-- LOADER OVERLAY -->
+  <div class="card-loader" *ngIf="loadCard" aria-hidden="true">
+    <div class="loader-wrap" role="status" aria-live="polite">
+      <i class="pct-loader1 anim-rotate" aria-hidden="true"></i>
+      <span class="loader-text">Actualizando…</span>
     </div>
-  }
-  @if (loadCard) {
-    <div class="card-loader">
-      <i class="pct-loader1 anim-rotate"></i>
-    </div>
-  }
+  </div>
 </div>

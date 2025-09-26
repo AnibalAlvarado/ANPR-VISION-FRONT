@@ -112,14 +112,14 @@ export class CardComponent implements OnInit {
     }
     this.isAnimating = true;
 
-    setTimeout(() => {
-      this.cardClass = animation === 'zoomOut' ? '' : this.cardClass;
-      if (this.cardClass === 'full-card') {
-        (document.querySelector('body') as HTMLBodyElement).style.overflow = 'hidden';
-      } else {
-        (document.querySelector('body') as HTMLBodyElement).removeAttribute('style');
-      }
-    }, 500);
+   setTimeout(() => {
+  // simplificar toggle de clase en body para evitar sobrescribir otros estilos
+  if (this.cardClass === 'full-card') {
+    document.body.classList.add('app-card-fullscreen');
+  } else {
+    document.body.classList.remove('app-card-fullscreen');
+  }
+}, 500);
   }
 
   collapsedCardToggle() {

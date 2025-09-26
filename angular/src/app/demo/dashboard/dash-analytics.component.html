@@ -1,299 +1,104 @@
-<div class="row">
-  <!-- order-card start -->
-  @for (card of cards; track card) {
-  <div class="col-md-6 col-xl-4">
-    <app-card [hidHeader]="true" cardClass="{{ card.background }} order-card">
-      <h6>{{ card.title }}</h6>
-      <h2 class="text-end">
-        <i class="{{ card.icon }} float-start"></i>
-        <span>{{ card.number }}</span>
-      </h2>
+<div class="dashboard-grid">
 
-    </app-card>
-  </div>
-  }
-  <!-- order-card end -->
+  <!-- Stats cards (grid responsive) -->
+  <div class="stats-grid">
 
-  <!-- account-section start -->
-  <div class="col-xl-6 col-md-12">
-
-    <app-card [hidHeader]="true" cardClass="bg-c-blue order-card">
-      <h6>Ocupación actual vs. capacidad</h6>
-
-      <apx-chart [series]="occupancyDonutOptions.series" [chart]="occupancyDonutOptions.chart"
-        [labels]="occupancyDonutOptions.labels" [legend]="occupancyDonutOptions.legend"
-        [dataLabels]="occupancyDonutOptions.dataLabels" [plotOptions]="occupancyDonutOptions.plotOptions"
-        [tooltip]="occupancyDonutOptions.tooltip">
-      </apx-chart>
-
-      <div class="text-center mt-2">
-        <strong>{{ capacity.occupied }}/{{ capacity.total }}</strong>
-        cupos ocupados
-        (<strong>{{ capacity.percentage | number:'1.0-2' }}%</strong>)
-      </div>
-    </app-card>
-
-    <app-card [hidHeader]="true" cardClass="bg-c-yellow order-card">
-      <h6>Distribución por tipo de vehículo</h6>
-
-      <apx-chart [series]="vehicleTypePieOptions.series" [chart]="vehicleTypePieOptions.chart"
-        [labels]="vehicleTypePieOptions.labels" [legend]="vehicleTypePieOptions.legend"
-        [dataLabels]="vehicleTypePieOptions.dataLabels" [plotOptions]="vehicleTypePieOptions.plotOptions"
-        [tooltip]="vehicleTypePieOptions.tooltip">
-      </apx-chart>
-
-      <div class="text-center mt-2">
-        Total estacionados: <strong>{{ vehicleTypeTotal }}</strong>
-      </div>
-    </app-card>
-
-  </div>
-
-  <div class="col-xl-6 col-md-12">
-    <!-- <div class="zone-card">
-    <div class="zone-card__header">
-      <h6 class="mb-0">Ocupación por zona</h6>
-
-      <div class="pillbar" *ngIf="zones?.length; else noZones">
-        <button
-          type="button"
-          class="pill"
-          *ngFor="let z of zones"
-          [class.active]="z.value === selectedZoneId"
-          (click)="onZoneBtnClick(z.value)">
-          {{ z.label }}
-        </button>
-      </div>
-      <ng-template #noZones><span class="muted">Cargando zonas…</span></ng-template>
-    </div>
-
-    <apx-chart
-      [series]="zoneDonutOptions.series"
-      [chart]="zoneDonutOptions.chart"
-      [labels]="zoneDonutOptions.labels"
-      [legend]="zoneDonutOptions.legend"
-      [dataLabels]="zoneDonutOptions.dataLabels"
-      [plotOptions]="zoneDonutOptions.plotOptions"
-      [tooltip]="zoneDonutOptions.tooltip">
-    </apx-chart>
-
-    <div class="text-center mt-2" *ngIf="zoneCapacity?.name">
-      <strong>{{ zoneCapacity.occupied }}/{{ zoneCapacity.total }}</strong>
-      cupos ocupados en {{ zoneCapacity.name }}
-      (<strong>{{ zoneCapacity.percentage | number:'1.0-2' }}%</strong>)
-    </div>
-  </div> -->
-
-    <app-card [hidHeader]="true" cardClass="bg-c-orange order-card">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-        <h6 class="mb-0">Ocupación por zona</h6>
-
-        <div class="zone-pills" *ngIf="zones?.length; else noZones">
-          <button type="button" class="pill-btn" *ngFor="let z of zones" [class.active]="z.value === selectedZoneId"
-            (click)="onZoneBtnClick(z.value)">
-            {{ z.label }}
-          </button>
-        </div>
-        <ng-template #noZones><span class="muted">Cargando zonas…</span></ng-template>
-      </div>
-
-      <apx-chart [series]="zoneDonutOptions.series" [chart]="zoneDonutOptions.chart" [labels]="zoneDonutOptions.labels"
-        [legend]="zoneDonutOptions.legend" [dataLabels]="zoneDonutOptions.dataLabels"
-        [plotOptions]="zoneDonutOptions.plotOptions" [tooltip]="zoneDonutOptions.tooltip">
-      </apx-chart>
-
-      <div class="text-center mt-2" *ngIf="zoneCapacity?.name">
-        <strong>{{ zoneCapacity.occupied }}/{{ zoneCapacity.total }}</strong>
-        cupos ocupados en {{ zoneCapacity.name }}
-        (<strong>{{ zoneCapacity.percentage | number:'1.0-2' }}%</strong>)
-      </div>
-    </app-card>
-
-  </div>
-
-
-
-  <h1 class="titulo-alert">Alertas recientes</h1>
-  <!-- <div class="col-md-12 col-lg-4">
+      @for (card of cards; track card) {
+  <div class="stat-card-wrapper">
     <app-card
       [hidHeader]="true"
-      cardClass="seo-card"
-      blockClass="seo-statustic"
-      footerClass="seo-chart border border-top-0 p-0 overflow-hidden"
-      [isCardFooter]="true"
-    >
-      <i class="feather icon-save f-20 text-c-red"></i>
-      <h5 class="mb-1">65%</h5>
-      <p>Memory</p>
-      <div class="app-card-footer">
-        <apx-chart
-          [series]="chartOptions_3.series!"
-          [chart]="chartOptions_3.chart!"
-          [stroke]="chartOptions_3.stroke!"
-          [dataLabels]="chartOptions_3.dataLabels!"
-          [colors]="chartOptions_3.colors!"
-          [fill]="chartOptions_3.fill!"
-          [tooltip]="chartOptions_3.tooltip!"
-          [yaxis]="chartOptions_3.yaxis!"
-        ></apx-chart>
+      [cardClass]="getCardClassString(card.background, 'stat')">
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-title">{{ card.title }}</div>
+          <div class="stat-icon" [class]="getIconClass(card.background)">
+            <i [class]="card.icon"></i>
+          </div>
+        </div>
+
+        <div class="stat-bottom">
+          <div class="stat-number">{{ card.number }}</div>
+        </div>
       </div>
     </app-card>
-  </div> -->
-  <!-- <div class="col-md-6 col-lg-4">
-    <app-card [hidHeader]="true" blockClass="text-center">
-      <i class="fa fa-envelope-open text-c-blue d-block f-40"></i>
-      <h4 class="m-t-20">
-        <span class="text-c-blue">8.62k</span>
-        Subscribers
-      </h4>
-      <p class="m-b-20">Your main list is growing</p>
-      <button class="btn btn-primery btn-sm btn-round">Manage List</button>
-    </app-card>
-  </div> -->
-  <!-- <div class="col-md-6 col-lg-4">
-    <app-card [hidHeader]="true" blockClass="text-center">
-      <i class="fab fa-twitter text-c-green d-block f-40"></i>
-      <h4 class="m-t-20">
-        <span class="text-c-green">+40</span>
-        Followers
-      </h4>
-      <p class="m-b-20">Your main list is growing</p>
-      <button class="btn btn-success btn-sm btn-round">Check Theme Out</button>
-    </app-card>
-  </div> -->
-  <!-- account-section end -->
-
-  <!-- conversion-section start -->
-  <div class="col-lg-12 col-md-12">
-    <div class="alert-card">
-      <span class="alert-icon">⚠️</span>
-      <p class="alert-message">
-        <strong>Entrada de vehículo registrada:</strong>
-        ¡Vehículo ingresado! <span class="label">Placa:</span> ABC123 –
-        <span class="label">Hora:</span> 10:30 AM
-      </p>
-    </div>
-    <div class="alert-card">
-      <span class="alert-icon">⚠️</span>
-      <p class="alert-message">
-        <strong>Zonas disponibles al límite:</strong>
-        ¡Advertencia! Solo quedan 2 plazas disponibles
-      </p>
-    </div>
-    <div class="alert-card">
-      <span class="alert-icon">⚠️</span>
-      <p class="alert-message">
-        <strong>Vehículo detectado en la lista negra:</strong>
-        ¡Ojo! el vehículo con <span class="label">Placa:</span> ABC123 –
-        <span class="label">Esta en la lista negra:</span>
-      </p>
-    </div>
   </div>
-  <!-- <div class="col-lg-8 col-md-12">
-    <app-card cardTitle="Activity Feed" blockClass="m-t-10" [options]="false">
-      <ul class="feed-blog ps-0">
-        <li class="active-feed">
-          <div class="feed-user-img">
-            <img src="assets/images/user/avatar-4.jpg" class="img-radius" alt="User-Profile-Image" />
+}
+    <!-- order-card end -->
+  </div>
+
+  <!-- Main charts column (stack en mobile, 2 col en desktop) -->
+  <div class="charts-grid">
+
+    <div class="card-section">
+      <app-card [hidHeader]="true" cardClass="bg-c-blue chart-card">
+        <h6 class="card-heading">Ocupación actual vs. capacidad</h6>
+
+        <apx-chart [series]="occupancyDonutOptions.series" [chart]="occupancyDonutOptions.chart"
+          [labels]="occupancyDonutOptions.labels" [legend]="occupancyDonutOptions.legend"
+          [dataLabels]="occupancyDonutOptions.dataLabels" [plotOptions]="occupancyDonutOptions.plotOptions"
+          [tooltip]="occupancyDonutOptions.tooltip">
+        </apx-chart>
+
+        <div class="chart-caption text-center mt-2">
+          <strong>{{ capacity.occupied }}/{{ capacity.total }}</strong>
+          cupos ocupados (<strong>{{ capacity.percentage | number:'1.0-2' }}%</strong>)
+        </div>
+      </app-card>
+    </div>
+
+    <div class="card-section">
+      <app-card [hidHeader]="true" cardClass="bg-c-yellow chart-card">
+        <h6 class="card-heading">Distribución por tipo de vehículo</h6>
+
+        <apx-chart [series]="vehicleTypePieOptions.series" [chart]="vehicleTypePieOptions.chart"
+          [labels]="vehicleTypePieOptions.labels" [legend]="vehicleTypePieOptions.legend"
+          [dataLabels]="vehicleTypePieOptions.dataLabels" [plotOptions]="vehicleTypePieOptions.plotOptions"
+          [tooltip]="vehicleTypePieOptions.tooltip">
+        </apx-chart>
+
+        <div class="chart-caption text-center mt-2">
+          Total estacionados: <strong>{{ vehicleTypeTotal }}</strong>
+        </div>
+      </app-card>
+    </div>
+
+    <div class="card-section full-width">
+      <app-card [hidHeader]="true" cardClass="bg-c-orange chart-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <h6 class="card-heading mb-0">Ocupación por zona</h6>
+
+          <div class="zone-pills" *ngIf="zones?.length; else noZones">
+            <button type="button" class="pill-btn" *ngFor="let z of zones" [class.active]="z.value === selectedZoneId"
+              (click)="onZoneBtnClick(z.value)">
+              {{ z.label }}
+            </button>
           </div>
-          <h6>
-            <span class="badge bg-danger">File</span>
-            Eddie uploaded new files:
-            <small class="text-muted ms-1">2 hours ago</small>
-          </h6>
-          <p class="m-b-15 m-t-15">
-            hii
-            <b>&#64;everone</b>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
-            text ever since the 1500s.
-          </p>
-          <div class="row">
-            @for (image of images; track image) {
-              <div class="col-auto text-center">
-                <img src="{{ image.src }}" alt="img" class="img-fluid wid-100" />
-                <h6 class="m-t-15 m-b-0">{{ image.title }}</h6>
-                <p class="text-muted m-b-0">
-                  <small>{{ image.size }}</small>
-                </p>
-              </div>
-            }
-          </div>
-        </li>
-        <li class="diactive-feed">
-          <div class="feed-user-img">
-            <img src="assets/images/user/avatar-2.jpg" class="img-radius" alt="User-Profile-Image" />
-          </div>
-          <h6>
-            <span class="badge bg-success">Task</span>
-            Sarah marked the Pending Review:
-            <span class="text-c-green">Trash Can Icon Design</span>
-            <small class="text-muted">2 hours ago</small>
-          </h6>
-        </li>
-        <li class="diactive-feed">
-          <div class="feed-user-img">
-            <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
-          </div>
-          <h6>
-            <span class="badge bg-primary">comment</span>
-            abc posted a task:
-            <span class="text-c-green">Design a new Homepage</span>
-            <small class="text-muted">6 hours ago</small>
-          </h6>
-          <p class="m-b-15 m-t-15">
-            hii
-            <b>&#64;everone</b>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
-            text ever since the 1500s.
-          </p>
-        </li>
-      </ul>
-    </app-card>
+          <ng-template #noZones><span class="muted">Cargando zonas…</span></ng-template>
+        </div>
+
+        <apx-chart [series]="zoneDonutOptions.series" [chart]="zoneDonutOptions.chart" [labels]="zoneDonutOptions.labels"
+          [legend]="zoneDonutOptions.legend" [dataLabels]="zoneDonutOptions.dataLabels"
+          [plotOptions]="zoneDonutOptions.plotOptions" [tooltip]="zoneDonutOptions.tooltip">
+        </apx-chart>
+
+        <div class="chart-caption text-center mt-2" *ngIf="zoneCapacity?.name">
+          <strong>{{ zoneCapacity.occupied }}/{{ zoneCapacity.total }}</strong>
+          cupos ocupados en {{ zoneCapacity.name }}
+          (<strong>{{ zoneCapacity.percentage | number:'1.0-2' }}%</strong>)
+        </div>
+      </app-card>
+    </div>
+
+  </div> <!-- end charts-grid -->
+
+  <!-- Alerts (full width) -->
+  <!-- <h2 class="titulo-alert">Alertas recientes</h2> -->
+
+  <!-- <div class="alerts-list">
+    <div class="alert-card" *ngFor="let a of getRecentAlerts()">
+      <span class="alert-dot" aria-hidden="true"></span>
+      <div class="alert-content" [innerHTML]="a.message"></div>
+    </div>
   </div> -->
-  <!-- conversion-section end -->
-  <!-- <div class="col-md-12">
-    <app-card cardTitle="Campaign Monitor" cardClass="tab-card tab-content" blockClass="nav-fill" [options]="false">
-      <ul ngbNav #nav="ngbNav" aria-busy="true" class="nav-pills">
-        <li [ngbNavItem]="1" class="flex">
-          <a ngbNavLink>
-            <i class="fa fa-home m-r-10"></i>
-            Home
-          </a>
-          <ng-template ngbNavContent>
-            <div class="table-responsive">
-              <app-product-sale></app-product-sale>
-            </div>
-          </ng-template>
-        </li>
-        <li [ngbNavItem]="2" class="flex">
-          <a ngbNavLink>
-            <i class="fa fa-key m-r-10"></i>
-            Security
-          </a>
-          <ng-template ngbNavContent>
-            <app-product-sale></app-product-sale>
-          </ng-template>
-        </li>
-        <li [ngbNavItem]="3" class="flex">
-          <a ngbNavLink>
-            <i class="fa fa-play-circle m-r-10"></i>
-            Entertainment
-          </a>
-          <ng-template ngbNavContent>
-            <app-product-sale></app-product-sale>
-          </ng-template>
-        </li>
-        <li [ngbNavItem]="4" class="flex">
-          <a ngbNavLink>
-            <i class="fa fa-database m-r-10"></i>
-            Big Data
-          </a>
-          <ng-template ngbNavContent>
-            <app-product-sale></app-product-sale>
-          </ng-template>
-        </li>
-      </ul>
-      <div [ngbNavOutlet]="nav" class="mt-2"></div>
-    </app-card>
-  </div> -->
+
 </div>

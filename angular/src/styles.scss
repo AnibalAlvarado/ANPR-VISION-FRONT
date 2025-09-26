@@ -81,3 +81,5 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /* Asegura que los overlays de Material queden por encima de headers/cards/charts */
 .cdk-overlay-container { z-index: 10000 !important; }
+/* evita overflow cuando hay fullscreen, mejor que manipular style directamente */
+.app-card-fullscreen { overflow: hidden !important; }

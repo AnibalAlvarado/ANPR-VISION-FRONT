@@ -1,146 +1,240 @@
-// This file is intentionally left empty to allow customers to add custom CSS if needed.
-.titulo-alert{
-  text-align: start;
-  font-size: 1.4rem;
-  color: #30CFD0;
-  font-weight: bold;
-
+// Palette and common tokens
+:root {
+  --bg-page: #0f1720;         // fondo general oscuro
+  --card-bg: #0f1728;         // fondo ligero de card
+  --muted-text: #9aa4ad;
+  --accent-1: #38b6ff;        // azul principal
+  --accent-2: #2ed8b6;        // verde-accent
+  --accent-3: #f6b04a;        // amarillo naranja (soft)
+  --accent-4: #7c5cff;        // morado para highlights
+  --card-radius: 12px;
+  --glass-border: rgba(255,255,255,0.03);
+  --glass-outline: rgba(255,255,255,0.02);
 }
 
-.titulo-opciones{
-  text-align: center;
-  font-size: 1.4rem;
-  color: #30CFD0;
-  font-weight: bold;
-
+/* Base resets / layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  padding: 0.8rem 0.6rem;
 }
 
-.alert-card {
-  background-color: #23272F;
-  color: #e0e3e6; /* gris oscuro */
-  border-left: 4px solid #facc15; /* amarillo */
-  // border: 1px solid #9a9a9a;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  // max-width: 700px;
-  margin: auto;
-  font-family: 'Segoe UI', sans-serif;
-  margin-bottom: 10px;
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.25),  // sombra inferior
-    0 -1px 1px #bdbdbd,  // glow superior suave
-    inset 0 1px 0 rgba(255, 255, 255, 0.616); // borde interior claro
+/* Top stats grid (responsive) */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
 }
 
-.alert-icon {
-  font-size: 24px;
-  color: #facc15;
+/* Card wrapper small adjustments */
+.stat-card-wrapper app-card.order-card,
+.card-section app-card.chart-card {
+  display: block;
+  height: 100%;
 }
 
-.alert-message {
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0;
+/* Unified card style applied to your <app-card> children */
+.order-card, .chart-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: var(--card-radius);
+  padding: 1.05rem;
+  color: #e8eef2;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 6px 16px rgba(2,6,23,0.6), inset 0 1px 0 var(--glass-outline);
+  transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.label {
-  font-weight: 600;
+/* hover lift */
+.order-card:hover, .chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.75);
 }
 
-
-
-.cardGrafic{
-  color: white;
-   box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.25),  // sombra inferior
-    0 -1px 1px #d24949,  // glow superior suave
-    inset 0 1px 0 rgba(255, 255, 255, 0.616) !important; // borde interior claro
-
-}
-.vehicle-form {
+/* Stat card content */
+.stat-card {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 30px;
+  justify-content: space-between;
+  min-height: 110px;
 }
 
-.mat-dialog-title {
-  text-align: center;
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-
-/* Que los overlays de Material queden por encima de todo */
-.cdk-overlay-container { z-index: 10000 !important; }
-/* Eleva el select por encima del contenido de la card */
-.order-card mat-form-field { position: relative; z-index: 5; }
-
-/* Si el canvas del chart tapa clics, bájale prioridad o desactiva sus pointer-events */
-.order-card .apexcharts-canvas,
-.order-card apx-chart {
-  position: relative;
-  z-index: 1;
+.stat-title {
+  font-size: 0.95rem;
+  color: var(--muted-text);
+  font-weight: 700;
+  text-transform: none;
 }
 
-/* Por si tu tema bloquea eventos en la card */
-.order-card,
-.order-card * {
-  pointer-events: auto;
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.03);
+  font-size: 1.25rem;
+  color: var(--accent-1);
 }
-/* Tarjeta “manual” para la zona */
-/* Wrapper de los botones (alineación y separación) */
+
+/* number + change */
+.stat-bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat-number {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.stat-change {
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  background: rgba(255,255,255,0.02);
+  padding: 4px 8px;
+  border-radius: 999px;
+  align-self: center;
+}
+
+/* mapping backgrounds: usa clases existentes bg-c-blue, etc. */
+.bg-c-blue { background: linear-gradient(90deg, rgba(56,182,255,0.12), rgba(56,182,255,0.06)); .stat-icon { color: var(--accent-1); } }
+.bg-c-green { background: linear-gradient(90deg, rgba(46,216,182,0.10), rgba(46,216,182,0.04)); .stat-icon { color: var(--accent-2); } }
+.bg-c-yellow { background: linear-gradient(90deg, rgba(246,176,74,0.10), rgba(246,176,74,0.03)); .stat-icon { color: var(--accent-3); } }
+.bg-c-orange { background: linear-gradient(90deg, rgba(246,176,74,0.10), rgba(246,176,74,0.03)); .stat-icon { color: var(--accent-3); } }
+.bg-c-red { background: linear-gradient(90deg, rgba(255,120,120,0.06), rgba(255,120,120,0.03)); .stat-icon { color: #ff6b6b; } }
+
+/* Charts grid: dos columnas en desktop, stack en mobile */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.card-section {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card heading */
+.card-heading {
+  font-weight: 700;
+  color: #cfeef6;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+/* Chart caption */
+.chart-caption {
+  color: var(--muted-text);
+  font-size: 0.95rem;
+}
+
+/* Pills improved (works on dark backgrounds) */
 .zone-pills {
   display: flex;
+  gap: 0.5rem;
+  align-items: center;
   flex-wrap: wrap;
-  gap: .5rem;
-  max-width: 60%;
-  justify-content: flex-end;
 }
 
-/* Botón “píldora” con buen contraste en fondo oscuro */
-/* === Píldoras visibles en card CLARA === */
 .pill-btn {
-  /* colores base pensados para fondo claro */
-  --pill-border: rgba(17, 24, 39, .25);   /* gris oscuro 800 @ 25% */
-  --pill-bg:     rgba(17, 24, 39, .05);
-  --pill-text:   #111827;                 /* slate-900 */
-  --pill-bg-hover:     rgba(17, 24, 39, .10);
-  --pill-border-hover: rgba(17, 24, 39, .40);
-
-  border: 1px solid var(--pill-border);
-  background: var(--pill-bg);
-  color: var(--pill-text);
+  background: rgba(255,255,255,0.03);
+  color: #e6eef3;
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: .3rem .7rem;
   border-radius: 999px;
-  padding: .35rem .85rem;
-  font-weight: 600;
-  line-height: 1;
+  font-weight: 700;
+  font-size: 0.85rem;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background .15s ease, color .15s ease,
-              border-color .15s ease, box-shadow .15s ease;
+  transition: transform .08s ease, background .12s ease;
+}
+.pill-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,0.05); }
+.pill-btn.active { background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); color: #031521; border: none; box-shadow: 0 6px 18px rgba(2,6,23,0.6); }
+
+/* Alerts */
+.titulo-alert {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  color: var(--accent-2);
+  font-weight: 800;
 }
 
-.pill-btn:hover,
-.pill-btn:focus {
-  background: var(--pill-bg-hover);
-  border-color: var(--pill-border-hover);
-  box-shadow: 0 0 0 .12rem rgba(17, 24, 39, .12);
-  outline: none;
+.alerts-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
 }
 
-.pill-btn.active {
-  background: #111827;   /* oscuro sólido */
+/* Alert card (refinado) */
+.alert-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  border-left: 4px solid rgba(250,204,21,0.14);
+  color: #dbe7ea;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.45);
+}
+
+.alert-dot {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(180deg, var(--accent-3), #f2a93a);
+  border-radius: 50%;
+  margin-top: 6px;
+  flex: 0 0 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.alert-content {
+  font-size: 0.95rem;
+  color: #e6eef3;
+  line-height: 1.24;
+}
+.alert-content .label {
   color: #fff;
-  border-color: #111827;
-  box-shadow: 0 3px 8px rgba(0,0,0,.18);
+  font-weight: 700;
 }
 
+/* Small helpers & accessibility */
+.muted { color: var(--muted-text); opacity: 0.95; }
+.order-card .apexcharts-canvas { pointer-events: auto; }
 
-/* Texto tenue para el “Cargando zonas…” */
-.muted { opacity: .7; }
+/* Responsive breakpoints */
+@media (min-width: 992px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+ .charts-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto; /* filas automáticas */
+    align-items: start;
+  }
+    .charts-grid .full-width {
+    grid-column: 1 / -1;
+  }
+  .charts-grid .full-width .chart-card {
+    min-height: 420px;
+  }
+  .card-section { min-height: 360px; }
+}
 
-
-
+@media (max-width: 600px) {
+  .stat-number { font-size: 1.3rem; }
+  .card-heading { font-size: 0.95rem; }
+  .zona-pills { max-width: 100%; overflow-x: auto; padding-bottom: 6px; }
+}
