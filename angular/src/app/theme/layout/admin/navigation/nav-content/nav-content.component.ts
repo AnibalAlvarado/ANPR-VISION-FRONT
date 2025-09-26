@@ -1,11 +1,17 @@
-// angular import
-import { Component, OnInit, inject, output } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/app/components/nav-content/nav-content.component.ts
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Location, LocationStrategy } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 // project import
 import { NavigationItem, NavigationItems } from '../navigation';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavGroupComponent } from './nav-group/nav-group.component';
+import { NavigationService } from '../navigation.service';
+import { OpenCommand, SharedMenuService } from '../shared-menu.service';
+
 
 @Component({
   selector: 'app-nav-content',
@@ -13,9 +19,16 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
   templateUrl: './nav-content.component.html',
   styleUrls: ['./nav-content.component.scss']
 })
-export class NavContentComponent implements OnInit {
+export class NavContentComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private locationStrategy = inject(LocationStrategy);
+
+  // inyectados de servicio
+  private navigationService = inject(NavigationService);
+  private sharedMenu = inject(SharedMenuService);
+  private router = inject(Router);
+
+  private cmdSub?: Subscription;
 
   // version
   title = 'Demo application for version numbering';
@@ -28,7 +41,7 @@ export class NavContentComponent implements OnInit {
   scrollWidth: number;
   windowWidth: number;
 
-  NavMobCollapse = output();
+  NavMobCollapse = (window as any).output ? (window as any).output() : (() => {})(); // mantiene compatibilidad con tu original
 
   // constructor
   constructor() {
@@ -40,12 +53,25 @@ export class NavContentComponent implements OnInit {
 
   // life cycle event
   ngOnInit() {
+    // registrar el menú para que el buscador tenga la misma fuente de verdad
+    this.navigationService.setMenu(this.navigation);
+
+    // suscribirse a comandos del buscador
+    this.cmdSub = this.sharedMenu.openObservable$.subscribe((cmd: OpenCommand) => {
+      if (!cmd) return;
+      this.openAndHighlight(cmd);
+    });
+
     if (this.windowWidth < 992) {
       setTimeout(() => {
         document.querySelector('.pcoded-navbar')?.classList.add('menupos-static');
         (document.querySelector('#nav-ps-gradient-able') as HTMLElement).style.height = '100%';
       }, 500);
     }
+  }
+
+  ngOnDestroy() {
+    this.cmdSub?.unsubscribe();
   }
 
   fireLeave() {
@@ -78,7 +104,7 @@ export class NavContentComponent implements OnInit {
 
   navMob() {
     if (this.windowWidth < 992 && document.querySelector('app-navigation.pcoded-navbar')?.classList.contains('mob-open')) {
-      this.NavMobCollapse.emit();
+      (this.NavMobCollapse as any).emit?.();
     }
   }
 
@@ -105,5 +131,64 @@ export class NavContentComponent implements OnInit {
         last_parent.classList.add('active');
       }
     }
+  }
+
+  // --- Nuevas funciones: abrir / expandir / resaltar item recibido desde el buscador ---
+  openAndHighlight(cmd: OpenCommand) {
+    if (cmd.id) {
+      // buscar elemento por data-menu-id
+      const el = document.querySelector(`[data-menu-id="${cmd.id}"]`) as HTMLElement | null;
+      if (el) {
+        this.expandParentsByElement(el);
+        this.scrollAndFlash(el);
+        // si el item tiene un <a> con href y navigate solicitado, navegar
+        const anchor = el.tagName.toLowerCase() === 'a' ? el : el.querySelector('a.nav-link') as HTMLAnchorElement | null;
+        const href = anchor?.getAttribute('href') || cmd.url;
+        if (cmd.navigate && href) {
+          // navegar mediante router
+          try { this.router.navigateByUrl(href); } catch (err) { /* fallback: location change */ }
+        }
+        return;
+      }
+    }
+
+    // fallback por url (si no se encontro por id)
+    if (cmd.url) {
+      const link = `a.nav-link[href='${cmd.url}']`;
+      const anchor = document.querySelector(link) as HTMLElement | null;
+      if (anchor) {
+        const parent = anchor.parentElement;
+        if (parent?.classList.contains('pcoded-hasmenu')) {
+          parent.classList.add('pcoded-trigger', 'active');
+        } else {
+          const up_parent = parent?.parentElement?.parentElement;
+          if (up_parent?.classList.contains('pcoded-hasmenu')) {
+            up_parent.classList.add('pcoded-trigger', 'active');
+          }
+        }
+        this.scrollAndFlash(anchor);
+        if (cmd.navigate) this.router.navigateByUrl(cmd.url);
+      }
+    }
+  }
+
+  private expandParentsByElement(el: HTMLElement) {
+    // sube por los padres y agrega las clases que tu tema usa para expandir (pcoded-trigger, active)
+    let p: HTMLElement | null = el.parentElement;
+    while (p) {
+      if (p.classList && p.classList.contains('pcoded-hasmenu')) {
+        p.classList.add('pcoded-trigger', 'active');
+      }
+      p = p.parentElement;
+    }
+  }
+
+  private scrollAndFlash(el: HTMLElement) {
+    try {
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    } catch (e) { /* ignore */ }
+
+    el.classList.add('menu-highlight');
+    setTimeout(() => el.classList.remove('menu-highlight'), 1500);
   }
 }

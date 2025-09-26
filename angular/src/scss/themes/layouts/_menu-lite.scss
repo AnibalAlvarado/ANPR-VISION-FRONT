@@ -51,33 +51,33 @@
   }
 }
 /* new logo End  */
-.search-bar {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: $header-height;
-  z-index: 1030;
-  background: #23272F;
-  padding: 12px;
+// .search-bar {
+//   display: none;
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: $header-height;
+//   z-index: 1030;
+//   background: #23272F;
+//   padding: 12px;
 
-  .close {
-    position: absolute;
-    top: 14px;
-    right: 9px;
-    padding: 8px 16px;
-    border-radius: 100%;
-  }
-  input{
-    background: #23272F;
-    color: white;
-  }
-  input::placeholder{
-    color: white ;
-  }
+//   .close {
+//     position: absolute;
+//     top: 14px;
+//     right: 9px;
+//     padding: 8px 16px;
+//     border-radius: 100%;
+//   }
+//   input{
+//     background: #23272F;
+//     color: white;
+//   }
+//   input::placeholder{
+//     color: white ;
+//   }
 
-}
+// }
 
 .pcoded-header {
   z-index: 1029;
@@ -1737,7 +1737,7 @@
           &:active,
           &:focus,
           &:hover {
-            background: #041130;
+            background: #042130;
 
             > a {
               background: transparent;
@@ -1872,8 +1872,10 @@
 
         .profile-notification {
           .pro-head {
-            color: white;
-            background: #041130;
+            color: rgb(0, 0, 0);
+            background: #818282;
+            font-size: 16px;
+            font-weight: 700;
 
             .dud-logout {
               color: white;

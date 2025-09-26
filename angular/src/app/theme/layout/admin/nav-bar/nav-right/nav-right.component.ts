@@ -1,21 +1,18 @@
-import { OnInit } from '@angular/core';
-// angular import
-import { Component, inject } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 
-// bootstrap import
-import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
+// ng-bootstrap
+import { NgbDropdown, NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 
-// project import
+// project imports
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { ChatUserListComponent } from './chat-user-list/chat-user-list.component';
-import { ChatMsgComponent } from './chat-msg/chat-msg.component';
 import { General } from 'src/app/generic/general.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-right',
-  imports: [SharedModule, ChatUserListComponent, ChatMsgComponent],
+  imports: [SharedModule],
   templateUrl: './nav-right.component.html',
   styleUrls: ['./nav-right.component.scss'],
   providers: [NgbDropdownConfig],
@@ -31,45 +28,78 @@ import { Router } from '@angular/router';
   ]
 })
 export class NavRightComponent implements OnInit {
-  // public props
   visibleUserList: boolean;
   chatMessage: boolean;
   friendId!: number;
+
+  @ViewChild('notifDropdown') notifDropdown!: NgbDropdown;
 
   private service = inject(General);
   private route = inject(Router);
 
   userName: string | null = null;
 
-
-  // constructor
   constructor() {
     this.visibleUserList = false;
     this.chatMessage = false;
   }
 
- ngOnInit(): void {
+  ngOnInit(): void {
     this.userName = this.service.getUsername();
   }
-  // public method
-  // eslint-disable-next-line
+
+  // --- Métodos de chat ---
   onChatToggle(friendID: any) {
     this.friendId = friendID;
     this.chatMessage = !this.chatMessage;
   }
-cerrarSesion() {
-  localStorage.clear(); // Elimina todos los datos del localStorage
-  this.route.navigate(['/login']); // Redirección
-}
 
-viewProfile(){
-  this.route.navigate(['/profile-index']);
-}
+  cerrarSesion() {
+    this.closeNotifPanel();
+    localStorage.clear();
+    this.route.navigate(['/login']);
+  }
 
-get firstLetter(): string {
-  return this.userName
-    ? this.userName.charAt(0).toUpperCase()
-    : '';
-}
+  viewProfile() {
+    this.closeNotifPanel();
+    this.route.navigate(['/profile-index']);
+  }
 
+  get firstLetter(): string {
+    return this.userName ? this.userName.charAt(0).toUpperCase() : '';
+  }
+
+  // --- Métodos del panel de notificaciones ---
+  openNotifPanel() {
+    if (this.notifDropdown && !this.notifDropdown.isOpen()) {
+      this.notifDropdown.open();
+    }
+  }
+
+  closeNotifPanel() {
+    if (this.notifDropdown && this.notifDropdown.isOpen()) {
+      this.notifDropdown.close();
+    }
+  }
+
+  toggleNotifPanel() {
+    if (this.notifDropdown) {
+      this.notifDropdown.toggle();
+    }
+  }
+
+  markAllRead() {
+    // Aquí va tu lógica real de marcar como leídas
+    this.closeNotifPanel();
+  }
+
+  clearAll() {
+    // Aquí va tu lógica real de limpiar
+    this.closeNotifPanel();
+  }
+
+  viewAll() {
+    this.closeNotifPanel();
+    this.route.navigate(['/notifications']); // Ajusta a tu ruta real
+  }
 }

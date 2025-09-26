@@ -34,7 +34,7 @@ export const NavigationItems: NavigationItem[] = [
       }
     ]
   },
-   {
+  {
     id: 'monitoreo',
     title: 'Monitoreo y control de Acceso',
     type: 'group',
@@ -49,14 +49,13 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-camera'
       },
       {
-        "id": "Vehículos",
-        "title": "Vehículos",
-        "type": "item",
-        "url": "/vehicles-index",
-        "classes": "nav-item",
-        "icon": "feather icon-map-pin"
-      }
-      ,
+        id: 'Vehículos',
+        title: 'Vehículos',
+        type: 'item',
+        url: '/vehicles-index',
+        classes: 'nav-item',
+        icon: 'feather icon-map-pin'
+      },
 
       {
         id: 'Zonas',
@@ -65,13 +64,11 @@ export const NavigationItems: NavigationItem[] = [
         url: '/parking-management',
         classes: 'nav-item',
         icon: 'feather icon-map-pin'
-      },
-
+      }
     ]
   },
 
-
-      {
+  {
     id: 'ui-component',
     title: 'Módulo Operacional',
     type: 'group',
@@ -100,7 +97,7 @@ export const NavigationItems: NavigationItem[] = [
             title: 'Registros de Vehículos',
             type: 'item',
             url: '/registeredVehicle-index'
-          },
+          }
 
           //  {
           //   id: 'HistoryVehicle',
@@ -108,13 +105,11 @@ export const NavigationItems: NavigationItem[] = [
           //   type: 'item',
           //   url: '/HistoryVehicle-index'
           // },
-
-
         ]
       }
     ]
   },
-    {
+  {
     id: 'ui-component',
     title: 'Módulo de Parametros',
     type: 'group',
@@ -156,13 +151,13 @@ export const NavigationItems: NavigationItem[] = [
           //   type: 'item',
           //   url: '/parking-index'
           // },
-            {
+          {
             id: 'Zones',
             title: 'Zonas',
             type: 'item',
             url: '/Zones-index'
           },
-             {
+          {
             id: 'Sectors',
             title: 'Sectores',
             type: 'item',
@@ -173,8 +168,7 @@ export const NavigationItems: NavigationItem[] = [
             title: 'Espacios',
             type: 'item',
             url: '/slots-index'
-          },
-
+          }
         ]
       }
     ]
@@ -216,13 +210,13 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/module-index'
           },
-           {
+          {
             id: 'FormsModule',
             title: 'Formularios por Modulos',
             type: 'item',
             url: '/form-module-index'
           },
-             {
+          {
             id: 'RolFormPermission',
             title: 'Permisos por Roles y Formularios',
             type: 'item',
@@ -240,7 +234,7 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/persons-index'
           },
-             {
+          {
             id: 'BackList',
             title: 'Lista Negra',
             type: 'item',
@@ -251,8 +245,7 @@ export const NavigationItems: NavigationItem[] = [
             title: 'Clientes',
             type: 'item',
             url: '/client-index'
-          },
-
+          }
         ]
       }
     ]
@@ -278,7 +271,7 @@ export const NavigationItems: NavigationItem[] = [
         url: '/help-center',
         classes: 'nav-item',
         icon: 'feather icon-help-circle'
-      },
+      }
 
       // {
       //   id: 'apexchart',
@@ -288,8 +281,6 @@ export const NavigationItems: NavigationItem[] = [
       //   classes: 'nav-item',
       //   icon: 'feather icon-log-out'
       // },
-
     ]
-  },
-
+  }
 ];

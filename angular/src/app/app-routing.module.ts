@@ -148,6 +148,7 @@ const routes: Routes = [
       {path: 'rates-form/:id', component: RatesForm},
       {path: 'configuracion', component: Configuration},
 
+
       {
         path: 'component',
         loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
