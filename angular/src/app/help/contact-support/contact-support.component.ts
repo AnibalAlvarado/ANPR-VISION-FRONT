@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/prefer-inject */
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,7 +16,7 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./contact-support.component.scss'],
   imports: [
     CommonModule,
-    ReactiveFormsModule,  
+    ReactiveFormsModule,
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
