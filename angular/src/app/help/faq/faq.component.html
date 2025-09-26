@@ -8,9 +8,9 @@
   <div class="search-container">
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Buscar pregunta</mat-label>
-      <input 
-        matInput 
-        [(ngModel)]="searchQuery" 
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
         placeholder="Escribe aquí..."
         style="color:white !important;" />
       <button mat-icon-button matSuffix *ngIf="searchQuery" (click)="clearSearch()">
