@@ -1925,3 +1925,387 @@
 /* ====== [Header Fixed  end ] ======== */
 
 /* ====== [ Box end ] ======== */
+/* ===========================
+   Mejora botón Buscar (pop-search)
+   Pegar al final del SCSS
+   =========================== */
+
+/* Asegura que el header tenga gap y alineación consistente */
+.pcoded-header .m-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important; /* espacio entre logo, título y controles */
+}
+
+/* Ajuste específico a los nav-items (solo en header) para reducir separación */
+.pcoded-header .navbar-nav.me-auto > li.nav-item {
+  padding: 0 6px !important;
+  height: $header-height !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Botón de búsqueda: más grande, centrado y con área clicable cómoda */
+// .pop-search {
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 44px;                 /* área clicable más grande */
+//   height: $header-height;      /* alineado exactamente con header */
+//   padding: 6px;                /* pequeño "colchón" interior */
+//   margin: 0 6px;               /* separación horizontal controlada */
+//   border-radius: 8px;          /* ligera curvatura */
+//   color: #9feee2 !important;   /* color del icono (ajusta si prefieres) */
+//   background: transparent;
+//   transition: background 0.12s ease, transform 0.12s ease, box-shadow 0.12s;
+//   cursor: pointer;
+//   border: none;
+//   outline: none;
+// }
+
+/* Icono dentro del botón: tamaño aumentado y centrado */
+// .pop-search > i.feather,
+// .pop-search i {
+//   font-size: 20px !important;  /* icono más grande */
+//   line-height: 1;
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+/* Hover / focus estilos sutiles */
+// .pop-search:focus {
+//   background: rgba(47, 59, 66, 0.45); /* ligero fondo cuando pasa el cursor */
+//   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+//   transform: translateY(-1px);
+//   color: #00d4aa !important; /* color primario en hover */
+// }
+
+/* Si usas .nav-link o .dropdown-toggle que contienen iconos, asegurar que no añaden padding extra */
+.pcoded-header .navbar-nav > li > a,
+.pcoded-header .navbar-nav > li > .dropdown-toggle {
+  padding: 0 6px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: $header-height !important;
+}
+
+/* Si tu buscador aparece como modal/backdrop, estilo más compacto y centrado */
+// .search-bar-backdrop {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: $header-height;
+//   z-index: 1500;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   background: transparent; /* mantiene header visible; cambia si quieres overlay */
+// }
+
+/* Barra de búsqueda emergente (dentro del header): anchura y padding agradables */
+// .search-bar {
+//   display: flex;
+//   align-items: center;
+//   gap: 8px;
+//   width: min(720px, calc(100% - 160px)); /* responsive */
+//   max-width: 720px;
+//   background: rgba(35, 39, 47, 0.98);
+//   border-radius: 10px;
+//   padding: 6px 10px;
+//   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+// }
+
+/* Input dentro de la search-bar */
+// .search-bar .search-input {
+//   flex: 1 1 auto;
+//   min-width: 120px;
+//   height: 40px;
+//   border: none;
+//   background: transparent;
+//   color: #e6f7f5;
+//   font-size: 15px;
+//   padding: 6px 8px;
+// }
+
+// .search-bar .search-input::placeholder {
+//   color: rgba(230, 247, 245, 0.5);
+// }
+
+// /* Botón cerrar / clear pequeños y discretos */
+// .search-bar .close-btn,
+// .search-bar .clear-btn {
+//   background: transparent;
+//   border: none;
+//   color: rgba(255,255,255,0.8);
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 36px;
+//   height: 36px;
+//   border-radius: 8px;
+// }
+
+/* A11y: foco visible (para teclado) */
+// .pop-search:focus,
+// .search-bar .search-input:focus,
+// .search-bar .close-btn:focus {
+//   outline: 2px solid rgba(0, 212, 170, 0.25);
+//   outline-offset: 2px;
+// }
+
+/* Small screens: reducir tamaño botón para que no recorte el header */
+// @media (max-width: 575px) {
+//   .pop-search {
+//     width: 40px;
+//     padding: 4px;
+//   }
+
+//   .pop-search > i {
+//     font-size: 18px !important;
+//   }
+// }
+/* ===========================
+   OVERRIDE: Mejoras SOLO para Search (pegar al final)
+   =========================== */
+
+/* El trigger del header (botón / icono) */
+.pop-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;                  /* área clicable cómoda */
+  height: $header-height;       /* alinea con header */
+  padding: 6px;
+  margin: 0 6px;
+  border-radius: 8px;
+  background: transparent;
+  color: #9feee2 !important;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pop-search i.feather,
+.pop-search i {
+  font-size: 20px !important;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* foco accesible */
+.pop-search:focus {
+  outline: 2px solid rgba(0,212,170,0.16);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Backdrop: opcional dim (ocupa toda la pantalla) pero la barra de búsqueda se sitúa en el header */
+// .search-bar-backdrop {
+//   position: fixed;
+//   inset: 0;
+//   z-index: 1600;
+//   background: rgba(0,0,0,0.18);      /* sutil, ajusta si quieres menos */
+//   display: flex;
+//   align-items: flex-start;
+//   justify-content: center;
+//   padding-top: 8px;                  /* separa del top */
+//   pointer-events: auto;
+// }
+
+.search-bar-backdrop {
+  /* pegar el panel casi en el header, menos espacio arriba */
+  position: fixed;
+  inset: 0;
+  z-index: 1600;
+  background: rgba(0,0,0,0.12);
+  display: flex;
+  align-items: flex-start;    /* importante: no centra verticalmente */
+  justify-content: center;
+  padding-top: 6px;           /* reduce el gap superior */
+  pointer-events: auto;
+}
+
+/* Contenedor principal de la search-bar: ancho controlado y centrado horizontal */
+// .search-bar {
+//   position: relative;
+//   width: min(920px, calc(100% - 160px)); /* responsive, no cubre todo */
+//   max-width: 920px;
+//   display: flex;
+//   align-items: center;
+//   gap: 10px;
+//   background: rgba(35,39,47,0.98);
+//   border-radius: 10px;
+//   padding: 8px 12px;
+//   box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+//   border: 1px solid rgba(0,212,170,0.06);
+//   z-index: 1620;
+// }
+
+.search-bar {
+  position: relative;
+  width: min(560px, calc(100% - 96px));
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(28,30,32,0.98);
+  border-radius: 6px;
+  padding: 6px 8px;           /* menos padding */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45); /* menos "flotante" */
+  border: 1px solid rgba(255,255,255,0.03);
+  z-index: 1620;
+}
+
+/* Icono fijo a la izquierda (puedes ocultarlo en móvil) */
+// .search-bar .search-left {
+//   width: 44px;
+//   height: 44px;
+//   display:flex;
+//   align-items:center;
+//   justify-content:center;
+//   border-radius:8px;
+//   color: rgba(160,235,220,0.95);
+//   flex: 0 0 44px;
+// }
+.search-bar .search-left {
+  width: 32px;
+  height: 32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex: 0 0 32px;
+}
+
+/* Input: grande, centrado y con placeholder legible */
+// .search-bar .search-input {
+//   flex: 1 1 auto;
+//   min-width: 140px;
+//   height: 44px;
+//   border-radius: 8px;
+//   border: 1px solid rgba(255,255,255,0.04);
+//   padding: 8px 12px;
+//   background: rgba(0,0,0,0.06);
+//   color: #e6f7f5;
+//   font-size: 15px;
+//   transition: border-color 0.12s ease, box-shadow 0.12s ease;
+//   box-sizing: border-box;
+// }
+
+.search-bar .search-input {
+  flex: 1 1 auto;
+  min-width: 100px;
+  height: 34px;                /* reduce altura */
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.02);
+  padding: 6px 8px;
+  background: rgba(0,0,0,0.03);
+  color: #e8f7f5;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.search-bar .search-input::placeholder {
+  color: rgba(230,247,245,0.5);
+}
+
+.search-bar .search-input:focus {
+  outline: none;
+  border-color: rgba(0,212,170,0.9);
+  box-shadow: 0 8px 22px rgba(0,212,170,0.06);
+  background: rgba(0,0,0,0.03);
+}
+
+/* Botones Clear / Close discretos */
+.search-bar .clear-btn,
+.search-bar .close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255,255,255,0.9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+}
+/* Panel de sugerencias: aparece debajo de la barra y no ocupa todo el alto ni la izquierda */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);      /* pegado con menos gap */
+  left: 8px;
+  right: 8px;
+  width: calc(100% - 16px);
+  max-height: 180px;          /* controlar cuanto ocupa */
+  min-height: 56px;
+  background: linear-gradient(180deg, rgba(14,16,18,0.99), rgba(20,22,24,0.99));
+  border-radius: 6px;
+  padding: 6px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.52);
+  border: 1px solid rgba(255,255,255,0.02);
+  overflow-y: auto;
+  z-index: 1640;
+}
+/* Cada item estilizado */
+.suggestion-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;           /* menos padding */
+  border-radius: 6px;
+  cursor: pointer;
+  color: rgba(230,247,245,0.95);
+  transition: background 0.08s ease;
+  margin: 0 0 4px 0;          /* espacio mínimo entre items */
+  min-height: 40px;           /* ajustable si quieres aún más pequeño */
+}
+
+.suggestion-item:last-child { margin-bottom: 0; }
+
+.suggestion-item .s-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #f1fcf9;
+  line-height: 1;
+}
+
+.suggestion-item .s-path {
+  font-size: 11px;
+  color: rgba(230,247,245,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55%;             /* evita que la ruta empuje todo */
+  line-height: 1;
+}
+
+/* hover / activo */
+.suggestion-item:hover,
+.suggestion-item.active {
+  background: rgba(0,212,170,0.035);
+  transform: none;
+  box-shadow: none;
+}
+
+/* scrollbar simple y discreto (webkit) */
+.suggestions::-webkit-scrollbar { width: 7px; }
+.suggestions::-webkit-scrollbar-thumb {
+  background: rgba(0,212,170,0.08);
+  border-radius: 8px;
+}
+
+/* Móvil: ocupa casi todo el ancho y oculta icono izquierdo si quieres */
+@media (max-width: 767px) {
+  .search-bar { width: calc(100% - 24px); margin: 6px; padding: 6px; }
+  .search-bar .search-left { display: none; }
+  .search-bar .search-input { height: 34px; font-size: 14px; }
+  .suggestions { left: 6px; right: 6px; max-height: 45vh; }
+  .suggestion-item .s-path { display: none; }
+}

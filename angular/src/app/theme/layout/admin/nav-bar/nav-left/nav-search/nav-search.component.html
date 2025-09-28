@@ -26,7 +26,7 @@
       #searchInput
       type="text"
       class="form-control search-input border-0 shadow-none"
-      placeholder="Search here"
+      placeholder="Buscar..."
       [(ngModel)]="query"
       (input)="onInput()"
       (keydown)="onKeydown($event)"
@@ -40,17 +40,20 @@
         role="option"
         [class.active]="i === suggestionIndex"
         (click)="selectSuggestion(s)"
-        (mousemove)="suggestionIndex = i"          
+        (mousemove)="suggestionIndex = i"
         tabindex="0"
       >
         <div class="s-title">{{ s.title }}</div>
         <div class="s-path">{{ s.fullPath }}</div>
       </li>
 </ul>
+    <!-- botón limpiar (solo aparece si hay texto) -->
     <button *ngIf="query" class="clear-btn" (click)="clear()" type="button" aria-label="Borrar búsqueda">✕</button>
 
-    <button class="close-btn" (click)="closeSearch()" type="button" aria-label="Cerrar búsqueda">
+    <!-- botón cerrar (solo aparece si NO hay texto) -->
+    <button *ngIf="!query" class="close-btn" (click)="closeSearch()" type="button" aria-label="Cerrar búsqueda">
       <i class="feather icon-x" aria-hidden="true"></i>
     </button>
+
   </div>
 </div>
