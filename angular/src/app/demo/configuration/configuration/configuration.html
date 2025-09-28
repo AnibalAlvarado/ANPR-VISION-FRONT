@@ -1,108 +1,156 @@
-<!-- Fondo y contenedor -->
-<div class="page-bg">
-  <div class="page-container">
-    <!-- Columna izquierda -->
-    <div class="col col-main">
-
-      <!-- Tarjeta resumen de perfil (igual a la imagen) -->
-      <section class="panel profile-card">
-        <div class="avatar">
-          <img src="https://i.pravatar.cc/160?img=47" alt="Avatar" />
+<!-- profile-config.component.html -->
+<div class="profile-container" [class.sidebar-visible]="showSidebar">
+  <!-- LEFT: Info de usuario -->
+  <div class="profile-section">
+    <!-- card: avatar + info -->
+    <div class="user-card" role="region" aria-label="Ficha de usuario">
+      <div class="user-avatar">
+        <div class="patient-photo" aria-hidden="true">
+          {{ firstLetter }}
         </div>
-        <div class="info">
-          <h2 class="name">Prokhorova Nikol</h2>
+      </div>
 
-          <div class="meta-grid">
-            <div class="meta">
-              <span class="k">Дата регистрации</span>
-              <span class="v">24 ноября 2022</span>
-            </div>
-            <div class="meta">
-              <span class="k">Город</span>
-              <span class="v">Bogotá, Colombia</span>
-            </div>
-            <div class="meta">
-              <span class="k">Email</span>
-              <span class="v">nikol&#64;example.com</span>
-            </div>
-            <div class="meta">
-              <span class="k">Телефон</span>
-              <span class="v">+278 965 236 25</span>
-            </div>
-          </div>
+      <div class="user-info">
+        <div class="user-top">
+          <h3 class="user-name">{{ userProfile.name }}</h3>
 
-          <!-- (Opcional) chips y redes; puedes quitarlos si no los quieres -->
-          <div class="chips">
-            <span class="chip">UX/UI</span>
-            <span class="chip">Premium</span>
-            <span class="chip">Активна</span>
-          </div>
-          <div class="social">
-            <a href="#" aria-label="Telegram">✈</a>
-            <a href="#" aria-label="Instagram">📸</a>
-            <a href="#" aria-label="GitHub">🐙</a>
-            <a href="#" aria-label="Dribbble">🏀</a>
-          </div>
+          <!-- Edit user -->
+          <button
+            class="edit-profile-btn"
+            title="Editar usuario"
+            (click)="openEditUserDialog()"
+            aria-label="Editar usuario"
+          >
+            <i class="fas fa-edit" aria-hidden="true"></i>
+          </button>
         </div>
-      </section>
 
-      <!-- Мои курсы (timeline con tarjetas coloreadas) -->
-      <section class="panel">
-        <h4 class="panel-title">Мои курсы</h4>
-        <ul class="timeline">
-          <li class="t-item">
-            <div class="dot"></div>
-            <div class="card mini">
-              <div class="title">UX/UI Design — сайты</div>
-              <div class="sub">62 урока • проект</div>
-              <span class="badge success">Завершено</span>
+        <!-- Loading skeleton -->
+        <div *ngIf="loading" class="skeleton">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+
+        <!-- Datos que SI vienen del backend -->
+        <div class="user-details" *ngIf="!loading">
+          <div class="detail-item">
+            <span class="label">Nombre de usuario:</span>
+            <span class="value">{{ userData?.username ?? '—' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Correo:</span>
+            <span class="value">{{ userData?.email ?? '—' }}</span>
+          </div>
+
+          <ng-container *ngIf="personData; else noPersonTpl">
+            <div class="detail-item">
+              <span class="label">Nombres:</span>
+              <span class="value">{{ personData?.firstName ?? '—' }}</span>
             </div>
-          </li>
-          <li class="t-item">
-            <div class="dot"></div>
-            <div class="card mini">
-              <div class="title">UX/UI Design — прототипы</div>
-              <div class="sub">Figma продвинутый</div>
-              <span class="badge success">Завершено</span>
+
+            <div class="detail-item">
+              <span class="label">Apellidos:</span>
+              <span class="value">{{ personData?.lastName ?? '—' }}</span>
             </div>
-          </li>
-          <li class="t-item">
-            <div class="dot pulse"></div>
-            <div class="card mini">
-              <div class="title">UX/UI Design — анимации</div>
-              <div class="sub">Начат: 15.06.2025</div>
-              <span class="badge start">Начат</span>
+
+            <div class="detail-item">
+              <span class="label">Documento:</span>
+              <span class="value">{{ personData?.document ?? '—' }}</span>
             </div>
-          </li>
-        </ul>
-      </section>
+
+            <div class="detail-item">
+              <span class="label">Edad:</span>
+              <span class="value">{{ personData?.age ?? '—' }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">Número de teléfono:</span>
+              <span class="value">{{ personData?.phone ?? '—' }}</span>
+            </div>
+
+            <div class="detail-item person-edit-row">
+              <button
+                class="edit-person-btn"
+                title="Editar persona"
+                (click)="openEditPersonDialog()"
+                aria-label="Editar persona"
+              >
+                <i class="fas fa-user-edit"></i> Editar datos personales
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #noPersonTpl>
+            <div class="detail-item">
+              <span class="label">Persona:</span>
+              <span class="value">No hay datos de persona asociados</span>
+            </div>
+          </ng-template>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+      </div>
     </div>
 
-    <!-- Columna derecha -->
-    <aside class="col col-side">
-      <div class="card side-card pay">
-        <h5>Платёжные данные</h5>
-        <div class="pay-row">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="VISA" />
-          <div class="num">•••• •••• •••• 2956</div>
+    <!-- Tarjeta destacada (hard-coded) -->
+    <div class="featured-course-wrapper">
+      <div class="featured-course-card" role="article" aria-label="Curso destacado">
+        <!-- estado fijo (puedes quitar si no lo usas) -->
+        <span class="featured-status">Завершен</span>
+
+        <div class="featured-left">
+          <div class="featured-title">
+            <h4>Información del Parqueadero</h4>
+          </div>
+
+          <p class="featured-desc">
+            Aquí puedes consultar y editar la información principal del parqueadero.
+          </p>
+
+          <div class="featured-meta">
+            <span class="lessons-count">Ver detalles</span>
+          </div>
         </div>
-        <div class="pay-icons">
-          <span>Apple Pay</span><span>G Pay</span><span>VISA</span>
+
+        <div class="featured-cta">
+          <!-- ahora llamamos a método para mostrar la sidebar en vez de navegar -->
+          <button class="cta-circle" (click)="openParkInfo($event)" title="Abrir información del parqueadero" aria-label="Abrir información">
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
         </div>
-        <button class="ghost block">Управлять</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Pagos y premium (sidebar) -->
+  <div class="sidebar-section" role="complementary" aria-label="Información del parqueadero - sidebar">
+    <!-- botón cerrar -->
+    <button class="close-sidebar" (click)="closeSidebar()" aria-label="Cerrar panel">✕</button>
+
+    <div class="payment-card">
+      <h4 class="card-title">Información del parqueadero</h4>
+      <div class="card-info">
+        <span class="card-label">Номер карточки:</span>
+        <span class="card-number">**** **** **** {{ paymentInfo.lastFourDigits }}</span>
       </div>
 
-      <div class="card side-card promo">
-        <h5>Индивидуальная подписка Success Premium</h5>
-        <ul class="bullets">
-          <li>Живые занятия</li>
-          <li>Неограниченный доступ</li>
-          <li>Сертификаты</li>
-        </ul>
-        <button class="primary block">Подписаться</button>
+      <div class="payment-methods">
+        <img src="assets/images/western-union.png" alt="Western Union" class="payment-logo" />
+        <img src="assets/images/gpay.png" alt="Google Pay" class="payment-logo" />
+        <img src="assets/images/mastercard.png" alt="Mastercard" class="payment-logo" />
+        <img src="assets/images/visa.png" alt="Visa" class="payment-logo" />
       </div>
-    </aside>
+    </div>
+
+    <div class="premium-card">
+      <h4 class="premium-title">Cámaras en el parqueadero</h4>
+      <div class="premium-features">
+        <div class="feature-item"><i class="fas fa-check"></i> 1 месяц Premium бесплатно</div>
+        <div class="feature-item"><i class="fas fa-check"></i> 2 месяца для учеников и студентов бесплатно</div>
+      </div>
+      <button class="subscribe-btn">Подписаться</button>
+    </div>
   </div>
 </div>
-
-

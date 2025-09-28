@@ -14,6 +14,9 @@ export interface Person extends IBaseEntity {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  document: string;
+  phone: string;
+  age: number;
 }
 
 export interface IUser extends IBaseEntity {
@@ -34,7 +37,7 @@ export interface FormModule extends IBaseEntity {
 }
 
 export interface User extends IBaseEntity {
-  userName: string;
+  username: string;
   email: string;
   password: string;
   personId: number;
