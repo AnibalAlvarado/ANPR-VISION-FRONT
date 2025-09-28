@@ -3,6 +3,7 @@ import { Component, inject, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
@@ -15,7 +16,8 @@ import Swal from 'sweetalert2';
     FormsModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './edit-person-dialog-component.html',
   styleUrl: './edit-person-dialog-component.scss'
@@ -53,7 +55,7 @@ export class EditPersonDialogComponent {
       return;
     }
 
-    if (!this.data.phoneNumber || this.data.phoneNumber.trim() === '') {
+    if (!this.data.phone || this.data.phone.trim() === '') {
       Swal.fire({
         icon: 'warning',
         title: 'Campo requerido',
@@ -64,7 +66,7 @@ export class EditPersonDialogComponent {
 
 
     const phoneRegex = /^[0-9]{7,15}$/;
-    if (!phoneRegex.test(this.data.phoneNumber)) {
+    if (!phoneRegex.test(this.data.phone)) {
       Swal.fire({
         icon: 'error',
         title: 'Número inválido',
@@ -73,7 +75,7 @@ export class EditPersonDialogComponent {
       return;
     }
 
- 
+
     this.service.put('Person', this.data).subscribe({
       next: () => {
         Swal.fire({

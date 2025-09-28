@@ -8,6 +8,7 @@ import { General } from 'src/app/generic/general.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { User } from 'src/app/generic/Models/Entitys';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-edit-user-dialog-component',
@@ -15,7 +16,8 @@ import { User } from 'src/app/generic/Models/Entitys';
     FormsModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './edit-user-dialog-component.html',
   styleUrl: './edit-user-dialog-component.scss'

@@ -64,6 +64,10 @@ export class NavRightComponent implements OnInit {
     this.closeNotifPanel();
     this.route.navigate(['/profile-index']);
   }
+  configuracion() {
+    this.closeNotifPanel();
+    this.route.navigate(['/configuracion']);
+  }
 
   get firstLetter(): string {
     return this.userName ? this.userName.charAt(0).toUpperCase() : '';

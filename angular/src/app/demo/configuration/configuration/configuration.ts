@@ -33,6 +33,9 @@ export class Configuration implements OnInit, OnDestroy {
 
   // estado UI
   loading = false;
+  // --- NUEVO: indicador de carga específica de la categoría ---
+parkingCategoryLoading = false;
+
   errorMessage = '';
 
   // estado para mostrar/ocultar sidebar
@@ -40,18 +43,24 @@ export class Configuration implements OnInit, OnDestroy {
 
   userProfile = {
     name: 'Usuario',
-    registrationDate: '—',
-    location: '—',
-    birthDate: '—',
-    email: '—',
-    phone: '—',
-    isDeleted: false,
-    asset: false
   };
 
   // placeholders
   userCourses: any[] = [];
   paymentInfo = { lastFourDigits: 'XXXX' };
+
+  // --- NUEVO: parking (solo los campos que devuelve tu back) ---
+  parkingData: {
+    location?: string | null;
+    parkingCategoryId?: number | null;
+    parkingCategory?: any | null;
+    name?: string | null;
+    id?: number | null;
+    asset?: boolean | null;
+    isDeleted?: boolean | null;
+  } | null = null;
+  parkingLoading = false;
+  parkingError = '';
 
   // userId desde localStorage via General
   private userIdStr: string | null = null;
@@ -75,6 +84,9 @@ export class Configuration implements OnInit, OnDestroy {
       this.errorMessage = 'Usuario no autenticado';
       console.warn('No userId disponible en General.getUserId()');
     }
+
+    // Cargamos el parqueadero con id "quemado" = 3
+    this.loadParking(3);
   }
 
   ngOnDestroy(): void {
@@ -147,46 +159,9 @@ export class Configuration implements OnInit, OnDestroy {
     const fullNamePerson = (p.firstName || p.lastName) ? `${p.firstName ?? ''} ${p.lastName ?? ''}`.trim() : '';
     const name = fullNamePerson || (u as any).personName || (u as any).userName || this.userName || 'Usuario';
 
-    const email = u.email ?? '—';
-    const phone = (p && (p as any).phoneNumber) ? (p as any).phoneNumber : '—';
-
-    const birthDate = (p as any).birthDate ? this.formatDate((p as any).birthDate) : ((p as any).age ? `${(p as any).age} años` : '—');
-
-    const registrationDate = (u as any).createdAt ? this.formatDate((u as any).createdAt)
-      : (u as any).created_on ? this.formatDate((u as any).created_on)
-      : (u.id ? `ID: ${u.id}` : '—');
-
-    const location = this.composeLocation(p);
-
     this.userProfile = {
       name,
-      registrationDate,
-      location: location || '—',
-      birthDate,
-      email,
-      phone,
-      isDeleted: !!(u as any).isDeleted || !!(p as any).isDeleted,
-      asset: !!(u as any).asset || !!(p as any).asset
     };
-  }
-
-  private composeLocation(p?: Person | null): string {
-    if (!p) return '';
-    const parts: string[] = [];
-    if ((p as any).country) parts.push((p as any).country);
-    if ((p as any).city) parts.push((p as any).city);
-    return parts.join(', ');
-  }
-
-  private formatDate(raw: any): string {
-    if (!raw) return '—';
-    try {
-      const d = new Date(raw);
-      if (isNaN(d.getTime())) return String(raw);
-      return d.toLocaleDateString(undefined, { day: '2-digit', month: 'long', year: 'numeric' });
-    } catch {
-      return String(raw);
-    }
   }
 
   get firstLetter(): string {
@@ -196,7 +171,7 @@ export class Configuration implements OnInit, OnDestroy {
   // ---------------- acciones UI (sin tocar la lógica original) ----------------
   openEditUserDialog(): void {
     try {
-      const ref = this.dialog.open(EditUserDialogComponent, { width: '420px', data: { ...(this.userData ?? {}) }});
+      const ref = this.dialog.open(EditUserDialogComponent, { width: '420px',panelClass: 'custom-edit-dialog', data: { ...(this.userData ?? {}) }});
       ref.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((res) => {
         if (res === 'updated') this.reload();
       });
@@ -207,7 +182,7 @@ export class Configuration implements OnInit, OnDestroy {
 
   openEditPersonDialog(): void {
     try {
-      const ref = this.dialog.open(EditPersonDialogComponent, { width: '420px', data: { ...(this.personData ?? {}) }});
+      const ref = this.dialog.open(EditPersonDialogComponent, { width: '420px',panelClass: 'custom-edit-dialog', data: { ...(this.personData ?? {}) }});
       ref.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((res) => {
         if (res === 'updated') this.reload();
       });
@@ -244,4 +219,87 @@ export class Configuration implements OnInit, OnDestroy {
   closeSidebar(): void {
     this.showSidebar = false;
   }
+
+  // ------------------ NUEVO: Cargar información del parqueadero por ID (quemado = 3) ------------------
+// ------------------ Cargar información del parqueadero por ID (quemado = 3) ------------------
+loadParking(id: number): void {
+  this.parkingLoading = true;
+  this.parkingError = '';
+
+  this.service.getById<any>('Parking', id)
+    .pipe(
+      takeUntil(this.destroy$),
+      catchError(err => {
+        this.parkingLoading = false;
+        this.parkingError = `No se pudo cargar el parqueadero: ${err?.message ?? err}`;
+        console.error('Error get Parking', err);
+        return of(null);
+      })
+    )
+    .subscribe((resp) => {
+      // termina estado de loading principal (pero si vamos a cargar categoría, lo manejamos abajo)
+      if (!resp) {
+        this.parkingLoading = false;
+        this.parkingData = null;
+        return;
+      }
+
+      // Soporta wrapper { data: {...} } o la entidad directa
+      const payload = (resp && (resp as any).data) ? (resp as any).data : resp;
+
+      // Mapeamos **solo** los campos que tu back devuelve
+      this.parkingData = {
+        location: payload?.location ?? null,
+        parkingCategoryId: payload?.parkingCategoryId ?? null,
+        parkingCategory: payload?.parkingCategory ?? null,
+        name: payload?.name ?? null,
+        id: payload?.id ?? null,
+        asset: payload?.asset ?? null,
+        isDeleted: payload?.isDeleted ?? null
+      };
+
+      // Si recibimos parkingCategoryId y no hay objeto de parkingCategory, traemos la categoría por separado
+      const catId = this.parkingData.parkingCategoryId;
+      if (catId && (this.parkingData.parkingCategory === null || this.parkingData.parkingCategory === undefined)) {
+        this.parkingCategoryLoading = true;
+
+        // Asumo que la entidad se llama 'ParkingCategory' — si en tu API tiene otro nombre, cámbialo
+        this.service.getById<any>('ParkingCategory', Number(catId))
+          .pipe(
+            takeUntil(this.destroy$),
+            catchError(errCat => {
+              // no bloqueamos la UI completa si falla la categoría; informamos y dejamos el campo null
+              this.parkingCategoryLoading = false;
+              console.warn(`No se pudo cargar ParkingCategory ${catId}:`, errCat);
+              return of(null);
+            })
+          )
+          .subscribe((catResp) => {
+            this.parkingCategoryLoading = false;
+            if (!catResp) return;
+
+            const catPayload = (catResp && (catResp as any).data) ? (catResp as any).data : catResp;
+
+            // Si la respuesta tiene nombre, lo dejamos como objeto completo para acceder a .name en template
+            this.parkingData = {
+              ...this.parkingData,
+              parkingCategory: catPayload ?? this.parkingData?.parkingCategory
+            };
+          }, () => {
+            // por seguridad: asegurar que la bandera se apaga ante error no capturado
+            this.parkingCategoryLoading = false;
+          }, () => {
+            // noop
+          });
+
+        // dejamos el loading principal en false porque ya terminó la carga del parking (categoria se carga por separado)
+        this.parkingLoading = false;
+      } else {
+        // no hay catId o ya viene la categoría embebida: terminamos
+        this.parkingCategoryLoading = false;
+        this.parkingLoading = false;
+      }
+    });
+}
+
 }
