@@ -186,17 +186,29 @@ export class VehicleForm implements OnInit {
   save() {
   const data = { ...this.form.value };
 
-  // extraer ids de autocomplete
-  if (data.clientId && data.clientId.value) {
-    data.clientId = data.clientId.value;
-  }
-  if (data.typeVehicleId && data.typeVehicleId.value) {
-    data.typeVehicleId = data.typeVehicleId.value;
+  // Normalizar TypeVehicleId
+  if (data.typeVehicleId && typeof data.typeVehicleId === 'object' && data.typeVehicleId.value) {
+    data.typeVehicleId = Number(data.typeVehicleId.value);
+  } else if (typeof data.typeVehicleId === 'string') {
+    const type = this.typeVehicles.find(t => t.label.toLowerCase() === data.typeVehicleId.toLowerCase());
+    data.typeVehicleId = type ? Number(type.value) : 0;
+  } else {
+    data.typeVehicleId = Number(data.typeVehicleId);
   }
 
-  // 👉 ya no hay clientes temporales aquí
+  // Normalizar ClientId
+  if (data.clientId && typeof data.clientId === 'object' && data.clientId.value) {
+    data.clientId = Number(data.clientId.value);
+  } else if (typeof data.clientId === 'string') {
+    const client = this.clients.find(c => c.label.toLowerCase() === data.clientId.toLowerCase());
+    data.clientId = client ? Number(client.value) : 0;
+  } else {
+    data.clientId = Number(data.clientId);
+  }
+
   this.saveVehicle(data);
 }
+
 
   private saveVehicle(data: any) {
     if (!this.isEdit) {

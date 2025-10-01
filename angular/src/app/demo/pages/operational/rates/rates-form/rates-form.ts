@@ -51,7 +51,7 @@ export class RatesForm implements OnInit {
     {
       name: 'starHour', // si en tu back es startHour, cámbialo en ambos lados
       label: 'Hora de Inicio',
-      type: 'date', // si tu GenericForm soporta 'time', considera usar 'time'
+      type: 'time', // si tu GenericForm soporta 'time', considera usar 'time'
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La hora de inicio es obligatoria.' }
@@ -60,7 +60,7 @@ export class RatesForm implements OnInit {
     {
       name: 'endHour',
       label: 'Hora de Fin',
-      type: 'date',
+      type: 'time',
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La hora de fin es obligatoria.' }
@@ -191,46 +191,68 @@ export class RatesForm implements OnInit {
     }
   }
 
-  save(data: any) {
-    if (this.isEdit) {
-      this.service.put('Rates', data).subscribe({
-        next: () => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Registro actualizado exitosamente',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
-          });
-          this.route.navigate(['/rates-index']);
-        },
-        error: (err: Error) => {
-          Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
-        }
-      });
-    } else {
-      const payload = { ...data };
-      delete payload.id;
+save(data: any) {
+  const payload = { ...data };
+  delete payload.id;
 
-      this.service.post('Rates', payload).subscribe({
-        next: () => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Registro creado exitosamente',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
-          });
-          this.route.navigate(['/rates-index']);
-        },
-        error: (err: Error) => {
-          Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
-        }
-      });
-    }
+  // convertir horas a ISO
+  if (data.starHour) {
+    payload.starHour = this.toIsoDateTime(data.starHour);
   }
+  if (data.endHour) {
+    payload.endHour = this.toIsoDateTime(data.endHour);
+  }
+
+  if (this.isEdit) {
+    this.service.put('Rates', payload).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro actualizado exitosamente',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+        this.route.navigate(['/rates-index']);
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudo actualizar el registro.', 'error');
+      }
+    });
+  } else {
+    this.service.post('Rates', payload).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro creado exitosamente',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+        this.route.navigate(['/rates-index']);
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudo crear el registro.', 'error');
+      }
+    });
+  }
+}
+
 
   cancel() {
     this.route.navigate(['/rates-index']);
   }
+
+  private toIsoDateTime(time: string): string | null {
+  if (!time) return null;
+
+  // Usamos la fecha de hoy como base
+  const today = new Date();
+  const [hours, minutes] = time.split(':').map(Number);
+
+  today.setHours(hours, minutes, 0, 0);
+
+  return today.toISOString(); // "2025-10-01T11:02:00.000Z"
+}
+
 }

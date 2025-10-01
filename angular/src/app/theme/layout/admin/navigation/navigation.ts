@@ -192,24 +192,24 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/role-index'
           },
-          {
-            id: 'Formularios',
-            title: 'Formularios',
-            type: 'item',
-            url: '/form-index'
-          },
+          // {
+          //   id: 'Formularios',
+          //   title: 'Formularios',
+          //   type: 'item',
+          //   url: '/form-index'
+          // },
           {
             id: 'Permisos',
             title: 'Permisos',
             type: 'item',
             url: '/permission-index'
           },
-          {
-            id: 'Módulos',
-            title: 'Módulos',
-            type: 'item',
-            url: '/module-index'
-          },
+          // {
+          //   id: 'Módulos',
+          //   title: 'Módulos',
+          //   type: 'item',
+          //   url: '/module-index'
+          // },
           {
             id: 'FormsModule',
             title: 'Formularios por Modulos',
