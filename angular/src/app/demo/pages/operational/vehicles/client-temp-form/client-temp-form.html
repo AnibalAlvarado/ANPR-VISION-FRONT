@@ -1,43 +1,44 @@
 <h2 class="modal-title">Nuevo Cliente</h2>
 
 <form [formGroup]="form" (ngSubmit)="submit()" class="modal-form">
-  <!-- Nombre -->
+
+  <!-- 🔹 Sección Persona -->
+  <h3>Datos de la Persona</h3>
+
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Nombre del cliente</mat-label>
-    <input matInput formControlName="name" required />
-    <mat-error *ngIf="form.get('name')?.hasError('required')">
-      El nombre del cliente es obligatorio
-    </mat-error>
-    <mat-error *ngIf="form.get('name')?.hasError('minlength')">
-      Debe tener al menos 2 caracteres
-    </mat-error>
-    <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
-      No puede exceder los 50 caracteres
-    </mat-error>
-    <mat-error *ngIf="form.get('name')?.hasError('pattern')">
-      Solo se permiten letras y espacios
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="firstName" required />
+    <mat-error *ngIf="form.get('firstName')?.hasError('required')">
+      El nombre es obligatorio
     </mat-error>
   </mat-form-field>
 
-  <!-- Persona asociada -->
-  <div class="person-section">
-    <mat-form-field appearance="outline" class="flex-grow">
-      <mat-label>Persona Asociada</mat-label>
-      <mat-select formControlName="personId" required panelClass="custom-select-panel">
-        <mat-option *ngFor="let p of people" [value]="p.value">
-          {{ p.label }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="form.get('personId')?.hasError('required')">
-        Debe seleccionar una persona
-      </mat-error>
-    </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Apellido</mat-label>
+    <input matInput formControlName="lastName" required />
+    <mat-error *ngIf="form.get('lastName')?.hasError('required')">
+      El apellido es obligatorio
+    </mat-error>
+  </mat-form-field>
 
-    <!-- 🚀 Botón nuevo persona -->
-    <button mat-stroked-button color="primary" type="button" (click)="openPersonTempModal()">
-      [+] Nueva Persona
-    </button>
-  </div>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Teléfono</mat-label>
+    <input matInput formControlName="phoneNumber" />
+    <mat-error *ngIf="form.get('phoneNumber')?.hasError('pattern')">
+      El teléfono debe tener entre 7 y 15 dígitos
+    </mat-error>
+  </mat-form-field>
+
+  <!-- 🔹 Sección Cliente -->
+  <h3>Datos del Cliente</h3>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nombre del Cliente</mat-label>
+    <input matInput formControlName="clientName" required />
+    <mat-error *ngIf="form.get('clientName')?.hasError('required')">
+      El nombre del cliente es obligatorio
+    </mat-error>
+  </mat-form-field>
 
   <!-- Botones -->
   <div class="actions">

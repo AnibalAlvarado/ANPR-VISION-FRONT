@@ -714,3 +714,118 @@
     }
   }
 }
+
+/* ============================================
+   PAGINADOR - SOLUCIÓN QUE FUNCIONA
+   ============================================ */
+
+/* Paginador base */
+::ng-deep .mat-mdc-paginator {
+  background-color: transparent !important;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Texto (Items per page, range, etc.) - TODO BLANCO */
+::ng-deep .mat-mdc-paginator-range-label,
+::ng-deep .mat-mdc-paginator-page-size-label {
+  color: #ffffff !important;
+  font-size: 14px;
+}
+
+/* Select del pageSize */
+::ng-deep .mat-mdc-paginator-page-size-select {
+  background-color: #2a2d35 !important;
+  color: #ffffff !important;
+  border-radius: 6px;
+  padding: 2px 6px;
+  min-width: 50px !important;
+}
+
+/* Valor seleccionado dentro del select */
+::ng-deep .mat-mdc-paginator-page-size-select .mat-mdc-select-value,
+::ng-deep .mat-mdc-paginator-page-size-select .mat-mdc-select-value-text {
+  color: #ffffff !important;
+}
+
+/* Flecha del select */
+::ng-deep .mat-mdc-paginator-page-size-select .mat-mdc-select-arrow {
+  color: #ffffff !important;
+}
+
+/* Trigger del select (contenedor del valor) */
+::ng-deep .mat-mdc-select-trigger {
+  color: #ffffff !important;
+}
+
+/* ============================================
+   BOTONES DE NAVEGACIÓN - BLANCOS
+   ============================================ */
+
+/* Todos los botones del paginador */
+::ng-deep .mat-mdc-paginator-navigation-first,
+::ng-deep .mat-mdc-paginator-navigation-previous,
+::ng-deep .mat-mdc-paginator-navigation-next,
+::ng-deep .mat-mdc-paginator-navigation-last,
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button {
+  color: #ffffff !important;
+}
+
+/* Iconos dentro de los botones */
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button .mat-icon,
+::ng-deep .mat-mdc-paginator-icon {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* SVG dentro de los iconos (algunos usan SVG directamente) */
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button svg,
+::ng-deep .mat-mdc-paginator-icon svg {
+  fill: #ffffff !important;
+}
+
+/* Hover en botones */
+::ng-deep .mat-mdc-paginator-navigation-first:hover,
+::ng-deep .mat-mdc-paginator-navigation-previous:hover,
+::ng-deep .mat-mdc-paginator-navigation-next:hover,
+::ng-deep .mat-mdc-paginator-navigation-last:hover,
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button:hover {
+  color: #07bcbe !important;
+  background-color: rgba(7, 188, 190, 0.15) !important;
+  border-radius: 50%;
+}
+
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button:hover .mat-icon,
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button:hover svg {
+  color: #07bcbe !important;
+  fill: #07bcbe !important;
+}
+
+/* Botones deshabilitados */
+::ng-deep .mat-mdc-paginator-navigation-first.mat-mdc-button-disabled,
+::ng-deep .mat-mdc-paginator-navigation-previous.mat-mdc-button-disabled,
+::ng-deep .mat-mdc-paginator-navigation-next.mat-mdc-button-disabled,
+::ng-deep .mat-mdc-paginator-navigation-last.mat-mdc-button-disabled,
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button.mat-mdc-button-disabled {
+  color: #5a5a5a !important;
+  opacity: 0.5 !important;
+}
+
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button.mat-mdc-button-disabled .mat-icon,
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button.mat-mdc-button-disabled svg {
+  color: #5a5a5a !important;
+  fill: #5a5a5a !important;
+}
+
+/* Range actions */
+::ng-deep .mat-mdc-paginator-range-actions {
+  font-size: 14px;
+  color: #ffffff !important;
+}
+
+/* Container de range actions (por si acaso) */
+::ng-deep .mat-mdc-paginator-container {
+  color: #ffffff !important;
+}

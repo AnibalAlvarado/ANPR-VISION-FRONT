@@ -60,7 +60,7 @@
   <div class="vehicle-list" *ngIf="dataSource.data.length > 0">
     <div
       class="vehicle-card-horizontal"
-      *ngFor="let vehicle of dataSource.data"
+      *ngFor="let vehicle of pagedData"
       [class.deleted-card]="vehicle.isDeleted">
 
       <!-- Left Section: Placa y Estado -->
@@ -158,6 +158,15 @@
       </div>
     </div>
   </div>
+
+  <mat-paginator
+  [length]="dataSource.data.length"
+  [pageSizeOptions]="[5, 10, 20]"
+  [pageSize]="5"
+  showFirstLastButtons
+  (page)="onPageChange($event)">
+</mat-paginator>
+
 
   <!-- Empty State -->
   <div class="empty-state" *ngIf="dataSource.data.length === 0">

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
@@ -22,6 +22,7 @@ export class VehicleIndex implements OnInit {
   dataSource = new MatTableDataSource<Vehicle>();
   originalData: Vehicle[] = [];
   selectedFilter: string = 'all';
+  pagedData: Vehicle[] = [];
 
   columns = [
     { key: 'plate', label: 'Placa' },
@@ -46,12 +47,13 @@ export class VehicleIndex implements OnInit {
       next: (items) => {
         this.originalData = items || [];
         this.dataSource.data = items || [];
-        if (this.paginator) this.dataSource.paginator = this.paginator;
+        this.applyPagination(); // ✅ inicializar con la primera página
       },
       error: (err: Error) => {
         Swal.fire('Error', err.message || 'No se pudieron cargar los vehículos.', 'error');
         this.originalData = [];
         this.dataSource.data = [];
+        this.pagedData = [];
       }
     });
   }
@@ -179,6 +181,7 @@ export class VehicleIndex implements OnInit {
     filteredData = this.applyStatusFilter(filteredData);
 
     this.dataSource.data = filteredData;
+    this.applyPagination(); // ✅ aplicar paginación después del filtro
   }
 
   filterByStatus(status: string): void {
@@ -201,6 +204,7 @@ export class VehicleIndex implements OnInit {
     filteredData = this.applyStatusFilter(filteredData);
 
     this.dataSource.data = filteredData;
+    this.applyPagination(); // ✅ aplicar paginación después del filtro
   }
 
   private applyStatusFilter(data: Vehicle[]): Vehicle[] {
@@ -214,6 +218,20 @@ export class VehicleIndex implements OnInit {
       case 'all':
       default:
         return data;
+    }
+  }
+
+  onPageChange(event: PageEvent) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.pagedData = this.dataSource.data.slice(startIndex, endIndex);
+  }
+
+  private applyPagination() {
+    // siempre resetear a la primera página con tamaño 5
+    this.pagedData = this.dataSource.data.slice(0, 5);
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
   }
 }

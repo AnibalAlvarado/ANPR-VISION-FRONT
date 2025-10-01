@@ -16,30 +16,38 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Observable, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-vehicle-form',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatAutocompleteModule,
     MatSlideToggleModule,
     MatButtonModule,
-    MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule],
+    MatNativeDateModule
+  ],
   templateUrl: './vehicle-form.html',
   styleUrl: './vehicle-form.scss'
 })
 export class VehicleForm implements OnInit {
- form!: FormGroup;
+  form!: FormGroup;
   isEdit = false;
   tempClient: any = null;
 
+  // data
   typeVehicles: any[] = [];
   clients: any[] = [];
+
+  // autocompletes
+  filteredClients!: Observable<any[]>;
+  filteredTypeVehicles!: Observable<any[]>;
 
   private service = inject(General);
   private router = inject(Router);
@@ -65,6 +73,12 @@ export class VehicleForm implements OnInit {
     this.service.get<VehicleType[]>('TypeVehicle/select').subscribe({
       next: (items) => {
         this.typeVehicles = (items || []).map(it => ({ value: it.id, label: it.name }));
+
+        this.filteredTypeVehicles = this.form.get('typeVehicleId')!.valueChanges.pipe(
+          startWith(''),
+          map(value => (typeof value === 'string' ? value : value?.label || '')),
+          map(name => (name ? this._filterTypeVehicles(name) : this.typeVehicles.slice()))
+        );
       },
       error: (err: Error) => {
         Swal.fire('Error', err.message || 'No se pudieron cargar los tipos de vehículo.', 'error');
@@ -75,6 +89,12 @@ export class VehicleForm implements OnInit {
     this.service.get<Client[]>('Client/join').subscribe({
       next: (items) => {
         this.clients = (items || []).map(it => ({ value: it.id, label: it.name }));
+
+        this.filteredClients = this.form.get('clientId')!.valueChanges.pipe(
+          startWith(''),
+          map(value => (typeof value === 'string' ? value : value?.label || '')),
+          map(name => (name ? this._filterClients(name) : this.clients.slice()))
+        );
       },
       error: (err: Error) => {
         Swal.fire('Error', err.message || 'No se pudieron cargar los clientes.', 'error');
@@ -86,6 +106,20 @@ export class VehicleForm implements OnInit {
       this.service.getById<any>('Vehicle', id).subscribe({
         next: (item) => {
           this.form.patchValue(item);
+
+          if (item.typeVehicleId) {
+            const type = this.typeVehicles.find(t => t.value === item.typeVehicleId);
+            if (type) {
+              this.form.get('typeVehicleId')?.setValue(type);
+            }
+          }
+
+          if (item.clientId) {
+            const client = this.clients.find(c => c.value === item.clientId);
+            if (client) {
+              this.form.get('clientId')?.setValue(client);
+            }
+          }
         },
         error: (err: Error) => {
           Swal.fire('Error', err.message || 'No se pudo cargar el vehículo.', 'error');
@@ -94,44 +128,87 @@ export class VehicleForm implements OnInit {
     }
   }
 
-  openClientTempModal() {
-    const dialogRef = this.dialog.open(ClientTempForm, { width: '500px' });
+  // mostrar nombres en inputs
+  displayClient = (client: any): string => client && client.label ? client.label : '';
+  displayTypeVehicle = (type: any): string => type && type.label ? type.label : '';
 
-    dialogRef.afterClosed().subscribe((tempClient) => {
-      if (tempClient) {
-        const fakeId = `temp-${Date.now()}`;
-        this.clients.push({ value: fakeId, label: tempClient.name });
-        this.form.get('clientId')?.setValue(fakeId);
-        this.tempClient = { ...tempClient, fakeId };
-      }
-    });
+  // filtros
+  private _filterClients(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.clients.filter(c => c.label.toLowerCase().includes(filterValue));
   }
+
+  private _filterTypeVehicles(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.typeVehicles.filter(t => t.label.toLowerCase().includes(filterValue));
+  }
+
+  openClientTempModal() {
+  const dialogRef = this.dialog.open(ClientTempForm, { width: '500px' });
+
+  dialogRef.afterClosed().subscribe((createdClient) => {
+    if (createdClient) {
+      const newClient = { value: createdClient.id, label: createdClient.name };
+      this.clients.push(newClient);
+      this.form.get('clientId')?.setValue(newClient);
+    }
+  });
+}
+
+
+  // save() {
+  //   const data = { ...this.form.value };
+
+  //   // extraer ids de autocomplete
+  //   if (data.clientId && data.clientId.value) {
+  //     data.clientId = data.clientId.value;
+  //   }
+  //   if (data.typeVehicleId && data.typeVehicleId.value) {
+  //     data.typeVehicleId = data.typeVehicleId.value;
+  //   }
+
+  //   // si hay cliente temporal
+  //   if (String(data.clientId).startsWith('temp-') && this.tempClient) {
+  //     this.service.post<Client>('Client', this.tempClient).subscribe({
+  //       next: (createdClient) => {
+  //         data.clientId = createdClient.id;
+  //         this.saveVehicle(data);
+  //       },
+  //       error: (err: Error) => {
+  //         Swal.fire('Error', err.message || 'No se pudo crear el cliente.', 'error');
+  //       }
+  //     });
+  //   } else {
+  //     this.saveVehicle(data);
+  //   }
+  // }
 
   save() {
-    const data = { ...this.form.value };
+  const data = { ...this.form.value };
 
-    // si hay cliente temporal
-    if (String(data.clientId).startsWith('temp-') && this.tempClient) {
-      this.service.post<Client>('Client', this.tempClient).subscribe({
-        next: (createdClient) => {
-          data.clientId = createdClient.id;
-          this.saveVehicle(data);
-        },
-        error: (err: Error) => {
-          Swal.fire('Error', err.message || 'No se pudo crear el cliente.', 'error');
-        }
-      });
-    } else {
-      this.saveVehicle(data);
-    }
+  // extraer ids de autocomplete
+  if (data.clientId && data.clientId.value) {
+    data.clientId = data.clientId.value;
   }
+  if (data.typeVehicleId && data.typeVehicleId.value) {
+    data.typeVehicleId = data.typeVehicleId.value;
+  }
+
+  // 👉 ya no hay clientes temporales aquí
+  this.saveVehicle(data);
+}
 
   private saveVehicle(data: any) {
     if (!this.isEdit) {
       delete data.id;
       this.service.post('Vehicle', data).subscribe({
         next: () => {
-          Swal.fire({ icon: 'success', title: 'Vehículo creado exitosamente', timer: 2000, showConfirmButton: false });
+          Swal.fire({
+            icon: 'success',
+            title: 'Vehículo creado exitosamente',
+            timer: 2000,
+            showConfirmButton: false
+          });
           this.router.navigate(['/vehicles-index']);
         },
         error: (err: Error) => {
@@ -141,7 +218,12 @@ export class VehicleForm implements OnInit {
     } else {
       this.service.put('Vehicle', data).subscribe({
         next: () => {
-          Swal.fire({ icon: 'success', title: 'Vehículo actualizado exitosamente', timer: 2000, showConfirmButton: false });
+          Swal.fire({
+            icon: 'success',
+            title: 'Vehículo actualizado exitosamente',
+            timer: 2000,
+            showConfirmButton: false
+          });
           this.router.navigate(['/vehicles-index']);
         },
         error: (err: Error) => {
@@ -154,5 +236,4 @@ export class VehicleForm implements OnInit {
   cancel() {
     this.router.navigate(['/vehicles-index']);
   }
-
 }

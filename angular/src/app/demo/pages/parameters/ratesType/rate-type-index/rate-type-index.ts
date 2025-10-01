@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { RateType } from '../rate-type';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { General } from 'src/app/generic/general.service';
@@ -14,21 +14,23 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-rate-type-index',
-  imports: [MatCardModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, FormsModule],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    CommonModule,
+    FormsModule,
+    MatPaginator
+  ],
   templateUrl: './rate-type-index.html',
   styleUrl: './rate-type-index.scss'
 })
 export class RateTypeIndex implements OnInit {
   dataSource = new MatTableDataSource<RateType>();
   originalData: RateType[] = [];
+  pagedData: RateType[] = [];
   selectedFilter: string = 'all';
-
-  columns = [
-    { key: 'name', label: 'Nombre' },
-    { key: 'description', label: 'Descripción' },
-    { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
-  ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -44,22 +46,23 @@ export class RateTypeIndex implements OnInit {
       next: (items) => {
         this.originalData = items || [];
         this.dataSource.data = items || [];
-        if (this.paginator) this.dataSource.paginator = this.paginator;
+        this.applyPagination();
       },
       error: (err: Error) => {
         Swal.fire('Error', err.message || 'No se pudieron cargar los tipos de tarifa.', 'error');
         this.originalData = [];
         this.dataSource.data = [];
+        this.pagedData = [];
       }
     });
   }
 
   goToCreate(): void {
-    this.router.navigate(['/RatesType-form']); // usa tu ruta real
+    this.router.navigate(['/RatesType-form']);
   }
 
   goToEdit(item: RateType): void {
-    this.router.navigate(['/RatesType-form', item.id]); // usa tu ruta real
+    this.router.navigate(['/RatesType-form', item.id]);
   }
 
   deleteRateType(id: number): void {
@@ -91,11 +94,11 @@ export class RateTypeIndex implements OnInit {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción eliminará el tipo de tarifa permanentemente.',
-      icon: 'warning',
+      icon: 'error',
       showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: 'Sí, eliminar permanentemente',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
+      confirmButtonColor: '#ff5722',
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -112,18 +115,7 @@ export class RateTypeIndex implements OnInit {
     });
   }
 
-  // Stats
-  getTotalRateTypes(): number {
-    return this.originalData.length;
-  }
-  getActiveRateTypes(): number {
-    return this.originalData.filter(rt => rt.asset && !rt.isDeleted).length;
-  }
-  getDeletedRateTypes(): number {
-    return this.originalData.filter(rt => rt.isDeleted).length;
-  }
-
-  // Búsqueda + estado
+  // --- Search + Filtro estado ---
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     let filteredData = this.originalData;
@@ -137,6 +129,7 @@ export class RateTypeIndex implements OnInit {
 
     filteredData = this.applyStatusFilter(filteredData);
     this.dataSource.data = filteredData;
+    this.applyPagination();
   }
 
   filterByStatus(status: string): void {
@@ -156,6 +149,7 @@ export class RateTypeIndex implements OnInit {
 
     filteredData = this.applyStatusFilter(filteredData);
     this.dataSource.data = filteredData;
+    this.applyPagination();
   }
 
   private applyStatusFilter(data: RateType[]): RateType[] {
@@ -165,6 +159,20 @@ export class RateTypeIndex implements OnInit {
       case 'deleted':  return data.filter(rt => rt.isDeleted);
       case 'all':
       default:         return data;
+    }
+  }
+
+  // --- Paginación ---
+  onPageChange(event: PageEvent) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.pagedData = this.dataSource.data.slice(startIndex, endIndex);
+  }
+
+  private applyPagination() {
+    this.pagedData = this.dataSource.data.slice(0, 5);
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
   }
 }
