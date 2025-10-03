@@ -21,7 +21,7 @@
     </mat-form-field>
 
     <!-- Tipo de Vehículo -->
-    <mat-form-field appearance="outline" class="full-width">
+    <!-- <mat-form-field appearance="outline" class="full-width">
       <mat-label>Tipo de Vehículo</mat-label>
       <mat-select formControlName="typeVehicleId" required>
         <mat-option *ngFor="let t of typeVehicles" [value]="t.value">{{ t.label }}</mat-option>
@@ -29,25 +29,61 @@
       <mat-error *ngIf="form.get('typeVehicleId')?.hasError('required')">
         El tipo de vehículo es obligatorio
       </mat-error>
-    </mat-form-field>
+    </mat-form-field> -->
+
+    <!-- Tipo de Vehículo -->
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>Tipo de Vehículo</mat-label>
+  <input
+    type="text"
+    matInput
+    [matAutocomplete]="autoType"
+    formControlName="typeVehicleId"
+    required
+  />
+
+  <mat-autocomplete #autoType="matAutocomplete" [displayWith]="displayTypeVehicle">
+    <mat-option *ngFor="let t of filteredTypeVehicles | async" [value]="t">
+      {{ t.label }}
+    </mat-option>
+  </mat-autocomplete>
+
+  <mat-error *ngIf="form.get('typeVehicleId')?.hasError('required')">
+    El tipo de vehículo es obligatorio
+  </mat-error>
+</mat-form-field>
+
+
 
     <!-- Cliente -->
-    <div class="client-section">
-      <mat-form-field appearance="outline" class="flex-grow">
-        <mat-label>Dueño del Vehículo</mat-label>
-        <mat-select formControlName="clientId" required>
-          <mat-option *ngFor="let c of clients" [value]="c.value">{{ c.label }}</mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('clientId')?.hasError('required')">
-          El cliente es obligatorio
-        </mat-error>
-      </mat-form-field>
+<div class="client-section">
+  <mat-form-field appearance="outline" class="flex-grow">
+    <mat-label>Dueño del Vehículo</mat-label>
+    <input
+      type="text"
+      matInput
+      [matAutocomplete]="autoClient"
+      formControlName="clientId"
+      required
+    />
 
-      <!-- Botón nuevo cliente -->
-      <button mat-stroked-button color="primary" type="button" (click)="openClientTempModal()">
-        [+] Nuevo Cliente
-      </button>
-    </div>
+    <mat-autocomplete #autoClient="matAutocomplete" [displayWith]="displayClient">
+      <mat-option *ngFor="let c of filteredClients | async" [value]="c">
+        {{ c.label }}
+      </mat-option>
+    </mat-autocomplete>
+
+    <mat-error *ngIf="form.get('clientId')?.hasError('required')">
+      El cliente es obligatorio
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Botón nuevo cliente -->
+  <button mat-stroked-button color="primary" type="button" (click)="openClientTempModal()">
+    [+] Nuevo Cliente
+  </button>
+</div>
+
 
     <!-- Botones -->
     <div class="actions">

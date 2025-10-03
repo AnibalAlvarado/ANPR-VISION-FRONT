@@ -55,11 +55,11 @@ export class ZonesIndex implements OnInit {
   }
 
   goToCreate(): void {
-    this.router.navigate(['/zones-form']); // minúsculas
+    this.router.navigate(['/Zones-form']); // minúsculas
   }
 
   goToEdit(form: Zones): void {
-    this.router.navigate(['/zones-form', form.id]); // minúsculas
+    this.router.navigate(['/Zones-form', form.id]); // minúsculas
   }
 
   deleteZone(id: number): void {

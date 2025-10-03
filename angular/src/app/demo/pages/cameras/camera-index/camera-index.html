@@ -10,8 +10,7 @@
         <div class="title">
           <mat-icon>videocam</mat-icon>
           <span>{{ cam.name || ('Cámara ' + cam.id) }}</span>
-          <span class="muted">• {{ cam.parking || ('Parking ' + cam.parkingId) }}</span>
-          <span class="pill" [class.on]="cam.asset">{{ cam.asset ? 'Activa' : 'Inactiva' }}</span>
+
           <span class="pill" *ngIf="cam.isDeleted">Eliminada</span>
         </div>
 
@@ -43,9 +42,13 @@
 
       <div class="viewer-body" [class.has-details]="showDetails">
         <!-- Reemplaza por tu <video>/<img> real -->
-        <div class="stream">
-          <mat-icon>photo_camera</mat-icon>
-        </div>
+       <div class="stream">
+  <!-- <img src="http://192.168.18.49:8080/video" alt="Stream en vivo" style="width:100%; max-width:600px;"> -->
+ <img *ngIf="selectedCamera?.url" [src]="selectedCamera.url" 
+       alt="Stream en vivo" style="width:100%; max-width:600px;">
+
+</div>
+
 
         <!-- Panel de detalles: solo visible cuando se pulsa "Detalles" -->
         <div class="info" *ngIf="showDetails">

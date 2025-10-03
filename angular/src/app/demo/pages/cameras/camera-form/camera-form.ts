@@ -96,17 +96,29 @@ export class CameraForm implements OnInit {
     });
 
     // Modo edición
-    if (id) {
-      this.isEdit = true;
-      this.service.getById<{ success: boolean; data: any }>('Cameras', id).subscribe({
-        next: (response) => {
-          if (response?.success) this.initialData = response.data;
-        },
-        error: (err: Error) => {
-          Swal.fire('Error', err.message || 'No se pudo cargar la cámara.', 'error');
-        }
-      });
+   // modo edición (arreglo mínimo)
+if (id) {
+  this.isEdit = true;
+  this.service.getById<any>('Cameras', id).subscribe({
+    next: (camera) => {
+      // camera ya es el objeto (General desenvuelve)
+      // Normalizamos por si el backend devuelve parking como objeto anidado
+      const normalized: any = { ...camera };
+
+      if (!normalized.parkingId && normalized.parking && typeof normalized.parking === 'object') {
+        normalized.parkingId = normalized.parking.id ?? normalized.parkingId;
+      }
+
+      normalized.asset = Boolean(normalized.asset);
+
+      this.initialData = normalized;
+    },
+    error: (err: Error) => {
+      Swal.fire('Error', err.message || 'No se pudo cargar la cámara.', 'error');
     }
+  });
+}
+
   }
 
   save(data: any) {

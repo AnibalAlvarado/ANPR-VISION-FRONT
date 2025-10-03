@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @angular-eslint/prefer-inject */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { General } from 'src/app/generic/general.service';
-import { Person } from 'src/app/generic/Models/Entitys';
-import { PersonTempForm } from '../person-temp-form/person-temp-form';
+import { Person, Client } from 'src/app/generic/Models/Entitys';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-client-temp-form',
@@ -21,96 +20,68 @@ import { PersonTempForm } from '../person-temp-form/person-temp-form';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatSelectModule
+    MatButtonModule
   ],
   templateUrl: './client-temp-form.html',
   styleUrl: './client-temp-form.scss'
 })
-export class ClientTempForm implements OnInit {
+export class ClientTempForm {
   form: FormGroup;
-  people: any[] = [];
-  tempPerson: any = null;   // 🔹 guardamos persona temporal
 
   private service = inject(General);
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ClientTempForm>,
-    private dialog: MatDialog
+    private dialogRef: MatDialogRef<ClientTempForm>
   ) {
     this.form = this.fb.group({
-      name: ['', [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(50),
-        Validators.pattern('^[a-zA-ZÀ-ÿ\\s]+$')
-      ]],
-      personId: ['', Validators.required]
-    });
-  }
-
-  ngOnInit() {
-    // 🚀 cargar personas reales
-    this.service.get<Person[]>('Person/select').subscribe({
-      next: (items) => {
-        this.people = (items || []).map(p => ({
-          value: p.id,
-          label: `${p.firstName ?? ''} ${p.lastName ?? ''}`.trim()
-        }));
-      },
-      error: (err: Error) => {
-        console.error('Error cargando personas:', err);
-      }
+      // persona
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[a-zA-ZÀ-ÿ\\s]+$')]],
+      lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[a-zA-ZÀ-ÿ\\s]+$')]],
+      phoneNumber: ['', [Validators.pattern('^[0-9]{7,15}$')]],
+      // cliente
+      clientName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]]
     });
   }
 
   submit() {
-    if (this.form.valid) {
-      const data = this.form.value;
+    if (this.form.invalid) return;
 
-      // 🚀 si el personId es temporal, primero guardamos la persona en BD
-      if (String(data.personId).startsWith('temp-person-') && this.tempPerson) {
-        this.service.post<Person>('Person', this.tempPerson).subscribe({
-          next: (createdPerson) => {
-            // reemplazar id temporal con id real
-            data.personId = createdPerson.id;
-            this.dialogRef.close(data);
+    const { firstName, lastName, phoneNumber, clientName } = this.form.value;
+
+    // 🔹 Paso 1: Crear Persona
+    const personPayload: Partial<Person> = { firstName, lastName, phoneNumber };
+
+    this.service.post<Person>('Person', personPayload).subscribe({
+      next: (createdPerson) => {
+        // 🔹 Paso 2: Crear Cliente
+        const clientPayload: Partial<Client> = {
+          name: clientName,
+          personId: createdPerson.id
+        };
+
+        this.service.post<Client>('Client', clientPayload).subscribe({
+          next: (createdClient) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Cliente creado exitosamente',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            this.dialogRef.close(createdClient); // 🚀 devolvemos cliente
           },
           error: (err: Error) => {
-            console.error('Error creando persona temporal:', err);
+            Swal.fire('Error', err.message || 'No se pudo crear el cliente', 'error');
           }
         });
-      } else {
-        this.dialogRef.close(data);
+      },
+      error: (err: Error) => {
+        Swal.fire('Error', err.message || 'No se pudo crear la persona', 'error');
       }
-    }
+    });
   }
 
   close() {
     this.dialogRef.close();
-  }
-
-  // 🚀 Abrir modal de persona temporal
-  openPersonTempModal() {
-    const dialogRef = this.dialog.open(PersonTempForm, { width: '500px' });
-
-    dialogRef.afterClosed().subscribe((tempPerson) => {
-      if (tempPerson) {
-        const fakeId = `temp-person-${Date.now()}`;
-
-        // agregar opción temporal
-        this.people.push({
-          value: fakeId,
-          label: `${tempPerson.firstName} ${tempPerson.lastName}`
-        });
-
-        // asignar automáticamente
-        this.form.get('personId')?.setValue(fakeId);
-
-        // guardamos en memoria
-        this.tempPerson = tempPerson;
-      }
-    });
   }
 }

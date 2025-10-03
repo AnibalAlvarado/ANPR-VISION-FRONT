@@ -4,22 +4,7 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <div class="hero-text">
-        <div class="stats-bar">
-          <div class="stat-item">
-            <span class="stat-number">{{ getTotalZones() }}</span>
-            <span class="stat-label">Total</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ getActiveZones() }}</span>
-            <span class="stat-label">Activas</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ getDeletedZones() }}</span>
-            <span class="stat-label">Eliminadas</span>
-          </div>
-        </div>
-      </div>
+
       <div class="hero-actions">
         <button
           mat-fab
@@ -50,36 +35,7 @@
           </div>
         </div>
 
-        <div class="filter-chips">
-          <button
-            mat-stroked-button
-            [class.active]="selectedFilter === 'all'"
-            (click)="filterByStatus('all')"
-            class="filter-chip">
-            Todas
-          </button>
-          <button
-            mat-stroked-button
-            [class.active]="selectedFilter === 'active'"
-            (click)="filterByStatus('active')"
-            class="filter-chip">
-            Activas
-          </button>
-          <button
-            mat-stroked-button
-            [class.active]="selectedFilter === 'inactive'"
-            (click)="filterByStatus('inactive')"
-            class="filter-chip">
-            Inactivas
-          </button>
-          <button
-            mat-stroked-button
-            [class.active]="selectedFilter === 'deleted'"
-            (click)="filterByStatus('deleted')"
-            class="filter-chip deleted">
-            Eliminadas
-          </button>
-        </div>
+
       </div>
     </mat-card>
   </div>

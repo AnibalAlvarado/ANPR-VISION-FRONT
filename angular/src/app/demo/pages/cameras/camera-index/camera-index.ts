@@ -31,6 +31,7 @@ import Swal from 'sweetalert2';
 })
 export class CameraIndex implements OnInit {
   @ViewChild('detailsDrawer') detailsDrawer!: MatDrawer;
+  
 
   loadingCameras = false;
 

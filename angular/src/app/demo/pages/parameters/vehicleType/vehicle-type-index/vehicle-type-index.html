@@ -1,92 +1,76 @@
-<!-- HTML Template para Tipos de Vehículos -->
+<!-- HTML Template para Tipos de Vehículos - Vista Horizontal -->
 <div class="vehicle-type-container">
-  <!-- Header Section -->
-  <div class="header-section">
-    <button mat-raised-button color="primary" (click)="goToCreate()" class="create-btn">
-      <mat-icon>directions_car</mat-icon>
-      Nuevo Tipo de Vehículo
-    </button>
+  <!-- Toolbar Section -->
+  <div class="toolbar-section">
+    <mat-card class="toolbar-card">
+      <div class="toolbar-content">
+        <div class="controls-row">
+          <div class="controls-left">
+            <button
+              mat-fab
+              extended
+              color="primary"
+              class="create-parking-btn"
+              (click)="goToCreate()"
+              matTooltip="Registrar nuevo tipo de vehículo">
+              <mat-icon class="title-icon">directions_car</mat-icon>
+              Nuevo Tipo de vehículo
+            </button>
+          </div>
+
+          <div class="controls-center">
+            <div class="search-section">
+              <div class="search-wrapper">
+                <mat-icon class="search-icon">search</mat-icon>
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre o estado..."
+                  class="search-input"
+                  (keyup)="applyFilter($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
   </div>
 
-  <!-- Stats Section -->
-  <div class="stats-section">
-    <div class="stat-card">
-      <div class="stat-icon active">
-        <mat-icon>check_circle</mat-icon>
-      </div>
-      <div class="stat-content">
-        <h3>{{ getActiveVehicles() }}</h3>
-        <p>Tipos de Vehículos Activos</p>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon total">
-        <mat-icon>inventory</mat-icon>
-      </div>
-      <div class="stat-content">
-        <h3>{{ (dataSource?.data?.length || 0) }}</h3>
-        <p>Total de Tipos de Vehículos</p>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon deleted">
-        <mat-icon>delete_sweep</mat-icon>
-      </div>
-      <div class="stat-content">
-        <h3>{{ getDeletedVehicles() }}</h3>
-        <p>Eliminados</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vehicle Types Grid -->
-  <div class="vehicles-grid" *ngIf="(dataSource?.data?.length || 0) > 0">
-    <div *ngFor="let vehicle of (dataSource?.data || [])" class="vehicle-card"
+  <!-- Vehicles List - Horizontal Cards -->
+  <div class="vehicles-list" *ngIf="pagedData.length > 0">
+    <div *ngFor="let vehicle of pagedData"
+         class="vehicle-card-horizontal"
          [ngClass]="{'card-deleted': vehicle.isDeleted, 'card-inactive': !vehicle.asset}">
 
-      <!-- Vehicle Icon Background -->
-      <div class="vehicle-icon-bg">
+      <!-- Left Section: Icon -->
+      <div class="card-left">
         <div class="vehicle-icon" [ngClass]="getVehicleIconClass(vehicle.name)">
           <mat-icon>{{ getVehicleIcon(vehicle.name) }}</mat-icon>
         </div>
-
-        <!-- Status Overlay -->
-        <div class="status-overlay" *ngIf="vehicle.isDeleted">
-          <mat-icon>delete</mat-icon>
-        </div>
       </div>
 
-      <!-- Status Badge -->
-      <div class="status-badge" [ngClass]="vehicle.asset ? 'badge-active' : 'badge-inactive'">
-        <mat-icon class="status-icon">{{ vehicle.asset ? 'check_circle' : 'pause_circle_filled' }}</mat-icon>
-        <span>{{ vehicle.asset ? 'Activo' : 'Inactivo' }}</span>
-      </div>
+      <!-- Center Section: Content -->
+      <div class="card-center">
+        <div class="vehicle-info">
+          <h3 class="vehicle-name">{{ vehicle.name }}</h3>
 
-      <!-- Card Content -->
-      <div class="card-content">
-        <h3 class="vehicle-name">{{ vehicle.name }}</h3>
+          <div class="vehicle-meta">
+            <!-- Status Badge -->
+            <div class="status-badge" [ngClass]="vehicle.asset ? 'badge-active' : 'badge-inactive'">
+              <mat-icon class="status-icon">{{ vehicle.asset ? 'check_circle' : 'pause_circle_filled' }}</mat-icon>
+              <span>{{ vehicle.asset ? 'Activo' : 'Inactivo' }}</span>
+            </div>
 
-        <!-- Vehicle Details -->
-        <div class="vehicle-details">
-          <div class="detail-item">
-            <mat-icon class="detail-icon">info</mat-icon>
-            <span class="detail-label">Estado:</span>
-            <span class="detail-value" [ngClass]="vehicle.asset ? 'value-active' : 'value-inactive'">
-              {{ vehicle.asset ? 'Activo' : 'Inactivo' }}
-            </span>
-          </div>
-
-          <div class="detail-item" *ngIf="vehicle.isDeleted">
-            <mat-icon class="detail-icon warning">warning</mat-icon>
-            <span class="detail-label">Eliminado lógicamente</span>
+            <!-- Deleted Warning -->
+            <div class="deleted-warning" *ngIf="vehicle.isDeleted">
+              <mat-icon class="warning-icon">warning</mat-icon>
+              <span>Eliminado lógicamente</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Card Actions -->
-      <div class="card-actions">
+      <!-- Right Section: Actions -->
+      <div class="card-right">
         <button mat-icon-button
                 class="action-btn edit-btn"
                 (click)="goToEdit(vehicle)"
@@ -105,27 +89,37 @@
           <mat-icon>delete</mat-icon>
         </button>
 
-        <!-- Botón de eliminación permanente - solo visible si está eliminado lógicamente -->
         <button *ngIf="vehicle.isDeleted"
                 mat-icon-button
-                class="action-btn danger-btn permanent-delete"
+                class="action-btn danger-btn"
                 (click)="deletePermanentTypeVehicle(vehicle.id)"
-                matTooltip="Eliminar permanentemente - Esta acción no se puede deshacer"
+                matTooltip="Eliminar permanentemente"
                 aria-label="Eliminar Permanentemente">
           <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
 
-      <!-- Deleted Indicator -->
-      <div class="deleted-indicator" *ngIf="vehicle.isDeleted">
-        <mat-icon>delete_forever</mat-icon>
-        <span>Eliminado</span>
+      <!-- Deleted Overlay -->
+      <div class="deleted-overlay" *ngIf="vehicle.isDeleted">
+        <div class="deleted-label">
+          <mat-icon>delete_forever</mat-icon>
+          <span>ELIMINADO</span>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Paginador -->
+  <mat-paginator
+    [length]="dataSource.data.length"
+    [pageSizeOptions]="[5, 10, 20]"
+    [pageSize]="5"
+    showFirstLastButtons
+    (page)="onPageChange($event)">
+  </mat-paginator>
+
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="(dataSource?.data?.length || 0) === 0">
+  <div class="empty-state" *ngIf="dataSource.data.length === 0">
     <div class="empty-animation">
       <div class="membership-animation">
         <mat-icon>directions_car</mat-icon>

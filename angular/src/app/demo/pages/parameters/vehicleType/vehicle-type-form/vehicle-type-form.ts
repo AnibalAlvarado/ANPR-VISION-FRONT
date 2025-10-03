@@ -49,12 +49,11 @@ export class VehicleTypeForm implements OnInit {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit = true;
-      this.service.getById<{ success: boolean; data: VehicleType }>('TypeVehicle', id)
-        .subscribe(response => {
-          if (response.success) {
-            this.initialData = response.data;
-          }
-        });
+     this.service.getById<VehicleType>('TypeVehicle', id)
+      .subscribe(vehicle => {
+        this.initialData = vehicle;
+      });
+
     }
   }
 
