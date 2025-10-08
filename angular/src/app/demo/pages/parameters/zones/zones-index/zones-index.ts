@@ -40,7 +40,15 @@ export class ZonesIndex implements OnInit {
   }
 
   getAllZones(): void {
-    this._generalService.get<Zones[]>('Zones/join').subscribe({
+    const parkingId = this._generalService.getParkingId();
+
+     if (!parkingId) {
+    Swal.fire('Error', 'No se encontró el ParkingId en localStorage.', 'error');
+    this.originalData = [];
+    this.dataSource.data = [];
+    return;
+  }
+    this._generalService.get<Zones[]>('Zones/by-parking/' + parkingId).subscribe({
       next: (zones) => {
         this.originalData = zones || [];
         this.dataSource.data = zones || [];

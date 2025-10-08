@@ -31,7 +31,7 @@ import Swal from 'sweetalert2';
 })
 export class CameraIndex implements OnInit {
   @ViewChild('detailsDrawer') detailsDrawer!: MatDrawer;
-  
+
 
   loadingCameras = false;
 
@@ -43,6 +43,7 @@ export class CameraIndex implements OnInit {
   private deleting = false;
 
   private readonly ENDPOINTS = {
+    byParking: 'Cameras/by-parking',
     camerasJoin: 'Cameras/join',
     softDelete: 'Cameras',             // DELETE {base}/Cameras/{id}
     hardDelete: 'Cameras/permanent'    // DELETE {base}/Cameras/permanent/{id}
@@ -56,30 +57,69 @@ export class CameraIndex implements OnInit {
 
   ngOnInit(): void { this.loadCameras(); }
 
-  loadCameras(): void {
-    this.loadingCameras = true;
-    this._generalService.get<Camera[]>(this.ENDPOINTS.camerasJoin).subscribe({
-      next: (items) => {
-        const data = items || [];
-        this.cameras = data;
-        this.filteredCameras = [...data];
+  // loadCameras(): void {
+  //   this.loadingCameras = true;
+  //   this._generalService.get<Camera[]>(this.ENDPOINTS.camerasJoin).subscribe({
+  //     next: (items) => {
+  //       const data = items || [];
+  //       this.cameras = data;
+  //       this.filteredCameras = [...data];
 
-        if (this.selectedCamera) {
-          const keep = this.cameras.find(c => c.id === this.selectedCamera!.id);
-          this.selectedCamera = keep ?? this.cameras[0] ?? null;
-        } else {
-          this.selectedCamera = this.cameras[0] ?? null;
-        }
-        this.showDetails = false;
-      },
-      error: (err: Error) => {
-        this._snack.open(err.message || 'No se pudieron cargar las cámaras.', 'Cerrar', { duration: 3500 });
-        this.cameras = []; this.filteredCameras = []; this.selectedCamera = null;
-        this.showDetails = false;
-      },
-      complete: () => this.loadingCameras = false
-    });
+  //       if (this.selectedCamera) {
+  //         const keep = this.cameras.find(c => c.id === this.selectedCamera!.id);
+  //         this.selectedCamera = keep ?? this.cameras[0] ?? null;
+  //       } else {
+  //         this.selectedCamera = this.cameras[0] ?? null;
+  //       }
+  //       this.showDetails = false;
+  //     },
+  //     error: (err: Error) => {
+  //       this._snack.open(err.message || 'No se pudieron cargar las cámaras.', 'Cerrar', { duration: 3500 });
+  //       this.cameras = []; this.filteredCameras = []; this.selectedCamera = null;
+  //       this.showDetails = false;
+  //     },
+  //     complete: () => this.loadingCameras = false
+  //   });
+  // }
+
+  loadCameras(): void {
+  this.loadingCameras = true;
+
+  // ✅ Obtén el parkingId desde localStorage
+  const parkingId = this._generalService.getParkingId();
+
+  if (!parkingId) {
+    this._snack.open('No se encontró el ParkingId en localStorage.', 'Cerrar', { duration: 3000 });
+    this.loadingCameras = false;
+    return;
   }
+
+  // Llamar al endpoint correcto
+  this._generalService.get<Camera[]>(`${this.ENDPOINTS.byParking}/${parkingId}`).subscribe({
+    next: (items) => {
+      const data = items || [];
+      this.cameras = data;
+      this.filteredCameras = [...data];
+
+      if (this.selectedCamera) {
+        const keep = this.cameras.find(c => c.id === this.selectedCamera!.id);
+        this.selectedCamera = keep ?? this.cameras[0] ?? null;
+      } else {
+        this.selectedCamera = this.cameras[0] ?? null;
+      }
+
+      this.showDetails = false;
+    },
+    error: (err: Error) => {
+      this._snack.open(err.message || 'No se pudieron cargar las cámaras.', 'Cerrar', { duration: 3500 });
+      this.cameras = [];
+      this.filteredCameras = [];
+      this.selectedCamera = null;
+      this.showDetails = false;
+    },
+    complete: () => this.loadingCameras = false
+  });
+}
 
   refresh(): void { this.loadCameras(); }
 

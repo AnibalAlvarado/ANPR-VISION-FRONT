@@ -14,6 +14,7 @@ interface AuthData {
   userId: number;
   token: string;
   roles: string[];
+  personId: number;
   // agrega otros campos si tu back los envía en data
 }
 
@@ -89,6 +90,7 @@ export class SignInComponent {
         localStorage.setItem('userRoles', JSON.stringify(data.roles ?? []));
         localStorage.setItem('username', this.LoginDto.username);
         localStorage.setItem('userId', JSON.stringify(data.userId));
+        localStorage.setItem('personId',JSON.stringify(data.personId)); // si usas personId igual que userId
 
         Swal.fire({
           icon: 'success',
@@ -97,7 +99,7 @@ export class SignInComponent {
           timer: 1500,
           showConfirmButton: false
         }).then(() => {
-          this.router.navigate(['/analytics']);
+          this.router.navigate(['/select-parking']);
         });
       },
       error: (err: Error) => {

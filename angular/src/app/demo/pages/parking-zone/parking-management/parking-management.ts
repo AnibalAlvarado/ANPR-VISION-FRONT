@@ -15,6 +15,7 @@ import { Zones } from '../../parameters/zones/zones';
 import { General } from 'src/app/generic/general.service';
 import { Sectors } from '../../parameters/sectors/sectors';
 import { Slots } from '../../parameters/slots/slots';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-parking-management',
@@ -66,7 +67,14 @@ export class ParkingManagement implements OnInit {
 
   // --- ZONES ---
   getAllZones(): void {
-    this._generalService.get<Zones[]>('Zones/join').subscribe({
+    const parkingId = this._generalService.getParkingId();
+    if (!parkingId) {
+      Swal.fire('Error', 'No se encontró el ParkingId en localStorage.', 'error');
+      this.zones = [];
+      return;
+    }
+
+    this._generalService.get<Zones[]>('Zones/by-parking/' + parkingId).subscribe({
       next: (zones) => {
         this.zones = zones ?? [];
         if (this.zones.length > 0) this.selectZone(this.zones[0]);

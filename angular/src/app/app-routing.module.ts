@@ -55,6 +55,7 @@ import { MemberShipsForm } from './demo/pages/operational/memberShips/member-shi
 import { RatesIndex } from './demo/pages/operational/rates/rates-index/rates-index';
 import { RatesForm } from './demo/pages/operational/rates/rates-form/rates-form';
 import { Configuration } from './demo/configuration/configuration/configuration';
+import { SelectParking } from './demo/pages/authentication/select-parking/select-parking';
 
 const routes: Routes = [
   {
@@ -182,6 +183,7 @@ const routes: Routes = [
         path: 'login',
         loadComponent: () => import('./demo/pages/authentication/sign-in/sign-in.component').then((c) => c.SignInComponent)
       },
+      {path: 'select-parking', component: SelectParking},
       {path: 'reset-password', component: ResetPassword},
 
     ]

@@ -130,3 +130,15 @@ export interface OccupancyEnvelope {
   data?: { occupied?: number; total?: number; percentage?: number; free?: number };
   occupied?: number; total?: number; percentage?: number; free?: number;
 }
+
+export interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  type: string;           // Ejemplo: "Info", "Warning", "Success"
+  isRead: boolean;
+  relatedEntityId?: number; // opcional
+  parkingId: number;
+  createdAt?: string;       // si en el backend añadimos fecha
+}
+

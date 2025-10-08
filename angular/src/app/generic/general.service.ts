@@ -35,6 +35,14 @@ export class General {
     return localStorage.getItem('userId');
   }
 
+  getPersonId(): string | null {
+    return localStorage.getItem('personId');
+  }
+
+  getParkingId(): string | null {
+    return localStorage.getItem('parkingId');
+  }
+
   // ---------- Helpers ----------
   private extractDataOrThrow<T>(res: any): T {
     // Si el back envuelve como ApiResponse<T>
