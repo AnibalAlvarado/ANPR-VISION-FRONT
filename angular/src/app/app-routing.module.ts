@@ -1,61 +1,62 @@
 // Angular Import
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminComponent } from './layout/admin/admin.component';
+import { PersonIndex } from './features/segurity/pages/person/person-index/person-index';
+import { PersonPrueba } from './features/segurity/pages/person/person-prueba/person-prueba';
+import { RoleIndex } from './features/segurity/pages/role/role-index/role-index';
+import { RoleForm } from './features/segurity/pages/role/role-form/role-form';
+import { UserIndex } from './features/segurity/pages/user/user-index/user-index';
+import { UserForm } from './features/segurity/pages/user/user-form/user-form';
+import { ModuleIndex } from './features/segurity/pages/module/module-index/module-index';
+import { FormIndex } from './features/segurity/pages/form/form-index/form-index';
+import { ModuleForm } from './features/segurity/pages/module/module-form/module-form';
+import { FormForm } from './features/segurity/pages/form/form-form/form-form';
+import { PermissionForm } from './features/segurity/pages/permission/permission-form/permission-form';
+import { PermissionIndex } from './features/segurity/pages/permission/permission-index/permission-index';
+import { FormModuleIndex } from './features/segurity/pages/form-module/form-module-index/form-module-index';
+import { FormModuleForm } from './features/segurity/pages/form-module/form-module-form/form-module-form';
+import { RolFormPerIndex } from './features/segurity/pages/rolFormPermission/rol-form-per-index/rol-form-per-index';
+import { ProfileIndex } from './features/segurity/pages/profile/profile-index/profile-index';
+import { VehicleTypeForm } from './features/parameters/pages/vehicleType/vehicle-type-form/vehicle-type-form';
+import { VehicleTypeIndex } from './features/parameters/pages/vehicleType/vehicle-type-index/vehicle-type-index';
+import { RolFormPerForm } from './features/segurity/pages/rolFormPermission/rol-form-per-form/rol-form-per-form';
+import { MembershipsTypeIndex } from './features/parameters/pages/membershipsType/memberships-type-index/memberships-type-index';
+import { MembershipsTypeForm } from './features/parameters/pages/membershipsType/memberships-type-form/memberships-type-form';
+import { RateTypeIndex } from './features/parameters/pages/ratesType/rate-type-index/rate-type-index';
+import { RateTypeForm } from './features/parameters/pages/ratesType/rate-type-form/rate-type-form';
+import { BackListIndex } from './features/segurity/pages/backlist/back-list-index/back-list-index';
+import { ZonesIndex } from './features/parameters/pages/zones/zones-index/zones-index';
+import { ZonesForm } from './features/parameters/pages/zones/zones-form/zones-form';
+import { ParkingIndex } from './features/parameters/pages/parking/parking-index/parking-index';
+import { ParkingForm } from './features/parameters/pages/parking/parking-form/parking-form';
+import { ParkingCategoryIndex } from './features/parameters/pages/parkingCategory/parking-category-index/parking-category-index';
+import { ParkingCategoryForm } from './features/parameters/pages/parkingCategory/parking-category-form/parking-category-form';
+import { SectorsIndex } from './features/parameters/pages/sectors/sectors-index/sectors-index';
+import { SectorsForm } from './features/parameters/pages/sectors/sectors-form/sectors-form';
+import { SlotsIndex } from './features/parameters/pages/slots/slots-index/slots-index';
+import { SlotsForm } from './features/parameters/pages/slots/slots-form/slots-form';
+import { VehicleIndex } from './features/operational/pages/vehicles/vehicle-index/vehicle-index';
+import { Configuration } from './features/configuration/configuration/configuration';
+import { RatesForm } from './features/operational/pages/rates/rates-form/rates-form';
+import { RatesIndex } from './features/operational/pages/rates/rates-index/rates-index';
+import { MemberShipsForm } from './features/operational/pages/memberShips/member-ships-form/member-ships-form';
+import { MemberShipsIndex } from './features/operational/pages/memberShips/member-ships-index/member-ships-index';
+import { CameraForm } from './features/cameras/camera-form/camera-form';
+import { CameraIndex } from './features/cameras/camera-index/camera-index';
+import { BlackListForm } from './features/segurity/pages/backlist/black-list-form/black-list-form';
+import { VehicleForm } from './features/operational/pages/vehicles/vehicle-form/vehicle-form';
+import { ParkingManagement } from './features/parking/pages/parking-management/parking-management';
+import { RegisteredVehicleIndex } from './features/operational/pages/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
+import { ClientIndex } from './features/segurity/pages/client/client-index/client-index';
+import { ClientForm } from './features/segurity/pages/client/client-form/client-form';
+import { HelpCenterComponent } from './features/help/help-center.component';
+import { GuestComponent } from './layout/guest/guest.component';
+import { SelectParking } from './features/parking/pages/select-parking/select-parking';
+import { ResetPasswordComponent } from './features/authentication/pages/reset-password/reset-password';
 
 // project import
-import { AdminComponent } from './theme/layout/admin/admin.component';
-import { GuestComponent } from './theme/layout/guest/guest.component';
-import { RoleForm } from './demo/pages/segurity/role/role-form/role-form';
-import { RoleIndex } from './demo/pages/segurity/role/role-index/role-index';
-import { PersonIndex } from './demo/pages/segurity/person/person-index/person-index';
-import { UserIndex } from './demo/pages/segurity/user/user-index/user-index';
-import { UserForm } from './demo/pages/segurity/user/user-form/user-form';
-import { PersonPrueba } from './demo/pages/segurity/person/person-prueba/person-prueba';
-import { ModuleIndex } from './demo/pages/segurity/module/module-index/module-index';
-import { ModuleForm } from './demo/pages/segurity/module/module-form/module-form';
-import { FormIndex } from './demo/pages/segurity/form/form-index/form-index';
-import { FormForm } from './demo/pages/segurity/form/form-form/form-form';
-import { PermissionIndex } from './demo/pages/segurity/permission/permission-index/permission-index';
-import { PermissionForm } from './demo/pages/segurity/permission/permission-form/permission-form';
-import { FormModuleIndex } from './demo/pages/segurity/form-module/form-module-index/form-module-index';
-import { FormModuleForm } from './demo/pages/segurity/form-module/form-module-form/form-module-form';
-import { RolFormPerIndex } from './demo/pages/segurity/rolFormPermission/rol-form-per-index/rol-form-per-index';
-import { RolFormPerForm } from './demo/pages/segurity/rolFormPermission/rol-form-per-form/rol-form-per-form';
-import { MembershipsTypeIndex } from './demo/pages/parameters/membershipsType/memberships-type-index/memberships-type-index';
-import { MembershipsTypeForm } from './demo/pages/parameters/membershipsType/memberships-type-form/memberships-type-form';
-import { ProfileIndex } from './demo/pages/segurity/profile/profile-index/profile-index';
-import { VehicleTypeIndex } from './demo/pages/parameters/vehicleType/vehicle-type-index/vehicle-type-index';
-import { VehicleTypeForm } from './demo/pages/parameters/vehicleType/vehicle-type-form/vehicle-type-form';
-import { RateTypeIndex } from './demo/pages/parameters/ratesType/rate-type-index/rate-type-index';
-import { RateTypeForm } from './demo/pages/parameters/ratesType/rate-type-form/rate-type-form';
-import { ParkingCategoryIndex } from './demo/pages/parameters/parkingCategory/parking-category-index/parking-category-index';
-import { ParkingCategoryForm } from './demo/pages/parameters/parkingCategory/parking-category-form/parking-category-form';
-import { BackListIndex } from './demo/pages/segurity/backlist/back-list-index/back-list-index';
-import { ZonesIndex } from './demo/pages/parameters/zones/zones-index/zones-index';
-import { ZonesForm } from './demo/pages/parameters/zones/zones-form/zones-form';
-import { ParkingForm } from './demo/pages/parameters/parking/parking-form/parking-form';
-import { ParkingIndex } from './demo/pages/parameters/parking/parking-index/parking-index';
-import { SectorsIndex } from './demo/pages/parameters/sectors/sectors-index/sectors-index';
-import { SectorsForm } from './demo/pages/parameters/sectors/sectors-form/sectors-form';
-import { SlotsIndex } from './demo/pages/parameters/slots/slots-index/slots-index';
-import { SlotsForm } from './demo/pages/parameters/slots/slots-form/slots-form';
-import { VehicleIndex } from './demo/pages/operational/vehicles/vehicle-index/vehicle-index';
-import { VehicleForm } from './demo/pages/operational/vehicles/vehicle-form/vehicle-form';
-import { ParkingManagement } from './demo/pages/parking-zone/parking-management/parking-management';
-import { RegisteredVehicleIndex } from './demo/pages/operational/registeredVehicle/registered-vehicle-index/registered-vehicle-index';
-import { HelpCenterComponent } from './help/help-center.component';
-import { ResetPassword } from './demo/pages/authentication/reset-password/reset-password';
-import { ClientIndex } from './demo/pages/segurity/client/client-index/client-index';
-import { ClientForm } from './demo/pages/segurity/client/client-form/client-form';
-import { BlackListForm } from './demo/pages/segurity/backlist/black-list-form/black-list-form';
-import { CameraIndex } from './demo/pages/cameras/camera-index/camera-index';
-import { CameraForm } from './demo/pages/cameras/camera-form/camera-form';
-import { MemberShipsIndex } from './demo/pages/operational/memberShips/member-ships-index/member-ships-index';
-import { MemberShipsForm } from './demo/pages/operational/memberShips/member-ships-form/member-ships-form';
-import { RatesIndex } from './demo/pages/operational/rates/rates-index/rates-index';
-import { RatesForm } from './demo/pages/operational/rates/rates-form/rates-form';
-import { Configuration } from './demo/configuration/configuration/configuration';
-import { SelectParking } from './demo/pages/authentication/select-parking/select-parking';
+
 
 const routes: Routes = [
   {
@@ -69,7 +70,7 @@ const routes: Routes = [
       },
       {
         path: 'analytics',
-        loadComponent: () => import('./demo/dashboard/dash-analytics.component').then((c) => c.DashAnalyticsComponent)
+        loadComponent: () => import('./features/dashboard/dash-analytics.component').then((c) => c.DashAnalyticsComponent)
       },
       {
         path: 'persons-index',
@@ -152,7 +153,7 @@ const routes: Routes = [
 
       {
         path: 'component',
-        loadChildren: () => import('./demo/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
+        loadChildren: () => import('./shared/components/ui-element/ui-basic.module').then((m) => m.UiBasicModule)
       },
       // {
       //   path: 'chart',
@@ -163,7 +164,7 @@ const routes: Routes = [
 
       {
         path: 'zonas-parqueadero',
-        loadComponent : ()=> import('./demo/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
+        loadComponent : ()=> import('./features/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
       },
       {
         path: 'help-center',
@@ -177,14 +178,14 @@ const routes: Routes = [
     children: [
       {
         path: 'register',
-        loadComponent: () => import('./demo/pages/authentication/sign-up/sign-up.component').then((c) => c.SignUpComponent)
+        loadComponent: () => import('./features/authentication/pages/sign-up/sign-up.component').then((c) => c.SignUpComponent)
       },
       {
         path: 'login',
-        loadComponent: () => import('./demo/pages/authentication/sign-in/sign-in.component').then((c) => c.SignInComponent)
+        loadComponent: () => import('./features/authentication/pages/sign-in/sign-in.component').then((c) => c.SignInComponent)
       },
       {path: 'select-parking', component: SelectParking},
-      {path: 'reset-password', component: ResetPassword},
+      {path: 'reset-password', component: ResetPasswordComponent},
 
     ]
   }
