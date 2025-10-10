@@ -99,6 +99,9 @@ export class DashAnalyticsComponent implements OnInit {
   // Distribución por tipo
   vehicleTypeTotal = 0;
 
+  // Parking
+  parkingId: string | null = null;
+
   // Zonas
   zones: ZoneOption[] = [];
   selectedZoneId: number | null = null;
@@ -347,6 +350,8 @@ export class DashAnalyticsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+
+    this.parkingId = this.service.getParkingId();
     // tipos de vehículo
     this.service.get<{ data: VehicleType[] }>('TypeVehicle/select').subscribe(res => {
       if (res?.data) this.vehicleTypes = res.data.map(item => ({ value: item.id, label: item.name }));
@@ -370,9 +375,9 @@ export class DashAnalyticsComponent implements OnInit {
       .pipe(
         switchMap(() =>
           forkJoin({
-            total: this.service.get<TotalEnvelope | any>('RegisteredVehicles/current/total-global').pipe(catchError(() => of(null))),
-            occupancy: this.service.get<OccupancyEnvelope | any>('Slots/occupancy/global').pipe(catchError(() => of(null))),
-            distribution: this.service.get<any>('RegisteredVehicles/distribution/types/global?includeZeros=true').pipe(catchError(() => of(null))),
+            total: this.service.get<TotalEnvelope | any>(`Dashboard/current/parked-vehicles/total?parkingId=${this.parkingId}`).pipe(catchError(() => of(null))),
+            occupancy: this.service.get<OccupancyEnvelope | any>(`Dashboard/occupancy/global?parkingId=${this.parkingId}`).pipe(catchError(() => of(null))),
+            distribution: this.service.get<any>(`Dashboard/distribution/types/global?parkingId=${this.parkingId}&includeZeros=true`).pipe(catchError(() => of(null))),
             zoneOcc: this.selectedZoneId ? this.getZoneOcc$(this.selectedZoneId).pipe(catchError(() => of(null))) : of(null)
           })
         ),
@@ -430,7 +435,7 @@ export class DashAnalyticsComponent implements OnInit {
 
   /** Payload robusto para: {data:[...]}, {data:{data:[...]}}, o el array directo */
   private loadZones() {
-    this.service.get<any>('Zones/select').subscribe({
+    this.service.get<any>(`Zones/by-parking/${this.parkingId}`).subscribe({
       next: (res) => {
         const arr: any[] =
           Array.isArray(res?.data) ? res.data :
