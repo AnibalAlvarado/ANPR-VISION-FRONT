@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 })
 export class RegisteredVehicleIndex implements OnInit {
   dataSource = new MatTableDataSource<RegisteredVehicle>();
+  parkingId: string | null = null;
   originalData: RegisteredVehicle[] = [];
   selectedFilter: string = 'all';
 
@@ -39,11 +40,12 @@ export class RegisteredVehicleIndex implements OnInit {
   private router = inject(Router);
 
   ngOnInit(): void {
+    this.parkingId = this._generalService.getParkingId();
     this.getAllRegisteredVehicles();
   }
 
   getAllRegisteredVehicles(): void {
-    this._generalService.get<RegisteredVehicle[]>('RegisteredVehicles/join').subscribe({
+    this._generalService.get<RegisteredVehicle[]>('RegisteredVehicles').subscribe({
       next: (items) => {
         this.originalData = items || [];
         this.dataSource.data = this.originalData;

@@ -6,9 +6,6 @@ import { Component, viewChild, TemplateRef, inject, OnInit, ViewChild } from '@a
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// project import
-
-// 3rd party import
 import {
   ApexOptions,
   ChartComponent,
@@ -36,7 +33,7 @@ import { DashboardCard, Client, TotalEnvelope, OccupancyEnvelope } from 'src/app
 import { SharedModule } from 'src/app/shared/shared.module';
 import { VehicleType } from '../parameters/pages/vehicleType/vehicle-type';
 
-/** Tipado donuts/pies */
+/** Tipado auxiliar para gráficos tipo donut o pie */
 type NonAxisChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
@@ -48,9 +45,13 @@ type NonAxisChartOptions = {
   colors?: string[];
   stroke?: ApexStroke;
 };
-
+/** Tipado auxiliar para opciones de zona */
 type ZoneOption = { value: number; label: string };
-
+/**
+ * Componente principal del dashboard analítico.
+ * Muestra información visual sobre ocupación de parqueaderos,
+ * distribución por tipo de vehículo y estado de zonas.
+ */
 @Component({
   selector: 'app-dash-analytics',
   imports: [
@@ -66,9 +67,10 @@ type ZoneOption = { value: number; label: string };
   styleUrls: ['./dash-analytics.component.scss']
 })
 export class DashAnalyticsComponent implements OnInit {
-  /**
-   * Paleta suavizada — menos saturada que antes.
-   * Si quieres aún más apagado, baja los valores hex o usa opacidades más altas en stroke/fill.
+
+   /**
+   * 🎨 Paleta de colores suaves para mantener coherencia visual.
+   * Usada en los gráficos y tarjetas.
    */
   private softPalette = {
     primary: '#5aa8c8',      // azul suave, menos vivo
@@ -78,8 +80,7 @@ export class DashAnalyticsComponent implements OnInit {
     purple: '#9b86d6',       // morado suave
     neutral: '#98a3ad'       // texto/leyendas muted
   };
-
-  // paleta para pies con varias categorías (desaturadas)
+   /** Colores alternativos para gráficos de distribución */
   private piePalette = [
     '#d8b46a', // amarillo suave
     '#5aa8c8', // azul suave
@@ -88,29 +89,33 @@ export class DashAnalyticsComponent implements OnInit {
     '#9b86d6', // morado suave
     '#ffb4aa'  // coral muy suave
   ];
-
+   /** Datos de formulario modal */
   formData: any = {};
+   /** Listas de selección */
   vehicleTypes: { value: number; label: string }[] = [];
   clients: { value: number; label: string }[] = [];
 
-  // Global
+   /** Ocupación global */
   capacity = { occupied: 0, total: 0, free: 0, percentage: 0 };
 
-  // Distribución por tipo
+    /** Total de vehículos por tipo */
   vehicleTypeTotal = 0;
 
-  // Parking
+   /** ID del parqueadero activo */
   parkingId: string | null = null;
 
-  // Zonas
+    /** Información de zonas */
   zones: ZoneOption[] = [];
   selectedZoneId: number | null = null;
   zoneCapacity = { id: 0, name: '', occupied: 0, total: 0, free: 0, percentage: 0 };
-
+    /** Control de ciclo de vida RxJS */
   private destroy$ = new Subject<void>();
+
+  /** Servicio general para peticiones HTTP */
   private service = inject(General);
 
-  // templates
+
+  // ==================== REFERENCIAS A PLANTILLAS Y GRÁFICOS ====================
   @ViewChild('vehicleFormModal') vehicleFormModal!: TemplateRef<any>;
   @ViewChild('secondModal') secondModal!: TemplateRef<any>;
 
@@ -118,13 +123,14 @@ export class DashAnalyticsComponent implements OnInit {
   chartDB: any;
   chart = viewChild<ChartComponent>('chart');
   customerChart = viewChild<ChartComponent>('customerChart');
+   /** Configuraciones de los diferentes gráficos ApexCharts */
   chartOptions!: Partial<ApexOptions>;
   chartOptions_1!: Partial<ApexOptions>;
   chartOptions_2!: Partial<ApexOptions>;
   chartOptions_3!: Partial<ApexOptions>;
 
 
-  // Donut global (suavizado)
+    // ==================== CONFIGURACIÓN DE DONUTS / PIES ====================
   occupancyDonutOptions: NonAxisChartOptions = {
     series: [0.0001, 0.0001],
     chart: {
@@ -171,7 +177,7 @@ export class DashAnalyticsComponent implements OnInit {
   };
 
 
-  // Pie distribución por tipo (suavizado)
+    /** Gráfico de distribución por tipo de vehículo */
   vehicleTypePieOptions: NonAxisChartOptions = {
     series: [1],
     chart: { type: 'pie', height: 240, toolbar: { show: false } },
@@ -203,7 +209,7 @@ export class DashAnalyticsComponent implements OnInit {
   };
 
 
-  // Donut por zona (suavizado)
+    /** Donut de ocupación por zona */
   zoneDonutOptions: NonAxisChartOptions = {
     series: [0.0001, 0.0001],
     chart: { type: 'donut', height: 240, toolbar: { show: false } },
@@ -248,7 +254,10 @@ export class DashAnalyticsComponent implements OnInit {
 
   constructor(private dialog: MatDialog) {
 
-    // tus charts demo (lineas suavizadas y colores desaturados)
+    /**
+     * Inicialización de gráficos demo.
+     * En producción, se reemplazan por datos reales del backend.
+     */
     this.chartOptions = {
       chart: { height: 205, type: 'line', toolbar: { show: false } },
       dataLabels: { enabled: false },
@@ -341,16 +350,18 @@ export class DashAnalyticsComponent implements OnInit {
     };
   }
 
-  // Cards
+   /** Tarjetas principales del dashboard */
   cards: DashboardCard[] = [
     { id: 'currentVehicles', background: 'bg-c-blue', title: 'Vehículos estacionados hoy', icon: 'fas fa-car', number: '—' },
     { id: 'dailyRevenue', background: 'bg-c-green', title: 'Ingresos del día', icon: 'fas fa-dollar-sign', number: '—' },
     { id: 'availableSlots', background: 'bg-c-yellow', title: 'Slots disponibles', icon: 'fas fa-draw-polygon', number: '—' },
     // { id: 'activeMemberships', background: 'bg-c-red', title: 'Membresías activas', icon: 'fas fa-credit-card', number: '—' }
   ];
-
+    // ===========================================================
+  // ==================== CICLO DE VIDA ========================
+  // ===========================================================
   ngOnInit(): void {
-
+     // Obtener parkingId actual desde el servicio
     this.parkingId = this.service.getParkingId();
     // tipos de vehículo
     this.service.get<{ data: VehicleType[] }>('TypeVehicle/select').subscribe(res => {

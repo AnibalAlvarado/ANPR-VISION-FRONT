@@ -162,10 +162,7 @@ const routes: Routes = [
 
 
 
-      {
-        path: 'zonas-parqueadero',
-        loadComponent : ()=> import('./features/zonas/zonas-parqueadero/zonas.parqueadero.component').then((c) => c.ZonasParqueadero)
-      },
+
       {
         path: 'help-center',
         component: HelpCenterComponent

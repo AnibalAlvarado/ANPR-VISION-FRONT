@@ -75,7 +75,7 @@ export class ParkingManagement implements OnInit {
       return;
     }
 
-    this._generalService.get<Zones[]>('Zones/by-parking/' + parkingId).subscribe({
+    this._generalService.get<Zones[]>('Zones').subscribe({
       next: (zones) => {
         this.zones = zones ?? [];
         if (this.zones.length > 0) this.selectZone(this.zones[0]);

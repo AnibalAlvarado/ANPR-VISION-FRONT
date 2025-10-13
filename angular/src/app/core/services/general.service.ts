@@ -91,33 +91,90 @@ export class General {
   }
 
   // ---------- Métodos públicos ----------
-  get<T>(endpoint: string, params?: HttpParams): Observable<T> {
-    return this.http
-      .get(`${this.baseUrl}/${endpoint}`, { params })
-      .pipe(this.handle<T>());
-  }
+//   get<T>(endpoint: string, params?: HttpParams): Observable<T> {
+//     return this.http
+//       .get(`${this.baseUrl}/${endpoint}`, { params })
+//       .pipe(this.handle<T>());
+//   }
 
+//   getById<T>(endpoint: string, id: number | string): Observable<T> {
+//     return this.http
+//       .get(`${this.baseUrl}/${endpoint}/${id}`)
+//       .pipe(this.handle<T>());
+//   }
+
+//   getByParking<T>(endpoint: string): Observable<T> {
+//   const parkingId = this.getParkingId();
+
+//   if (!parkingId) {
+//     throw new Error('No se encontró el parkingId en el almacenamiento local.');
+//   }
+
+//   const url = `${this.baseUrl}/${endpoint}/by-parking/${parkingId}`;
+//   return this.http.get(url).pipe(this.handle<T>());
+// }
+
+//   post<T>(endpoint: string, body: unknown): Observable<T> {
+//     return this.http
+//       .post(`${this.baseUrl}/${endpoint}`, body)
+//       .pipe(this.handle<T>());
+//   }
+
+//   put<T>(endpoint: string, body: unknown): Observable<T> {
+//     return this.http
+//       .put(`${this.baseUrl}/${endpoint}`, body)
+//       .pipe(this.handle<T>());
+//   }
+
+//   delete<T>(endpoint: string, id: number | string): Observable<T> {
+//     return this.http
+//       .delete(`${this.baseUrl}/${endpoint}/${id}`)
+//       .pipe(this.handle<T>());
+//   }
+
+// ---------- Métodos públicos ----------
+get<T>(endpoint: string, params?: HttpParams): Observable<T> {
+  const url = this.buildUrlWithParking(endpoint);
+  return this.http.get(url, { params }).pipe(this.handle<T>());
+}
   getById<T>(endpoint: string, id: number | string): Observable<T> {
-    return this.http
-      .get(`${this.baseUrl}/${endpoint}/${id}`)
-      .pipe(this.handle<T>());
+    const url = this.buildUrlWithParking(`${endpoint}/${id}`);
+    return this.http.get(url).pipe(this.handle<T>());
   }
+post<T>(endpoint: string, body: unknown, options?: any): Observable<T> {
+  const url = this.buildUrlWithParking(endpoint);
+  return this.http.post<T>(url, body, options).pipe(this.handle<T>());
+}
 
-  post<T>(endpoint: string, body: unknown): Observable<T> {
-    return this.http
-      .post(`${this.baseUrl}/${endpoint}`, body)
-      .pipe(this.handle<T>());
-  }
 
-  put<T>(endpoint: string, body: unknown): Observable<T> {
-    return this.http
-      .put(`${this.baseUrl}/${endpoint}`, body)
-      .pipe(this.handle<T>());
-  }
+put<T>(endpoint: string, body: unknown): Observable<T> {
+  const url = this.buildUrlWithParking(endpoint);
+  return this.http.put(url, body).pipe(this.handle<T>());
+}
 
-  delete<T>(endpoint: string, id: number | string): Observable<T> {
-    return this.http
-      .delete(`${this.baseUrl}/${endpoint}/${id}`)
-      .pipe(this.handle<T>());
-  }
+delete<T>(endpoint: string, id: number | string): Observable<T> {
+  const url = this.buildUrlWithParking(`${endpoint}/${id}`);
+  return this.http.delete(url).pipe(this.handle<T>());
+}
+
+/**
+ * 🔹 Agrega dinámicamente el parkingId si el endpoint lo requiere.
+ * - Si el endpoint ya contiene /by-parking o ?parkingId=, no hace nada.
+ * - Si hay un parkingId en localStorage, lo agrega automáticamente.
+ */
+private buildUrlWithParking(endpoint: string): string {
+  const base = `${this.baseUrl}/${endpoint}`;
+  const parkingId = this.getParkingId();
+
+  if (!parkingId) return base;
+
+  const hasParkingAlready =
+    base.includes('by-parking') || base.includes('parkingId=');
+
+  if (hasParkingAlready) return base;
+
+  // Si no tiene, lo agrega como query param
+  const separator = base.includes('?') ? '&' : '?';
+  return `${base}${separator}parkingId=${parkingId}`;
+}
 }

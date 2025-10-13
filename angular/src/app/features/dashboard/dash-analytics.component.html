@@ -1,6 +1,5 @@
 <div class="dashboard-grid">
 
-  <!-- Stats cards (grid responsive) -->
   <div class="stats-grid">
 
       @for (card of cards; track card) {
@@ -23,10 +22,8 @@
     </app-card>
   </div>
 }
-    <!-- order-card end -->
   </div>
 
-  <!-- Main charts column (stack en mobile, 2 col en desktop) -->
   <div class="charts-grid">
 
     <div class="card-section">
@@ -89,16 +86,7 @@
       </app-card>
     </div>
 
-  </div> <!-- end charts-grid -->
+  </div> 
 
-  <!-- Alerts (full width) -->
-  <!-- <h2 class="titulo-alert">Alertas recientes</h2> -->
-
-  <!-- <div class="alerts-list">
-    <div class="alert-card" *ngFor="let a of getRecentAlerts()">
-      <span class="alert-dot" aria-hidden="true"></span>
-      <div class="alert-content" [innerHTML]="a.message"></div>
-    </div>
-  </div> -->
 
 </div>

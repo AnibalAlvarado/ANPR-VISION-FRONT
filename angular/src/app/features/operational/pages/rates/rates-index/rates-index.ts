@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 })
 export class RatesIndex implements OnInit {
   dataSource = new MatTableDataSource<Rates>();
+  parkingId: string | null = null;
   columns = [
     { key: 'name', label: 'Nombre' },
     { key: 'type', label: 'Tipo' },
@@ -36,11 +37,12 @@ export class RatesIndex implements OnInit {
   private router = inject(Router);
 
   ngOnInit(): void {
+    this.parkingId = this._generalService.getParkingId();
     this.getAllRates();
   }
 
   getAllRates(): void {
-    this._generalService.get<Rates[]>('Rates/join').subscribe({
+    this._generalService.get<Rates[]>('Rates').subscribe({
       next: (items) => {
         this.dataSource.data = items || [];
         if (this.paginator) this.dataSource.paginator = this.paginator;
