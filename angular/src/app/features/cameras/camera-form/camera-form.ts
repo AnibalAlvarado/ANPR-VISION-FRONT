@@ -4,9 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { General } from 'src/app/core/services/general.service';
 import { FieldConfig, ValidatorNames } from 'src/app/shared/components/ui-element/generic-form/field-config.model';
 import { GenericForm } from 'src/app/shared/components/ui-element/generic-form/generic-form';
-
 import Swal from 'sweetalert2';
-import { Parking } from '../../parameters/pages/parking/parking';
 
 @Component({
   selector: 'app-camera-form',
@@ -23,8 +21,18 @@ export class CameraForm implements OnInit {
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El nombre es obligatorio.' },
-        { name: ValidatorNames.MinLength, validator: ValidatorNames.MinLength, value: 3, message: 'El nombre debe tener al menos 3 caracteres.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 25, message: 'El nombre no puede exceder los 25 caracteres.' }
+        {
+          name: ValidatorNames.MinLength,
+          validator: ValidatorNames.MinLength,
+          value: 3,
+          message: 'El nombre debe tener al menos 3 caracteres.'
+        },
+        {
+          name: ValidatorNames.MaxLength,
+          validator: ValidatorNames.MaxLength,
+          value: 25,
+          message: 'El nombre no puede exceder los 25 caracteres.'
+        }
       ]
     },
     {
@@ -45,20 +53,30 @@ export class CameraForm implements OnInit {
       required: true,
       validations: [
         { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'La URL es obligatoria.' },
-        { name: ValidatorNames.MaxLength, validator: ValidatorNames.MaxLength, value: 250, message: 'La URL no puede superar los 250 caracteres.' },
-        { name: ValidatorNames.Pattern, validator: ValidatorNames.Pattern, value: '^(https?|rtsp):\\/\\/[^\\s/$.?#].[^\\s]*$', message: 'Debe ser una URL válida con protocolo (http, https o rtsp).' }
+        {
+          name: ValidatorNames.MaxLength,
+          validator: ValidatorNames.MaxLength,
+          value: 250,
+          message: 'La URL no puede superar los 250 caracteres.'
+        },
+        {
+          name: ValidatorNames.Pattern,
+          validator: ValidatorNames.Pattern,
+          value: '^(https?|rtsp):\\/\\/[^\\s/$.?#].[^\\s]*$',
+          message: 'Debe ser una URL válida con protocolo (http, https o rtsp).'
+        }
       ]
     },
+
     {
       name: 'parkingId',
       label: 'Parqueadero al que pertenece',
-      type: 'select',
+      type: 'hidden',
+      value: localStorage.getItem('parkingId'),
       required: true,
-      options: [],
-      validations: [
-        { name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'Debe seleccionar un parqueadero.' }
-      ]
+      validations: [{ name: ValidatorNames.Required, validator: ValidatorNames.Required, message: 'El parqueadero es obligatorio.' }]
     },
+
     {
       name: 'asset',
       label: 'Activo',
@@ -77,56 +95,52 @@ export class CameraForm implements OnInit {
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    const parkingId = localStorage.getItem('parkingId');
 
-    // Cargar parqueaderos (robusto a distintas formas de respuesta)
-    this.service.get<any>('Parking/select').subscribe({
-      next: (res) => {
-        const list: Parking[] = Array.isArray(res) ? res : (res?.data ?? res?.Data ?? []);
-        const options = (list ?? []).map((p: any) => ({
-          value: p.id,
-          label: p.name ?? p.parking ?? `Parking ${p.id}`
-        }));
-
-        this.formConfig = this.formConfig.map(f =>
-          f.name === 'parkingId' ? { ...f, options } : f
-        );
-      },
-      error: (err: Error) => {
-        Swal.fire('Error', err.message || 'No se pudieron cargar los parqueaderos.', 'error');
-      }
-    });
-
-    // Modo edición
-   // modo edición (arreglo mínimo)
-if (id) {
-  this.isEdit = true;
-  this.service.getById<any>('Cameras', id).subscribe({
-    next: (camera) => {
-      // camera ya es el objeto (General desenvuelve)
-      // Normalizamos por si el backend devuelve parking como objeto anidado
-      const normalized: any = { ...camera };
-
-      if (!normalized.parkingId && normalized.parking && typeof normalized.parking === 'object') {
-        normalized.parkingId = normalized.parking.id ?? normalized.parkingId;
-      }
-
-      normalized.asset = Boolean(normalized.asset);
-
-      this.initialData = normalized;
-    },
-    error: (err: Error) => {
-      Swal.fire('Error', err.message || 'No se pudo cargar la cámara.', 'error');
+    if (!parkingId) {
+      Swal.fire('Error', 'No se encontró el ID del parqueadero en el almacenamiento local.', 'error');
+      this.route.navigate(['/cameras-index']);
+      return;
     }
-  });
-}
 
+    // en edición
+    if (id) {
+      this.isEdit = true;
+      this.service.getById<any>('Cameras', id).subscribe({
+        next: (camera) => {
+          const normalized: any = { ...camera };
+
+          if (!normalized.parkingId && normalized.parking && typeof normalized.parking === 'object') {
+            normalized.parkingId = normalized.parking.id ?? normalized.parkingId;
+          }
+
+          normalized.asset = Boolean(normalized.asset);
+          this.initialData = normalized;
+        },
+        error: (err: Error) => {
+          Swal.fire('Error', err.message || 'No se pudo cargar la cámara.', 'error');
+        }
+      });
+    } else {
+      // si es nuevo, inicializamos con el parkingId
+      this.initialData = { parkingId };
+    }
   }
 
   save(data: any) {
+    // asegura que siempre use el parkingId del localStorage
+    data.parkingId = localStorage.getItem('parkingId');
+
     if (this.isEdit) {
       this.service.put('Cameras', data).subscribe({
         next: () => {
-          Swal.fire({ icon: 'success', title: 'Registro actualizado exitosamente', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro actualizado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
           this.route.navigate(['/cameras-index']);
         },
         error: (err: Error) => {
@@ -137,7 +151,13 @@ if (id) {
       delete data.id;
       this.service.post('Cameras', data).subscribe({
         next: () => {
-          Swal.fire({ icon: 'success', title: 'Registro creado exitosamente', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+          Swal.fire({
+            icon: 'success',
+            title: 'Registro creado exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+          });
           this.route.navigate(['/cameras-index']);
         },
         error: (err: Error) => {
@@ -147,5 +167,7 @@ if (id) {
     }
   }
 
-  cancel() { this.route.navigate(['/cameras-index']); }
+  cancel() {
+    this.route.navigate(['/cameras-index']);
+  }
 }

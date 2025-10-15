@@ -42,7 +42,7 @@ export class RatesIndex implements OnInit {
   }
 
   getAllRates(): void {
-    this._generalService.get<Rates[]>('Rates').subscribe({
+    this._generalService.get<Rates[]>('Rates/join').subscribe({
       next: (items) => {
         this.dataSource.data = items || [];
         if (this.paginator) this.dataSource.paginator = this.paginator;

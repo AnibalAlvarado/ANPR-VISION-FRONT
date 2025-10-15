@@ -34,7 +34,7 @@ export class UserIndex implements OnInit {
   }
 
 getAllUsers(): void {
-  this._generalService.get<User[]>('User/select').subscribe({
+  this._generalService.get<User[]>('User/join').subscribe({
     next: (items) => {
       const rows = (items ?? []).map(u => {
         const person = (u as any)?.person;

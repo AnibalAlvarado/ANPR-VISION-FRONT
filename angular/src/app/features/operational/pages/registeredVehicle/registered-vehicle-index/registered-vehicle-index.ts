@@ -44,20 +44,42 @@ export class RegisteredVehicleIndex implements OnInit {
     this.getAllRegisteredVehicles();
   }
 
+  // getAllRegisteredVehicles(): void {
+  //   this._generalService.get<RegisteredVehicle[]>('RegisteredVehicles/by-parking/').subscribe({
+  //     next: (items) => {
+  //       this.originalData = items || [];
+  //       this.dataSource.data = this.originalData;
+  //       if (this.paginator) this.dataSource.paginator = this.paginator;
+  //     },
+  //     error: (err: Error) => {
+  //       Swal.fire('Error', err.message || 'No se pudieron cargar los registros de vehículos.', 'error');
+  //       this.originalData = [];
+  //       this.dataSource.data = [];
+  //     }
+  //   });
+  // }
+
   getAllRegisteredVehicles(): void {
-    this._generalService.get<RegisteredVehicle[]>('RegisteredVehicles').subscribe({
-      next: (items) => {
-        this.originalData = items || [];
-        this.dataSource.data = this.originalData;
-        if (this.paginator) this.dataSource.paginator = this.paginator;
-      },
-      error: (err: Error) => {
-        Swal.fire('Error', err.message || 'No se pudieron cargar los registros de vehículos.', 'error');
-        this.originalData = [];
-        this.dataSource.data = [];
-      }
-    });
+  const parkingId = this._generalService.getParkingId();
+  if (!parkingId) {
+    Swal.fire('Error', 'No se encontró el ID del parqueadero.', 'error');
+    return;
   }
+
+  this._generalService.get<RegisteredVehicle[]>('RegisteredVehicles/join').subscribe({
+    next: (items) => {
+      this.originalData = items || [];
+      this.dataSource.data = this.originalData;
+      if (this.paginator) this.dataSource.paginator = this.paginator;
+    },
+    error: (err: Error) => {
+      Swal.fire('Error', err.message || 'No se pudieron cargar los registros de vehículos.', 'error');
+      this.originalData = [];
+      this.dataSource.data = [];
+    }
+  });
+}
+
 
   goToCreate(): void {
     this.router.navigate(['/registeredVehicle-form']);

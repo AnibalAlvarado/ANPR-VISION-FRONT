@@ -72,7 +72,7 @@ export class CameraIndex implements OnInit {
   }
 
   // Llamar al endpoint correcto
-  this._generalService.get<Camera[]>('Cameras').subscribe({
+  this._generalService.get<Camera[]>('Cameras/join').subscribe({
     next: (items) => {
       const data = items || [];
       this.cameras = data;

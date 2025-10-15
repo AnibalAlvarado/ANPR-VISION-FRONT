@@ -97,6 +97,12 @@ export const NavigationItems: NavigationItem[] = [
             title: 'Registros de Vehículos',
             type: 'item',
             url: '/registeredVehicle-index'
+          },
+           {
+            id: 'BackList',
+            title: 'Lista Negra',
+            type: 'item',
+            url: '/blackList-index'
           }
 
           //  {
@@ -234,12 +240,7 @@ export const NavigationItems: NavigationItem[] = [
             type: 'item',
             url: '/persons-index'
           },
-          {
-            id: 'BackList',
-            title: 'Lista Negra',
-            type: 'item',
-            url: '/blackList-index'
-          },
+
           {
             id: 'Clientes',
             title: 'Clientes',

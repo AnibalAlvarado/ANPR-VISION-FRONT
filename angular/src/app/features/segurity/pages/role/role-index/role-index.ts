@@ -32,7 +32,7 @@ export class RoleIndex implements OnInit {
   }
 
   getAllRoles(): void {
-    this._generalService.get<Role[]>('Rol/select').subscribe({
+    this._generalService.get<Role[]>('Rol/join').subscribe({
       next: (items) => {
         this.dataSource.data = items || [];
         if (this.paginator) this.dataSource.paginator = this.paginator;

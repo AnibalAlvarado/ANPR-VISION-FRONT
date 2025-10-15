@@ -48,7 +48,7 @@ export class ZonesIndex implements OnInit {
     this.dataSource.data = [];
     return;
   }
-    this._generalService.get<Zones[]>('Zones/by-parking/' + parkingId).subscribe({
+    this._generalService.get<Zones[]>('Zones/join').subscribe({
       next: (zones) => {
         this.originalData = zones || [];
         this.dataSource.data = zones || [];

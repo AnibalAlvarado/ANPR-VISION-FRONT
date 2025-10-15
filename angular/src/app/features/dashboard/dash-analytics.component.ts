@@ -446,7 +446,7 @@ export class DashAnalyticsComponent implements OnInit {
 
   /** Payload robusto para: {data:[...]}, {data:{data:[...]}}, o el array directo */
   private loadZones() {
-    this.service.get<any>(`Zones/by-parking/${this.parkingId}`).subscribe({
+    this.service.get<any>('Zones/join').subscribe({
       next: (res) => {
         const arr: any[] =
           Array.isArray(res?.data) ? res.data :
