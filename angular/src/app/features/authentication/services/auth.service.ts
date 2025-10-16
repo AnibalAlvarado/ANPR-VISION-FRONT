@@ -10,7 +10,7 @@ import { ApiResponse } from 'src/app/shared/Models/ApiResponse';
 @Injectable({ providedIn: 'root' })
 export class AuthService extends General {
   private readonly baseEndpoint = 'Auth';
-
+  // private readonly baseEndpoint = 'User';
   /**
    * Inicia sesión de usuario
    * POST /User/login
