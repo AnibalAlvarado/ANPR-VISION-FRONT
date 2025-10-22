@@ -21,7 +21,7 @@ export class BackListIndex implements OnInit {
     { key: 'reason', label: 'Razón' },
     { key: 'restrictionDate', label: 'Fecha de Restriccion' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

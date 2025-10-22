@@ -11,6 +11,7 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
 import { NavigationService } from '../navigation.service';
 import { OpenCommand, SharedMenuService } from '../shared-menu.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MenuApiService } from 'src/app/layout/services/menu-api.service';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class NavContentComponent implements OnInit, OnDestroy {
   private navigationService = inject(NavigationService);
   private sharedMenu = inject(SharedMenuService);
   private router = inject(Router);
+  private menuApi = inject(MenuApiService);
 
   private cmdSub?: Subscription;
 
@@ -53,15 +55,26 @@ export class NavContentComponent implements OnInit, OnDestroy {
 
   // life cycle event
   ngOnInit() {
-    // registrar el menú para que el buscador tenga la misma fuente de verdad
-    this.navigationService.setMenu(this.navigation);
-
-    // suscribirse a comandos del buscador
-    this.cmdSub = this.sharedMenu.openObservable$.subscribe((cmd: OpenCommand) => {
-      if (!cmd) return;
-      this.openAndHighlight(cmd);
+    // 🧭 Cargar menú dinámico desde el backend
+    this.menuApi.getUserMenu().subscribe({
+      next: (menu) => {
+        this.navigation = menu;
+        this.navigationService.setMenu(menu);
+      },
+      error: (err) => {
+        console.error('Error cargando menú dinámico:', err.message || err);
+        // fallback al menú estático
+        this.navigation = NavigationItems;
+        this.navigationService.setMenu(NavigationItems);
+      }
     });
 
+    // 🔁 Suscripción para comandos de búsqueda o apertura directa
+    this.cmdSub = this.sharedMenu.openObservable$.subscribe((cmd: OpenCommand) => {
+      if (cmd) this.openAndHighlight(cmd);
+    });
+
+    // ⚙️ Ajustes de UI responsiva
     if (this.windowWidth < 992) {
       setTimeout(() => {
         document.querySelector('.pcoded-navbar')?.classList.add('menupos-static');
@@ -69,7 +82,6 @@ export class NavContentComponent implements OnInit, OnDestroy {
       }, 500);
     }
   }
-
   ngOnDestroy() {
     this.cmdSub?.unsubscribe();
   }

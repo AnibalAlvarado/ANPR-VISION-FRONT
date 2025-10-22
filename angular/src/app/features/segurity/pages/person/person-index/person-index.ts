@@ -22,7 +22,7 @@ export class PersonIndex implements OnInit {
     { key: 'lastName', label: 'Apellido' },
     { key: 'phoneNumber', label: 'Teléfono' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   private _generalService = inject(General);

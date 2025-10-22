@@ -20,7 +20,7 @@ export class FormModuleIndex implements OnInit {
     { key: 'moduleName', label: 'Nombre del Módulo' },
     { key: 'formName', label: 'Nombre del Formulario' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

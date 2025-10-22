@@ -21,7 +21,7 @@ export class RolFormPerIndex implements OnInit {
     { key: 'permissionName', label: 'Permiso' },
     { key: 'formName', label: 'Formulario' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

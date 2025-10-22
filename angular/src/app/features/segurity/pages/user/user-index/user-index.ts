@@ -23,7 +23,7 @@ export class UserIndex implements OnInit {
     { key: 'email', label: 'Email' },
     { key: 'personName', label: 'Persona' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   private _generalService = inject(General);

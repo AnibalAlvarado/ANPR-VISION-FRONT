@@ -19,7 +19,7 @@ export class RoleIndex implements OnInit {
     { key: 'name', label: 'Nombre' },
     { key: 'description', label: 'Descripción' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

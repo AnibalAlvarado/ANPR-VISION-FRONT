@@ -19,7 +19,7 @@ export class ClientIndex implements OnInit {
     { key: 'name', label: 'Nombres' },
     { key: 'person', label: 'Nombre del la persona' },
     { key: 'asset', label: 'Estado' },
-    { key: 'isDeleted', label: 'Eliminado Lógicamente' }
+    // { key: 'isDeleted', label: 'Eliminado Lógicamente' }
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
