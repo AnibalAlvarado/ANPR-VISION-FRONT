@@ -33,7 +33,7 @@ export class PersonIndex implements OnInit {
   }
 
   getAllPersons(): void {
-    this._generalService.get<Person[]>('Person/select').subscribe({
+    this._generalService.get<Person[]>('Person/join').subscribe({
       next: (items) => {
         this.dataSource.data = items || [];
         if (this.paginator) this.dataSource.paginator = this.paginator;
